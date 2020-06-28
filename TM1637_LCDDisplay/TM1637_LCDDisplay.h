@@ -16,8 +16,9 @@ class TM1637_LCDDisplay
     void clear();
     void setBrightness(uint8_t brightness, bool on);
 
-  private:
     TM1637Display* m_lcd;
+
+  private:
     int _clkPin;
     int _dioPin;
 };
