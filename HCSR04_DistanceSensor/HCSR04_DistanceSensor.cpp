@@ -12,7 +12,12 @@
  * @param temperature Ambient temperature, in degrees Celsius
  * @param max_distance Maximum measuring distance, in centimeters
  */
-HCSR04_DistanceSensor::HCSR04_DistanceSensor(int trigger_pin, int echo_pin, int16_t temperature, uint16_t max_distance) {
+HCSR04_DistanceSensor::HCSR04_DistanceSensor(
+  int trigger_pin,
+  int echo_pin,
+  int16_t temperature,
+  uint16_t max_distance
+) {
   _triggerPin = trigger_pin;
   _echoPin = echo_pin;
   _temperature = temperature;
