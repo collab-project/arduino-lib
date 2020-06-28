@@ -21,7 +21,7 @@ SystemClock::SystemClock(
   _ntpServer = ntp_server;
   _gmtOffset_sec = gmtOffset_sec;
   _daylightOffset_sec = daylightOffset_sec;
-  
+
   _clock = new DS3231_RealtimeClock(scl_pin, sda_pin);
 }
 
@@ -80,7 +80,7 @@ String SystemClock::getStartupTime() {
 String SystemClock::formatTime(RtcDateTime dt) {
   char tstamp[9];
 
-  snprintf_P(tstamp, 
+  snprintf_P(tstamp,
     countof(tstamp),
     PSTR("%02u:%02u:%02u"),
     dt.Hour(),
