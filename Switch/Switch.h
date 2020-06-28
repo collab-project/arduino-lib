@@ -12,6 +12,9 @@ class Switch
     Switch() {};
     Switch(int switch_pin);
     void begin();
+    void loop();
+
+    int state = LOW;
 
   private:
     int _switchPin;

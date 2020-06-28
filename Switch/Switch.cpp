@@ -11,3 +11,7 @@ Switch::Switch(int switch_pin) {
 void Switch::begin() {
   pinMode(_switchPin, INPUT_PULLUP);
 }
+
+void Switch::loop() {
+  state = digitalRead(_switchPin);
+}
