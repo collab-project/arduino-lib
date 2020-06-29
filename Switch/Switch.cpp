@@ -10,8 +10,17 @@ Switch::Switch(int switch_pin) {
 
 void Switch::begin() {
   pinMode(_switchPin, INPUT_PULLUP);
+  state = read();
+}
+
+int Switch::read() {
+  return digitalRead(_switchPin);
 }
 
 void Switch::loop() {
-  state = digitalRead(_switchPin);
+  int reading = read();
+
+  if (reading != state) {
+    state = reading;
+  }
 }

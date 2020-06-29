@@ -18,6 +18,7 @@ class Switch
 
   private:
     int _switchPin;
+    int read();
 };
 
 #endif
