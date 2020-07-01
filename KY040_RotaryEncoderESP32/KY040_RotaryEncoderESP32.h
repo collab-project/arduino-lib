@@ -21,7 +21,6 @@ class KY040_RotaryEncoderESP32
     );
     void begin();
     void loop();
-    int16_t getPosition();
     int rotation;
 
     enum EventType {
