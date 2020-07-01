@@ -4,7 +4,7 @@
 
 #include "KY040_RotaryEncoderESP32.h"
 
-// declared here so timeIRS() below can access it
+// declared here so functions below can access it
 RotaryEncoder* _encoder;
 
 void encoderISR()
@@ -35,10 +35,6 @@ KY040_RotaryEncoderESP32::KY040_RotaryEncoderESP32(
 
 void KY040_RotaryEncoderESP32::begin() {
   _encoder->begin();
-  //_encoder->setAccelerationEnabled(false);
-
-  /*Timer1.initialize(1000);
-  Timer1.attachInterrupt(timeIRS);*/
 
   attachInterrupt(digitalPinToInterrupt(_pinA), encoderISR, CHANGE);
   attachInterrupt(digitalPinToInterrupt(_btnPin), encoderButtonISR, FALLING);
@@ -64,25 +60,4 @@ void KY040_RotaryEncoderESP32::loop() {
   if (_encoder->getPushButton() == true) {
     _btnPressCallback.callback();
   }
-
-  /*
-  ClickEncoder::Button b = _encoder->getButton();
-  if (b != ClickEncoder::Open) {
-    #define VERBOSECASE(label) case label: Serial.println(#label); break;
-    switch (b) {
-      VERBOSECASE(ClickEncoder::Held)
-      VERBOSECASE(ClickEncoder::Released)
-      case ClickEncoder::Pressed:
-      case ClickEncoder::Clicked:
-
-        break;
-      case ClickEncoder::DoubleClicked:
-        Serial.println("ClickEncoder::DoubleClicked");
-        _encoder->setAccelerationEnabled(!_encoder->getAccelerationEnabled());
-        Serial.print("  Acceleration is ");
-        Serial.println((_encoder->getAccelerationEnabled()) ? "enabled" : "disabled");
-        break;
-    }
-  }
-  */
 }
