@@ -4,6 +4,8 @@
 #ifndef YX5300_AudioPlayer_h
 #define YX5300_AudioPlayer_h
 
+#define USE_SOFTWARESERIAL 0
+
 #include <Arduino.h>
 #include <MD_YX5300.h>
 

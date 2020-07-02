@@ -45,8 +45,7 @@ void KY040_RotaryEncoderESP32::begin() {
 void KY040_RotaryEncoderESP32::loop() {
   _value = _encoder->getPosition();
   if (_position != _value) {
-
-    if (_position > _value) {
+    if (_value > _position) {
       rotation = EventType::ROTARY_CCW;
     } else {
       rotation = EventType::ROTARY_CW;

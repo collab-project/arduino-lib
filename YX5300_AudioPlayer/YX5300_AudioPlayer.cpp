@@ -18,7 +18,10 @@ void cbResponse(const MD_YX5300::cbData *status) {
     case MD_YX5300::STS_TIMEOUT:    Serial.print(F("STS_TIMEOUT"));    break;
     case MD_YX5300::STS_VERSION:    Serial.print(F("STS_VERSION"));    break;
     case MD_YX5300::STS_CHECKSUM:   Serial.print(F("STS_CHECKSUM"));    break;
-    case MD_YX5300::STS_TF_INSERT:  Serial.print(F("STS_TF_INSERT"));  break;
+    case MD_YX5300::STS_TF_INSERT:
+      Serial.print(F("STS_TF_INSERT"));
+      break;
+
     case MD_YX5300::STS_TF_REMOVE:  Serial.print(F("STS_TF_REMOVE"));  break;
     case MD_YX5300::STS_ERR_FILE:   Serial.print(F("STS_ERR_FILE"));   break;
     case MD_YX5300::STS_ACK_OK:     Serial.print(F("STS_ACK_OK"));     break;
@@ -51,25 +54,16 @@ void YX5300_AudioPlayer::begin() {
   _player->setCallback(cbResponse);
   _player->setSynchronous(false);
   _player->volume(_volume);
+
+
+  _player->queryFilesCount();
+  _player->queryVolume();
+  //_player->queryStatus();
+  Serial.print("Max volume: ");
+  Serial.println(_player->volumeMax());
+
   _player->playFolderRepeat(PLAY_FOLDER);
-
-  bool totalSDFiles = _player->queryFilesCount();
-  bool vol = _player->queryVolume();
-
-  /*
-  _player->begin(_speed);
-  _player->reset();
-  _player->setSource(MP3_SRC_SDCARD);
-
-  _player->setLoopMode(MP3_LOOP_ALL);
-
-  Serial.print("Loop mode: ");
-  Serial.println(_player->getLoopMode());
-
-  if (_player->getStatus() != MP3_STATUS_PLAYING) {
-    _player->next();
-  }
-  */
+  _player->playStart();
 }
 
 void YX5300_AudioPlayer::loop() {
