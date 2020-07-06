@@ -23,7 +23,8 @@ class RotaryEncoderPushButton
       int b_pin,
       int btn_pin,
       Method btnPress_callback,
-      Method encoder_callback
+      Method encoder_callback,
+      int stepsPerNotch = 1
     );
     void begin();
     void loop();
@@ -43,6 +44,7 @@ class RotaryEncoderPushButton
     int _pinA;
     int _pinB;
     int _btnPin;
+    int _stepsPerNotch;
     int16_t _last, _value;
 
     // callback

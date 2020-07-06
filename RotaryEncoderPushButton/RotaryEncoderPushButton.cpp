@@ -16,22 +16,24 @@ RotaryEncoderPushButton::RotaryEncoderPushButton(
     int b_pin,
     int btn_pin,
     Method btnPress_callback,
-    Method encoder_callback
+    Method encoder_callback,
+    int stepsPerNotch
 ) {
   _pinA = a_pin;
   _pinB = b_pin;
   _btnPin = btn_pin;
+  _stepsPerNotch = stepsPerNotch;
   _btnPressCallback = btnPress_callback;
   _encoderCallback = encoder_callback;
 }
 
 void RotaryEncoderPushButton::begin() {
-  _encoder = new ClickEncoder(_pinA, _pinB, _btnPin, 2);
+  _encoder = new ClickEncoder(_pinA, _pinB, _btnPin, _stepsPerNotch);
   _encoder->setAccelerationEnabled(false);
 
   Timer1.initialize(1000);
   Timer1.attachInterrupt(timeIRS);
-  
+
   _last = _encoder->getValue();
 }
 
@@ -60,15 +62,10 @@ void RotaryEncoderPushButton::loop() {
     switch (b) {
       VERBOSECASE(ClickEncoder::Held)
       VERBOSECASE(ClickEncoder::Released)
+      VERBOSECASE(ClickEncoder::DoubleClicked)
       case ClickEncoder::Pressed:
       case ClickEncoder::Clicked:
         _btnPressCallback.callback();
-        break;
-      case ClickEncoder::DoubleClicked:
-        Serial.println("ClickEncoder::DoubleClicked");
-        _encoder->setAccelerationEnabled(!_encoder->getAccelerationEnabled());
-        Serial.print("  Acceleration is ");
-        Serial.println((_encoder->getAccelerationEnabled()) ? "enabled" : "disabled");
         break;
     }
   }
