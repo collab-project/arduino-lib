@@ -1,26 +1,33 @@
 /*
-   RotaryEncoderPushButtonESP32.h - ESP32 version of rotary encoder with internal push button.
+   RotaryEncoderPushButton.h - Rotary encoder with internal push button.
 */
 
-#ifndef RotaryEncoderPushButtonESP32_h
-#define RotaryEncoderPushButtonESP32_h
+#ifndef RotaryEncoderPushButton_h
+#define RotaryEncoderPushButton_h
 
+// None of the functions or ISRs will get compiled but their prototypes are declared
+#define LIBCALL_ENABLEINTERRUPT
+
+#include <stdint.h>
 #include <Arduino.h>
 #include <Method.h>
-#include <RotaryEncoder.h>
+#include <TimerOne.h>
+#include <ClickEncoder.h>
+#include <EnableInterrupt.h>
 
-class RotaryEncoderPushButtonESP32
+class RotaryEncoderPushButton
 {
   public:
-    RotaryEncoderPushButtonESP32(
+    RotaryEncoderPushButton(
       int a_pin,
       int b_pin,
       int btn_pin,
-      Method btn_callback,
+      Method btnPress_callback,
       Method encoder_callback
     );
     void begin();
     void loop();
+    int16_t getValue();
     int rotation;
 
     enum EventType {
@@ -33,14 +40,13 @@ class RotaryEncoderPushButtonESP32
     };
 
   private:
-    int16_t _position = 0;
-    int16_t _value = 0;
     int _pinA;
     int _pinB;
     int _btnPin;
+    int16_t _last, _value;
 
-    // callbacks
-    Method _btnCallback;
+    // callback
+    Method _btnPressCallback;
     Method _encoderCallback;
 };
 
