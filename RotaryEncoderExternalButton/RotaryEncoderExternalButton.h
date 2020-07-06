@@ -1,5 +1,5 @@
 /*
-   RotaryEncoderExternalButton.h - KY-040 rotary encoder with push button.
+   RotaryEncoderExternalButton.h - Rotary encoder with external push button.
 */
 
 #ifndef RotaryEncoderExternalButton_h
