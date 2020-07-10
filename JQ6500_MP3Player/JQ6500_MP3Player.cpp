@@ -4,7 +4,7 @@
 
 #include <JQ6500_MP3Player.h>
 
-JQ6500_MP3Player::JQ6500_MP3Player(short rx_pin, short tx_pin, long speed, int volume) {
+JQ6500_MP3Player::JQ6500_MP3Player(short rx_pin, short tx_pin, int volume, long speed) {
   _player = new JQ6500_Serial(rx_pin, tx_pin);
   _speed = speed;
   _volume = volume;

@@ -11,7 +11,7 @@
 class JQ6500_MP3Player
 {
   public:
-    JQ6500_MP3Player(short rx_pin, short tx_pin, long speed, int volume = 10);
+    JQ6500_MP3Player(short rx_pin, short tx_pin, int volume = 10, long speed = 9600);
     void begin();
     void loop();
 
