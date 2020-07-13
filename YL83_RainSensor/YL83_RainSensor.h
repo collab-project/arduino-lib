@@ -13,7 +13,6 @@ class YL83_RainSensor
     YL83_RainSensor(int rain_pin);
     void begin();
     void loop();
-    bool wet();
     int measure();
     int measurePercentage();
 

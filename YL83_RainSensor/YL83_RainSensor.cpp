@@ -25,8 +25,3 @@ int YL83_RainSensor::measurePercentage() {
   // map to percentage
   return map(output_value, 0, 4095, 100, 0);
 }
-
-bool YL83_RainSensor::wet() {
-  int sensorValue = measure();
-  return sensorValue < _thresholdValue;
-}
