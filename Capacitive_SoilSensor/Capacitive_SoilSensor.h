@@ -10,6 +10,7 @@ class Capacitive_SoilSensor
 {
   public:
     Capacitive_SoilSensor(int pin, int wet, int dry);
+    void begin();
     int measure();
     int measurePercentage();
 

@@ -9,8 +9,12 @@ Capacitive_SoilSensor::Capacitive_SoilSensor(int pin, int wet, int dry) {
   _dry = dry;
 }
 
+void Capacitive_SoilSensor::begin() {
+  pinMode(_pin, INPUT);
+}
+
 int Capacitive_SoilSensor::measure() {
-  return 0;
+  return analogRead(_pin);
 }
 
 int Capacitive_SoilSensor::measurePercentage() {
