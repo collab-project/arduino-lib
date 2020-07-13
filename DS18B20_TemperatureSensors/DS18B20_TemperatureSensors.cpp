@@ -30,8 +30,8 @@ float DS18B20_TemperatureSensors::getTemperatureByIndex(int index) {
 
   // invalid reading
   if (temp == -127 || temp > 100) {
-    // try again one more time
-    temp = _tempSensors->getTempCByIndex(index);
+    // something's wrong
+    temp = 0;
   }
 
   return temp;
