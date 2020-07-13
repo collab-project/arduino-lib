@@ -22,6 +22,6 @@ int YL83_RainSensor::measurePercentage() {
   // read the input
   int output_value = measure();
 
-  // map to percentage
-  return map(output_value, 0, 4095, 100, 0);
+  // map to positive percentage
+  return _max(map(output_value, 0, 4095, 100, 0), 0);
 }
