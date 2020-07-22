@@ -40,6 +40,7 @@ class RotaryEncoderPushButtonESP32MCP23017
     int _pinA;
     int _pinB;
     int _btnPin;
+    Adafruit_MCP23017* _mcp;
 
     // callbacks
     Method _btnCallback;

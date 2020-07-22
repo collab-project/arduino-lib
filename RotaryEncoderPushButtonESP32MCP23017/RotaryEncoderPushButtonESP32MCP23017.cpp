@@ -30,6 +30,7 @@ RotaryEncoderPushButtonESP32MCP23017::RotaryEncoderPushButtonESP32MCP23017(
   _btnPin = btn_pin;
   _btnCallback = btn_callback;
   _encoderCallback = encoder_callback;
+  _mcp = mcp;
 
   _encoder = new RotaryEncoderMCP23017(_pinA, _pinB, _btnPin, mcp);
 }
@@ -37,8 +38,16 @@ RotaryEncoderPushButtonESP32MCP23017::RotaryEncoderPushButtonESP32MCP23017(
 void RotaryEncoderPushButtonESP32MCP23017::begin() {
   _encoder->begin();
 
+  _mcp->setupInterruptPin(_pinA, CHANGE);
+  _mcp->setupInterruptPin(_btnPin, FALLING);
+
+  // enable interrupts before going to sleep/wait
+  // And we setup a callback for the arduino INT handler.
   attachInterrupt(digitalPinToInterrupt(_pinA), encoderISR, CHANGE);
   attachInterrupt(digitalPinToInterrupt(_btnPin), encoderButtonISR, FALLING);
+
+  //attachInterrupt(digitalPinToInterrupt(_pinA), encoderISR, CHANGE);
+  //attachInterrupt(digitalPinToInterrupt(_btnPin), encoderButtonISR, FALLING);
 
   _position = _encoder->getPosition();
 }
