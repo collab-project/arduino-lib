@@ -4,12 +4,13 @@
 
 class Method
 {
-public:
-  Method();
-  void attachCallback(const Functor0 & callback);
-  void callback();
-protected:
-  Functor0 callback_;
+  public:
+    Method();
+    void attachCallback(const Functor0 & callback);
+    void callback();
+
+  protected:
+    Functor0 callback_;
 };
 
 #endif
