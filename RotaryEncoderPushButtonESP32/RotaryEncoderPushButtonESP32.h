@@ -7,7 +7,10 @@
 
 #include <Arduino.h>
 #include <Method.h>
-#include <RotaryEncoder.h>
+#include <AceButton.h>
+#include <ESP32Encoder.h>
+
+using namespace ace_button;
 
 class RotaryEncoderPushButtonESP32
 {
@@ -16,31 +19,31 @@ class RotaryEncoderPushButtonESP32
       int a_pin,
       int b_pin,
       int btn_pin,
-      Method btn_callback,
+      Method btnPress_callback,
+      Method btnRelease_callback,
       Method encoder_callback
     );
     void begin();
     void loop();
+    int64_t getPosition();
+
     int rotation;
 
     enum EventType {
-      BUTTON_CLICKED            = 1 << 0,
-      BUTTON_DOUBLE_CLICKED     = 1 << 1,
-      BUTTON_LONG_PRESSED       = 1 << 2,
-
       ROTARY_CW                 = 1 << 3,
       ROTARY_CCW                = 1 << 4,
     };
 
   private:
-    int16_t _position = 0;
-    int16_t _value = 0;
+    AceButton* _button;
+    ESP32Encoder* _encoder;
+    int64_t _position = 0;
+    int64_t _value = 0;
     int _pinA;
     int _pinB;
     int _btnPin;
 
     // callbacks
-    Method _btnCallback;
     Method _encoderCallback;
 };
 
