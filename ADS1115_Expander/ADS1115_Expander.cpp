@@ -42,12 +42,28 @@ float ADS1115_Expander::readChannel(ADS1115_MUX channel) {
   return _adc->getResult_mV();
 }
 
+float ADS1115_Expander::readChannel0() {
+  return readChannel(ADS1115_COMP_0_GND);
+}
+
+float ADS1115_Expander::readChannel1() {
+  return readChannel(ADS1115_COMP_1_GND);
+}
+
+float ADS1115_Expander::readChannel2() {
+  return readChannel(ADS1115_COMP_2_GND);
+}
+
+float ADS1115_Expander::readChannel3() {
+  return readChannel(ADS1115_COMP_3_GND);
+}
+
 ADS1115Result ADS1115_Expander::readAll() {
   ADS1115Result result;
-  result.channel0 = readChannel(ADS1115_COMP_0_GND);
-  result.channel1 = readChannel(ADS1115_COMP_1_GND);
-  result.channel2 = readChannel(ADS1115_COMP_2_GND);
-  result.channel3 = readChannel(ADS1115_COMP_3_GND);
+  result.channel0 = readChannel0();
+  result.channel1 = readChannel1();
+  result.channel2 = readChannel2();
+  result.channel3 = readChannel3();
 
   return result;
 }

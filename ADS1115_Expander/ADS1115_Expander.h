@@ -27,6 +27,10 @@ class ADS1115_Expander
     void begin();
     ADS1115Result readAll();
     float readChannel(ADS1115_MUX channel);
+    float readChannel0();
+    float readChannel1();
+    float readChannel2();
+    float readChannel3();
 
   private:
     int _i2cAddress;
