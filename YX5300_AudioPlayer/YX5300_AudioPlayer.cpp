@@ -55,7 +55,6 @@ void YX5300_AudioPlayer::begin() {
   _player->setSynchronous(false);
   _player->volume(_volume);
 
-
   _player->queryFilesCount();
   _player->queryVolume();
   //_player->queryStatus();
@@ -63,7 +62,6 @@ void YX5300_AudioPlayer::begin() {
   Serial.println(_player->volumeMax());
 
   _player->playFolderRepeat(PLAY_FOLDER);
-  _player->playStart();
 }
 
 void YX5300_AudioPlayer::loop() {
