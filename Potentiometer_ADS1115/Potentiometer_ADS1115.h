@@ -1,5 +1,5 @@
 /*
-  Potentiometer_ADS1115.cpp - Control potentiometer using MCP23017.
+  Potentiometer_ADS1115.cpp - Control potentiometer using ADS1115.
 */
 #ifndef Potentiometer_ADS1115_h
 #define Potentiometer_ADS1115_h
