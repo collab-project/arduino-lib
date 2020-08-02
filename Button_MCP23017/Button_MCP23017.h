@@ -29,7 +29,7 @@ class Button_MCP23017
     Method _callback;
     MultiPlexer_MCP23017* _mcp;
     unsigned long _lastDebounceTime = 0;
-    unsigned long _debounceDelay = 50;
+    unsigned long _debounceDelay = 5;
 };
 
 #endif
