@@ -1,10 +1,10 @@
 /*
-  ADS1115_Expander.cpp - Control ADS1115 analog ADC.
+  MultiPlexer_ADS1115.cpp - Control ADS1115 analog ADC.
 */
 
-#include "ADS1115_Expander.h"
+#include "MultiPlexer_ADS1115.h"
 
-ADS1115_Expander::ADS1115_Expander(float max_voltage, int i2c_addr, ADS1115_RANGE voltage_range) {
+MultiPlexer_ADS1115::MultiPlexer_ADS1115(float max_voltage, int i2c_addr, ADS1115_RANGE voltage_range) {
   _maxVoltage = max_voltage;
   _i2cAddress = i2c_addr;
   _voltageRange = voltage_range;
@@ -12,7 +12,7 @@ ADS1115_Expander::ADS1115_Expander(float max_voltage, int i2c_addr, ADS1115_RANG
   _adc = new ADS1115_WE(_i2cAddress);
 }
 
-void ADS1115_Expander::begin() {
+void MultiPlexer_ADS1115::begin() {
   if (!_adc->init()) {
     Serial.println("ADS1115 not connected!");
   }
@@ -30,10 +30,10 @@ void ADS1115_Expander::begin() {
   _adc->setVoltageRange_mV(_voltageRange);
 }
 
-void ADS1115_Expander::loop() {
+void MultiPlexer_ADS1115::loop() {
 }
 
-float ADS1115_Expander::readChannel(ADS1115_MUX channel) {
+float MultiPlexer_ADS1115::readChannel(ADS1115_MUX channel) {
   _adc->setCompareChannels(channel);
   _adc->startSingleMeasurement();
 
@@ -42,23 +42,23 @@ float ADS1115_Expander::readChannel(ADS1115_MUX channel) {
   return _adc->getResult_mV();
 }
 
-float ADS1115_Expander::readChannel0() {
+float MultiPlexer_ADS1115::readChannel0() {
   return readChannel(ADS1115_COMP_0_GND);
 }
 
-float ADS1115_Expander::readChannel1() {
+float MultiPlexer_ADS1115::readChannel1() {
   return readChannel(ADS1115_COMP_1_GND);
 }
 
-float ADS1115_Expander::readChannel2() {
+float MultiPlexer_ADS1115::readChannel2() {
   return readChannel(ADS1115_COMP_2_GND);
 }
 
-float ADS1115_Expander::readChannel3() {
+float MultiPlexer_ADS1115::readChannel3() {
   return readChannel(ADS1115_COMP_3_GND);
 }
 
-ADS1115Result ADS1115_Expander::readAll() {
+ADS1115Result MultiPlexer_ADS1115::readAll() {
   ADS1115Result result;
   result.channel0 = readChannel0();
   result.channel1 = readChannel1();

@@ -1,8 +1,8 @@
 /*
-  ADS1115_Expander.h - Control ADS1115 analog ADC.
+  MultiPlexer_ADS1115.h - Control ADS1115 analog ADC.
 */
-#ifndef ADS1115_Expander_h
-#define ADS1115_Expander_h
+#ifndef MultiPlexer_ADS1115_h
+#define MultiPlexer_ADS1115_h
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -15,10 +15,10 @@ struct ADS1115Result {
   float channel3;
 };
 
-class ADS1115_Expander
+class MultiPlexer_ADS1115
 {
   public:
-    ADS1115_Expander(
+    MultiPlexer_ADS1115(
       float max_voltage,
       int i2c_addr = 0x48,
       ADS1115_RANGE voltage_range = ADS1115_RANGE_6144
