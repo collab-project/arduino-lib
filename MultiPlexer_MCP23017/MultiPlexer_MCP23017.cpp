@@ -27,6 +27,3 @@ void MultiPlexer_MCP23017::setPin(byte pin, MCP_PORT port, byte state) {
 bool MultiPlexer_MCP23017::getPin(byte pin, MCP_PORT port) {
   return _mcp->getPin(pin, port);
 }
-
-void MultiPlexer_MCP23017::loop() {
-}

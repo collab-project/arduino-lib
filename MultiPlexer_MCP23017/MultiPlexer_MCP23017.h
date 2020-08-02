@@ -15,7 +15,6 @@ class MultiPlexer_MCP23017
       int i2c_addr = 0x20
     );
     void begin();
-    void loop();
     void setPortMode(uint8_t val, MCP_PORT port);
     void setAllPins(MCP_PORT port, byte state);
     void setPin(byte pin, MCP_PORT port, byte state);
