@@ -4,7 +4,12 @@
 
 #include "Button_MCP23017.h"
 
-Button_MCP23017::Button_MCP23017(int btn_pin, MCP_PORT mcp_port, MultiPlexer_MCP23017* mcp, Method callback) {
+Button_MCP23017::Button_MCP23017(
+    int btn_pin,
+    MCP_PORT mcp_port,
+    MultiPlexer_MCP23017* mcp,
+    Method callback
+) {
   _btnPin = btn_pin;
   _mcp = mcp;
   _port = mcp_port;
