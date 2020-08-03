@@ -16,16 +16,17 @@ void handleButtonEvent(
   switch (eventType) {
     case AceButton::kEventPressed:
       // notify others
-      _btnPressCallback.callback();
+      _btnPressCallback.callbackIntArg(button->getId());
       break;
     case AceButton::kEventReleased:
       // notify others
-      _btnReleaseCallback.callback();
+      _btnReleaseCallback.callbackIntArg(button->getId());
       break;
   }
 }
 
 RotaryEncoderPushButtonESP32::RotaryEncoderPushButtonESP32(
+    uint8_t index,
     int a_pin,
     int b_pin,
     int btn_pin,
@@ -41,7 +42,8 @@ RotaryEncoderPushButtonESP32::RotaryEncoderPushButtonESP32(
   _encoderCallback = encoder_callback;
 
   _encoder = new ESP32Encoder();
-  _button = new AceButton(_btnPin);
+  _btnCfg = new ButtonConfig();
+  _button = new AceButton(_btnCfg, _btnPin, HIGH, index);
 }
 
 void RotaryEncoderPushButtonESP32::begin() {
@@ -50,8 +52,7 @@ void RotaryEncoderPushButtonESP32::begin() {
 
   // btn
   pinMode(_btnPin, INPUT_PULLUP);
-  ButtonConfig* buttonConfig = _button->getButtonConfig();
-  buttonConfig->setEventHandler(handleButtonEvent);
+  _btnCfg->setEventHandler(handleButtonEvent);
 }
 
 void RotaryEncoderPushButtonESP32::loop() {

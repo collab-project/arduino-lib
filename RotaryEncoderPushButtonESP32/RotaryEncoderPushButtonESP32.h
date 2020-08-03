@@ -16,6 +16,7 @@ class RotaryEncoderPushButtonESP32
 {
   public:
     RotaryEncoderPushButtonESP32(
+      uint8_t index,
       int a_pin,
       int b_pin,
       int btn_pin,
@@ -30,12 +31,13 @@ class RotaryEncoderPushButtonESP32
     int rotation;
 
     enum EventType {
-      ROTARY_CW                 = 1 << 3,
-      ROTARY_CCW                = 1 << 4,
+      ROTARY_CW  = 1 << 3,
+      ROTARY_CCW = 1 << 4,
     };
 
   private:
     AceButton* _button;
+    ButtonConfig* _btnCfg;
     ESP32Encoder* _encoder;
     int64_t _position = 0;
     int64_t _value = 0;
