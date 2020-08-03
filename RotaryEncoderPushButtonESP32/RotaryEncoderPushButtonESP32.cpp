@@ -5,24 +5,15 @@
 #include "RotaryEncoderPushButtonESP32.h"
 
 // declared here so handler below can access
-Method _btnPressCallback;
-Method _btnReleaseCallback;
+Method _btnCallback;
 
 void handleButtonEvent(
   AceButton* button,
   uint8_t eventType,
   uint8_t buttonState
 ) {
-  switch (eventType) {
-    case AceButton::kEventPressed:
-      // notify others
-      _btnPressCallback.callbackIntArg(button->getId());
-      break;
-    case AceButton::kEventReleased:
-      // notify others
-      _btnReleaseCallback.callbackIntArg(button->getId());
-      break;
-  }
+  // notify others
+  _btnCallback.callback2IntArg(button->getId(), eventType);
 }
 
 RotaryEncoderPushButtonESP32::RotaryEncoderPushButtonESP32(
@@ -30,15 +21,13 @@ RotaryEncoderPushButtonESP32::RotaryEncoderPushButtonESP32(
     int a_pin,
     int b_pin,
     int btn_pin,
-    Method btnPress_callback,
-    Method btnRelease_callback,
+    Method btn_callback,
     Method encoder_callback
 ) {
   _pinA = a_pin;
   _pinB = b_pin;
   _btnPin = btn_pin;
-  _btnPressCallback = btnPress_callback;
-  _btnReleaseCallback = btnRelease_callback;
+  _btnCallback = btn_callback;
   _encoderCallback = encoder_callback;
 
   _encoder = new ESP32Encoder();
@@ -70,7 +59,7 @@ void RotaryEncoderPushButtonESP32::loop() {
     _position = _value;
 
     // notify others
-    _encoderCallback.callback();
+    _encoderCallback.callback2IntArg(_position, rotation);
   }
 }
 

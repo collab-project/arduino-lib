@@ -20,8 +20,7 @@ class RotaryEncoderPushButtonESP32
       int a_pin,
       int b_pin,
       int btn_pin,
-      Method btnPress_callback,
-      Method btnRelease_callback,
+      Method btn_callback,
       Method encoder_callback
     );
     void begin();
