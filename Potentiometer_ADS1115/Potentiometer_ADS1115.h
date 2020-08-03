@@ -12,7 +12,7 @@ class Potentiometer_ADS1115
 {
   public:
     Potentiometer_ADS1115(
-      int pin,
+      int channel,
       MultiPlexer_ADS1115* adc,
       Method callback
     );
@@ -21,8 +21,9 @@ class Potentiometer_ADS1115
     void read();
 
   private:
-    int _pin;
+    int _channel;
     float _val;
+    float _prev;
     Method _callback;
     MultiPlexer_ADS1115* _adc;
 };
