@@ -39,7 +39,7 @@ void Button_MCP23017::read() {
 
       // only toggle if the new button state is HIGH
       if (_currentBtnState == HIGH) {
-        _callback.callback();
+        _callback.callbackIntArg(_btnPin);
       }
     }
   }
