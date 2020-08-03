@@ -4,7 +4,11 @@
 
 #include "MultiPlexer_ADS1115.h"
 
-MultiPlexer_ADS1115::MultiPlexer_ADS1115(float max_voltage, int i2c_addr, ADS1115_RANGE voltage_range) {
+MultiPlexer_ADS1115::MultiPlexer_ADS1115(
+  float max_voltage,
+  int i2c_addr,
+  ADS1115_RANGE voltage_range
+) {
   _maxVoltage = max_voltage;
   _i2cAddress = i2c_addr;
   _voltageRange = voltage_range;
