@@ -27,3 +27,11 @@ void MultiPlexer_MCP23017::setPin(byte pin, MCP_PORT port, byte state) {
 bool MultiPlexer_MCP23017::getPin(byte pin, MCP_PORT port) {
   return _mcp->getPin(pin, port);
 }
+
+void MultiPlexer_MCP23017::setPinX(uint8_t pin, MCP_PORT port, uint8_t ioDir, uint8_t state) {
+  _mcp->setPinX(pin, port, ioDir, state);
+}
+
+void MultiPlexer_MCP23017::setPinMode(uint8_t pin, MCP_PORT port, uint8_t state) {
+  _mcp->setPinMode(pin, port, state);
+}

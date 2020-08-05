@@ -16,9 +16,11 @@ class MultiPlexer_MCP23017
     );
     void begin();
     void setPortMode(uint8_t val, MCP_PORT port);
+    bool getPin(byte pin, MCP_PORT port);
     void setAllPins(MCP_PORT port, byte state);
     void setPin(byte pin, MCP_PORT port, byte state);
-    bool getPin(byte pin, MCP_PORT port);
+    void setPinX(uint8_t pin, MCP_PORT port, uint8_t ioDir, uint8_t state);
+    void setPinMode(uint8_t pin, MCP_PORT port, uint8_t state);
 
   private:
     MCP23017* _mcp;

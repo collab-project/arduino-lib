@@ -26,7 +26,7 @@ void MultiPlexer_ADS1115::begin() {
    *
    * ADS1115_RANGE_6144  ->  +/- 6144 mV
    * ADS1115_RANGE_4096  ->  +/- 4096 mV
-   * ADS1115_RANGE_2048  ->  +/- 2048 mV (default)
+   * ADS1115_RANGE_2048  ->  +/- 2048 mV
    * ADS1115_RANGE_1024  ->  +/- 1024 mV
    * ADS1115_RANGE_0512  ->  +/- 512 mV
    * ADS1115_RANGE_0256  ->  +/- 256 mV
