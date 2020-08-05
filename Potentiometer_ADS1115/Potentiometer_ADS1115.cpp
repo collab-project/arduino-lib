@@ -33,7 +33,6 @@ void Potentiometer_ADS1115::read() {
   }
   if (_val != _prev) {
     _prev = _val;
-    //Serial.println(_val);
-    //_callback.callback();
+    _callback.callbackIntArg(_val);
   }
 }

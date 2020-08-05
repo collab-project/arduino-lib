@@ -6,12 +6,16 @@
 
 MultiPlexer_ADS1115::MultiPlexer_ADS1115(
   float max_voltage,
+  int range_min,
+  int range_max,
   int i2c_addr,
   ADS1115_RANGE voltage_range
 ) {
   _maxVoltage = max_voltage;
   _i2cAddress = i2c_addr;
   _voltageRange = voltage_range;
+  _rangeMin = range_min;
+  _rangeMax = range_max;
 
   _adc = new ADS1115_WE(_i2cAddress);
 }
@@ -43,7 +47,7 @@ float MultiPlexer_ADS1115::readChannel(ADS1115_MUX channel) {
 
   while (_adc->isBusy()) {}
 
-  return _adc->getResult_mV();
+  return _adc->getResultWithRange(_rangeMin, _rangeMax);
 }
 
 float MultiPlexer_ADS1115::readChannel0() {

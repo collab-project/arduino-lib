@@ -20,6 +20,8 @@ class MultiPlexer_ADS1115
   public:
     MultiPlexer_ADS1115(
       float max_voltage,
+      int range_min = 0,
+      int range_max = 127,
       int i2c_addr = 0x48,
       ADS1115_RANGE voltage_range = ADS1115_RANGE_6144
     );
@@ -35,6 +37,8 @@ class MultiPlexer_ADS1115
   private:
     int _i2cAddress;
     int _maxVoltage;
+    int _rangeMin;
+    int _rangeMax;
     ADS1115_WE* _adc;
     ADS1115_RANGE _voltageRange;
 };
