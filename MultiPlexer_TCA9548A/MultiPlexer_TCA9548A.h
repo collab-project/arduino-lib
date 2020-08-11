@@ -12,8 +12,8 @@ class MultiPlexer_TCA9548A
 {
   public:
     MultiPlexer_TCA9548A(int i2c_addr = 0x70);
-    void begin();
-    void changeBus(uint8_t bus_nr);
+    void begin(int sda_pin, int scl_pin);
+    void openChannel(uint8_t bus_nr);
 
   private:
     TCA9548A* _mux;
