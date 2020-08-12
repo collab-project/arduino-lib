@@ -5,17 +5,17 @@
 #include "MultiPlexer_ADS1115.h"
 
 MultiPlexer_ADS1115::MultiPlexer_ADS1115(
-  float max_voltage,
-  int range_min,
-  int range_max,
+  int16_t max_voltage,
+  int16_t range_min,
+  int16_t range_max,
   int i2c_addr,
   ADS1115_RANGE voltage_range
 ) {
   _maxVoltage = max_voltage;
-  _i2cAddress = i2c_addr;
-  _voltageRange = voltage_range;
   _rangeMin = range_min;
   _rangeMax = range_max;
+  _i2cAddress = i2c_addr;
+  _voltageRange = voltage_range;
 
   _adc = new ADS1115_WE(_i2cAddress);
 }
@@ -41,28 +41,28 @@ void MultiPlexer_ADS1115::begin() {
 void MultiPlexer_ADS1115::loop() {
 }
 
-float MultiPlexer_ADS1115::readChannel(ADS1115_MUX channel) {
+int16_t MultiPlexer_ADS1115::readChannel(ADS1115_MUX channel) {
   _adc->setCompareChannels(channel);
   _adc->startSingleMeasurement();
 
   while (_adc->isBusy()) {}
 
-  return _adc->getResultWithRange(_rangeMin, _rangeMax);
+  return _adc->getResultWithRange(_rangeMin, _rangeMax, _maxVoltage);
 }
 
-float MultiPlexer_ADS1115::readChannel0() {
+int16_t MultiPlexer_ADS1115::readChannel0() {
   return readChannel(ADS1115_COMP_0_GND);
 }
 
-float MultiPlexer_ADS1115::readChannel1() {
+int16_t MultiPlexer_ADS1115::readChannel1() {
   return readChannel(ADS1115_COMP_1_GND);
 }
 
-float MultiPlexer_ADS1115::readChannel2() {
+int16_t MultiPlexer_ADS1115::readChannel2() {
   return readChannel(ADS1115_COMP_2_GND);
 }
 
-float MultiPlexer_ADS1115::readChannel3() {
+int16_t MultiPlexer_ADS1115::readChannel3() {
   return readChannel(ADS1115_COMP_3_GND);
 }
 
