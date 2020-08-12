@@ -22,8 +22,8 @@ class Potentiometer_ADS1115
 
   private:
     int _channel;
-    float _val;
-    float _prev;
+    int16_t _val;
+    int16_t _prev;
     Method _callback;
     MultiPlexer_ADS1115* _adc;
 };
