@@ -15,11 +15,13 @@ void MultiPlexer_TCA9548A::begin(int sda_pin, int scl_pin) {
 
   // set a base state which we know (also the default state on power on)
   _mux->closeAll();
-
-  // tell the TCA9548A we want to use I2C bus number zero (to talk to the OLED)
-  openChannel(0);
 }
 
-void MultiPlexer_TCA9548A::openChannel(uint8_t bus_nr) {
-  _mux->openChannel(bus_nr);
+void MultiPlexer_TCA9548A::openChannel(uint8_t channel_nr) {
+  _mux->openChannel(channel_nr);
 }
+
+void MultiPlexer_TCA9548A::closeChannel(uint8_t channel_nr) {
+  _mux->closeChannel(channel_nr);
+}
+
