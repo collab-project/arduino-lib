@@ -5,15 +5,9 @@
 #include "MultiPlexer_ADS1115.h"
 
 MultiPlexer_ADS1115::MultiPlexer_ADS1115(
-  int16_t max_voltage,
-  int16_t range_min,
-  int16_t range_max,
   int i2c_addr,
   ADS1115_RANGE voltage_range
 ) {
-  _maxVoltage = max_voltage;
-  _rangeMin = range_min;
-  _rangeMax = range_max;
   _i2cAddress = i2c_addr;
   _voltageRange = voltage_range;
 
@@ -41,37 +35,37 @@ void MultiPlexer_ADS1115::begin() {
 void MultiPlexer_ADS1115::loop() {
 }
 
-int16_t MultiPlexer_ADS1115::readChannel(ADS1115_MUX channel) {
+int16_t MultiPlexer_ADS1115::readChannel(ADS1115_MUX channel, int16_t max_voltage, int16_t range_min, int16_t range_max) {
   _adc->setCompareChannels(channel);
   _adc->startSingleMeasurement();
 
   while (_adc->isBusy()) {}
 
-  return _adc->getResultWithRange(_rangeMin, _rangeMax, _maxVoltage);
+  return _adc->getResultWithRange(range_min, range_max, max_voltage);
 }
 
-int16_t MultiPlexer_ADS1115::readChannel0() {
-  return readChannel(ADS1115_COMP_0_GND);
+int16_t MultiPlexer_ADS1115::readChannel0(int16_t max_voltage, int16_t range_min, int16_t range_max) {
+  return readChannel(ADS1115_COMP_0_GND, max_voltage, range_min, range_max);
 }
 
-int16_t MultiPlexer_ADS1115::readChannel1() {
-  return readChannel(ADS1115_COMP_1_GND);
+int16_t MultiPlexer_ADS1115::readChannel1(int16_t max_voltage, int16_t range_min, int16_t range_max) {
+  return readChannel(ADS1115_COMP_1_GND, max_voltage, range_min, range_max);
 }
 
-int16_t MultiPlexer_ADS1115::readChannel2() {
-  return readChannel(ADS1115_COMP_2_GND);
+int16_t MultiPlexer_ADS1115::readChannel2(int16_t max_voltage, int16_t range_min, int16_t range_max) {
+  return readChannel(ADS1115_COMP_2_GND, max_voltage, range_min, range_max);
 }
 
-int16_t MultiPlexer_ADS1115::readChannel3() {
-  return readChannel(ADS1115_COMP_3_GND);
+int16_t MultiPlexer_ADS1115::readChannel3(int16_t max_voltage, int16_t range_min, int16_t range_max) {
+  return readChannel(ADS1115_COMP_3_GND, max_voltage, range_min, range_max);
 }
 
-ADS1115Result MultiPlexer_ADS1115::readAll() {
+ADS1115Result MultiPlexer_ADS1115::readAll(int16_t max_voltage, int16_t range_min, int16_t range_max) {
   ADS1115Result result;
-  result.channel0 = readChannel0();
-  result.channel1 = readChannel1();
-  result.channel2 = readChannel2();
-  result.channel3 = readChannel3();
+  result.channel0 = readChannel0(max_voltage, range_min, range_max);
+  result.channel1 = readChannel1(max_voltage, range_min, range_max);
+  result.channel2 = readChannel2(max_voltage, range_min, range_max);
+  result.channel3 = readChannel3(max_voltage, range_min, range_max);
 
   return result;
 }

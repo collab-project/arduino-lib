@@ -13,6 +13,9 @@ class Potentiometer_ADS1115
   public:
     Potentiometer_ADS1115(
       int channel,
+      int16_t max_voltage,
+      int16_t range_min,
+      int16_t range_max,
       MultiPlexer_ADS1115* adc,
       Method callback
     );
@@ -24,6 +27,10 @@ class Potentiometer_ADS1115
     int _channel;
     int16_t _val;
     int16_t _prev;
+    int16_t _rangeMin;
+    int16_t _rangeMax;
+    int16_t _maxVoltage;
+  
     Method _callback;
     MultiPlexer_ADS1115* _adc;
 };
