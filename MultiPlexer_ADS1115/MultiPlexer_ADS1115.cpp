@@ -35,7 +35,9 @@ void MultiPlexer_ADS1115::begin() {
 void MultiPlexer_ADS1115::loop() {
 }
 
-int16_t MultiPlexer_ADS1115::readChannel(ADS1115_MUX channel, int16_t max_voltage, int16_t range_min, int16_t range_max) {
+int16_t MultiPlexer_ADS1115::readChannel(
+  ADS1115_MUX channel, int16_t max_voltage, int16_t range_min, int16_t range_max
+) {
   _adc->setCompareChannels(channel);
   _adc->startSingleMeasurement();
 
