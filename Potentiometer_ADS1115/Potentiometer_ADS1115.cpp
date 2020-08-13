@@ -18,6 +18,8 @@ Potentiometer_ADS1115::Potentiometer_ADS1115(
   _rangeMax = range_max;
   _adc = adc;
   _callback = callback;
+
+  _filter = createDeadbandFilter(_widthOfDeadbandInBits);
 }
 
 void Potentiometer_ADS1115::begin() {
@@ -37,6 +39,10 @@ void Potentiometer_ADS1115::read() {
   } else if (_channel == 3) {
     _val = _adc->readChannel3(_maxVoltage, _rangeMin, _rangeMax);
   }
+
+  // add hysteresis
+  _val = deadband(_filter, _val);
+
   if (_val != _prev) {
     _prev = _val;
     _callback.callbackIntArg(_val);

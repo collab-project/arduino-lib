@@ -6,6 +6,7 @@
 
 #include <Arduino.h>
 #include <Method.h>
+#include <Deadband.h>
 #include <MultiPlexer_ADS1115.h>
 
 class Potentiometer_ADS1115
@@ -30,8 +31,10 @@ class Potentiometer_ADS1115
     int16_t _rangeMin;
     int16_t _rangeMax;
     int16_t _maxVoltage;
-  
+    const int _widthOfDeadbandInBits = 1;
+
     Method _callback;
+    DeadbandFilter* _filter;
     MultiPlexer_ADS1115* _adc;
 };
 
