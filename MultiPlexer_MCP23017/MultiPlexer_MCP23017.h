@@ -11,7 +11,7 @@ class MultiPlexer_MCP23017
 {
   public:
     MultiPlexer_MCP23017(
-      int reset_pin = 5,
+      int reset_pin = -1,
       int i2c_addr = 0x20
     );
     void begin();
