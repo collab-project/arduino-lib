@@ -4,7 +4,7 @@
 
 #include "MultiPlexer_MCP23017.h"
 
-MultiPlexer_MCP23017::MultiPlexer_MCP23017(int reset_pin, int i2c_addr) {
+MultiPlexer_MCP23017::MultiPlexer_MCP23017(int i2c_addr, int reset_pin) {
   if (reset_pin == -1) {
     _mcp = new MCP23017(i2c_addr);
   } else {

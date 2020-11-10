@@ -11,8 +11,8 @@ class MultiPlexer_MCP23017
 {
   public:
     MultiPlexer_MCP23017(
-      int reset_pin = -1,
-      int i2c_addr = 0x20
+      int i2c_addr = 0x20,
+      int reset_pin = -1
     );
     void begin();
     void setPortMode(uint8_t val, MCP_PORT port);
