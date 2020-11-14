@@ -5,30 +5,26 @@
 
 #include "RotaryEncoderMCP23017ButtonESP32.h"
 
-// declared here so handler below can access
-Method _btnCallback;
-//_btnCallback.callback2IntArg(button->getId(), eventType);
-
-RotaryEncoderPushButtonESP32::RotaryEncoderPushButtonESP32(
+RotaryEncoderMCP23017ButtonESP32::RotaryEncoderMCP23017ButtonESP32(
     uint8_t index,
     int a_pin,
     int b_pin,
     int btn_pin,
     Method btn_callback,
     Method encoder_callback,
-    MultiPlexer_MCP23017* mcp
+    MultiPlexer_MCP23017* mcp,
+    MCP_PORT port
 ) {
   _pinA = a_pin;
   _pinB = b_pin;
   _btnPin = btn_pin;
-  _btnCallback = btn_callback;
   _encoderCallback = encoder_callback;
 
   _encoder = new ESP32Encoder();
-  _button = new Button_MCP23017(_btnPin, MCP_PORT::A, mcp, _btnCallback);
+  _button = new Button_MCP23017(_btnPin, port, mcp, btn_callback);
 }
 
-void RotaryEncoderPushButtonESP32::begin() {
+void RotaryEncoderMCP23017ButtonESP32::begin() {
   // encoder
   _encoder->attachSingleEdge(_pinA, _pinB);
 
@@ -36,7 +32,7 @@ void RotaryEncoderPushButtonESP32::begin() {
   _button->begin();
 }
 
-void RotaryEncoderPushButtonESP32::loop() {
+void RotaryEncoderMCP23017ButtonESP32::loop() {
   // button
   _button->loop();
 
@@ -55,6 +51,6 @@ void RotaryEncoderPushButtonESP32::loop() {
   }
 }
 
-int64_t RotaryEncoderPushButtonESP32::getPosition() {
+int64_t RotaryEncoderMCP23017ButtonESP32::getPosition() {
   return _encoder->getCount();
 }

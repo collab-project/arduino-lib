@@ -22,7 +22,8 @@ class RotaryEncoderMCP23017ButtonESP32
       int btn_pin,
       Method btn_callback,
       Method encoder_callback,
-      MultiPlexer_MCP23017* mcp
+      MultiPlexer_MCP23017* mcp,
+      MCP_PORT port
     );
     void begin();
     void loop();
