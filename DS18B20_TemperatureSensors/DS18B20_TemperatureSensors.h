@@ -4,7 +4,8 @@
 #ifndef DS18B20_TemperatureSensors_h
 #define DS18B20_TemperatureSensors_h
 
-#include "Arduino.h"
+#include <Arduino.h>
+#include <OneWire.h>
 #include <DallasTemperature.h>
 
 class DS18B20_TemperatureSensors
