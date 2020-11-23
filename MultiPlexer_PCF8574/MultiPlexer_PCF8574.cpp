@@ -9,15 +9,22 @@ MultiPlexer_PCF8574::MultiPlexer_PCF8574(uint8_t address) {
 }
 
 void MultiPlexer_PCF8574::begin() {
-  for (int i=0; i<8; i++) {
+  Serial.print("Initializing PCF8574... ");
+  // inputs
+  int i = 0;
+  for (i = 0; i<4; i++) {
     _expander->pinMode(i, INPUT);
   }
+  // outputs
+  for (i=4; i<8; i++) {
+    _expander->pinMode(i, OUTPUT, LOW);
+  }
 
-	if (_expander->begin()) {
-		Serial.println("OK");
-	} else{
-		Serial.println("KO");
-	}
+  if (_expander->begin()) {
+    Serial.println("OK");
+  } else{
+    Serial.println("Error!");
+  }
 }
 
 void MultiPlexer_PCF8574::loop() {
