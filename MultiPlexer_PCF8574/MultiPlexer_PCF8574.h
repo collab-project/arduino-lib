@@ -8,12 +8,10 @@
 #include <Method.h>
 #include <PCF8574.h>
 
-#define ESP8266_INTERRUPTED_PIN 16
-
 class MultiPlexer_PCF8574
 {
   public:
-    MultiPlexer_PCF8574(uint8_t address, uint8_t interrupt_pin);
+    MultiPlexer_PCF8574(uint8_t address);
     void begin();
     void loop();
 
