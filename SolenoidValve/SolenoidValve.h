@@ -1,10 +1,10 @@
-/*
-   SolenoidValve.h
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
 */
 #ifndef SolenoidValve_h
 #define SolenoidValve_h
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <SingleChannel_Relay.h>
 
 class SolenoidValve

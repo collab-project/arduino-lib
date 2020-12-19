@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   RCWL0516_MovementSensor.cpp - Control RCWL-0516 movement sensor.
 */

@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 #include "Method.h"
 
 Method::Method() {}

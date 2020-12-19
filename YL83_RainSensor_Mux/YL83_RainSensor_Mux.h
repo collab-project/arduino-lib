@@ -1,10 +1,13 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   YL83_RainSensor_Mux.h - Control YL-83 rain sensor using a multiplexer.
 */
 #ifndef YL83_RainSensor_Mux_h
 #define YL83_RainSensor_Mux_h
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <MultiPlexer_74HC4067.h>
 
 class YL83_RainSensor_Mux

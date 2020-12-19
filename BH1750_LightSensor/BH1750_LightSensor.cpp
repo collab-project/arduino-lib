@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   BH1750_LightSensor.cpp - Read BH1750 light sensor.
 */

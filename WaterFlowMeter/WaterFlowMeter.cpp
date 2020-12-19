@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   WaterFlowMeter.cpp - Control water flow meter.
 */

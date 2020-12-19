@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 #ifndef _METHOD_H_
 #define _METHOD_H_
 #include <Functor.h>

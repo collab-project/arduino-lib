@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   BMP280_BarometerSensor.cpp - Read BMP280 sensor.
 */
@@ -26,7 +29,7 @@ void BMP280_BarometerSensor::begin() {
   _i2c->begin(_sdaPin, _sclPin, _clockSpeed);
 
   bool status;
-  status = _sensor->begin(_address);  
+  status = _sensor->begin(_address);
   if (!status) {
     Serial.println("Could not find a valid BMP280 sensor, check wiring!");
   }

@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   YX5300_AudioPlayer.cpp - Control YX5300 audio player.
 */

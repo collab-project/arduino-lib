@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   Button_MCP23017.cpp - Control MCP23017 connected button.
 */

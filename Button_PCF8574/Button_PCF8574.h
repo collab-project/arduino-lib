@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   Button_PCF8574.cpp - Control PCF8574 connected button.
 */

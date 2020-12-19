@@ -1,10 +1,13 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   WaterFlowMeter.h - Control water flow meter.
 */
 #ifndef WaterFlowMeter_h
 #define WaterFlowMeter_h
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <FlowMeter.h>
 #include <Preferences.h>
 

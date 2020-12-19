@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   BME280_BarometerSensor.cpp - Read BME280 sensor.
 */
@@ -24,7 +27,7 @@ void BME280_BarometerSensor::begin() {
   _i2c->begin(_sdaPin, _sclPin, _clockSpeed);
 
   bool status;
-  status = _sensor->begin(_address, _i2c);  
+  status = _sensor->begin(_address, _i2c);
   if (!status) {
     Serial.println("Could not find a valid BME280 sensor, check wiring!");
   }

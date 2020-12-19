@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   LED_MCP23017.h - Control LED light using MCP23017 multiplexer.
 */

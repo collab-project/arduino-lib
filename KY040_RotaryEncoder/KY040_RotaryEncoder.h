@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
    KY040_RotaryEncoder.h - KY-040 rotary encoder with push button.
 */

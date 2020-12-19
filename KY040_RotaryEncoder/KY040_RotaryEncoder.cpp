@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   KY040_RotaryEncoder.cpp - KY-040 rotary encoder with push button.
 */
@@ -31,7 +34,7 @@ void KY040_RotaryEncoder::begin() {
 
   Timer1.initialize(1000);
   Timer1.attachInterrupt(timeIRS);
-  
+
   _last = _encoder->getValue();
 }
 

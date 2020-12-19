@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   YL83_RainSensor.cpp - Control YL-83 rain sensor.
 */

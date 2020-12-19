@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
    SingleChannel_Relay.h - Single channel relay.
 */

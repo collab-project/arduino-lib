@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   JQ6500_MP3Player.h - Control JQ6500 MP3 player.
 */

@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   LED_PCF8574.h - Control LED light using PCF8574 multiplexer.
 */

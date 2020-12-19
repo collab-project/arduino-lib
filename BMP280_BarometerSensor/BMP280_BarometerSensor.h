@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   BMP280_BarometerSensor.h - Read BMP280 sensor.
 */

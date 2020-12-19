@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
   YL83_RainSensor_Mux.cpp - Control YL-83 rain sensor using a multiplexer.
 */
