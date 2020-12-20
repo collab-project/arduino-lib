@@ -19,6 +19,7 @@ class MultiPlexer_PCF8574
     void loop();
     void pinMode(uint8_t pin, uint8_t mode, uint8_t initialValue = HIGH);
     void digitalWrite(uint8_t pin, uint8_t value);
+    uint8_t digitalRead(uint8_t pin, bool forceReadNow = true);
 
   private:
     PCF8574* _expander;

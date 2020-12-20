@@ -31,3 +31,7 @@ void MultiPlexer_PCF8574::pinMode(uint8_t pin, uint8_t mode, uint8_t initialValu
 void MultiPlexer_PCF8574::digitalWrite(uint8_t pin, uint8_t value) {
   _expander->digitalWrite(pin, value);
 }
+
+uint8_t MultiPlexer_PCF8574::digitalRead(uint8_t pin, bool forceReadNow) {
+  _expander->digitalRead(pin, forceReadNow);
+}

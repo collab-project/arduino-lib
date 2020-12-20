@@ -27,14 +27,14 @@ void Button_PCF8574::loop() {
 }
 
 void Button_PCF8574::read() {
-  /*
-  int buttonReading = _mcp->getPin(_btnPin, _port);
+  uint8_t buttonReading = _expander->digitalRead(_btnPin);
 
   // if the switch changed, due to noise or pressing
   if (buttonReading != _lastBtnState) {
     // reset the debouncing timer
     _lastDebounceTime = millis();
   }
+
   if ((millis() - _lastDebounceTime) > _debounceDelay) {
     // if the button state has changed
     if (buttonReading != _currentBtnState) {
@@ -42,11 +42,11 @@ void Button_PCF8574::read() {
 
       // only toggle if the new button state is HIGH
       if (_currentBtnState == HIGH) {
-        _callback.callbackIntArg(_btnPin);
+        _callback.callback();
       }
     }
   }
+
   // save the switch reading
   _lastBtnState = buttonReading;
-  */
 }

@@ -30,7 +30,7 @@ class Button_PCF8574
     Method _callback;
     MultiPlexer_PCF8574* _expander;
     unsigned long _lastDebounceTime = 0;
-    unsigned long _debounceDelay = 5;
+    unsigned long _debounceDelay = 50;
 };
 
 #endif
