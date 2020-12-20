@@ -29,7 +29,7 @@ class LED_PCF8574
     void update();
 
     int _pin;
-    MultiPlexer_PCF8574* _pcf;
+    MultiPlexer_PCF8574* _expander;
 };
 
 #endif

@@ -7,24 +7,12 @@
 
 #include <MultiPlexer_PCF8574.h>
 
-MultiPlexer_PCF8574::MultiPlexer_PCF8574(uint8_t address) {
-  _expander = new PCF8574(address);
+MultiPlexer_PCF8574::MultiPlexer_PCF8574(uint8_t address, uint8_t sda, uint8_t scl) {
+  _expander = new PCF8574(address, sda, scl);
 }
 
 void MultiPlexer_PCF8574::begin() {
   Serial.print("Initializing PCF8574... ");
-
-  /*
-  // inputs
-  int i = 0;
-  for (i = 0; i<4; i++) {
-    _expander->pinMode(i, INPUT);
-  }
-  // outputs
-  for (i=4; i<8; i++) {
-    _expander->pinMode(i, OUTPUT, LOW);
-  }
-  */
 
   if (_expander->begin()) {
     Serial.println("OK");

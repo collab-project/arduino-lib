@@ -14,7 +14,7 @@
 class MultiPlexer_PCF8574
 {
   public:
-    MultiPlexer_PCF8574(uint8_t address);
+    MultiPlexer_PCF8574(uint8_t address, uint8_t sda, uint8_t scl);
     void begin();
     void loop();
     void pinMode(uint8_t pin, uint8_t mode, uint8_t initialValue = HIGH);
@@ -22,6 +22,7 @@ class MultiPlexer_PCF8574
 
   private:
     PCF8574* _expander;
+
 };
 
 #endif

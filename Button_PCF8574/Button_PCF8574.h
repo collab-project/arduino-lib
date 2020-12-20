@@ -28,7 +28,7 @@ class Button_PCF8574
     int _currentBtnState;
     int _lastBtnState;
     Method _callback;
-    MultiPlexer_PCF8574* _pcf;
+    MultiPlexer_PCF8574* _expander;
     unsigned long _lastDebounceTime = 0;
     unsigned long _debounceDelay = 5;
 };

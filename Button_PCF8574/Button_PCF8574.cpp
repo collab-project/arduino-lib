@@ -13,12 +13,13 @@ Button_PCF8574::Button_PCF8574(
     Method callback
 ) {
   _btnPin = btn_pin;
-  _pcf = pcf;
+  _expander = pcf;
   _callback = callback;
   _lastBtnState = LOW;
 }
 
 void Button_PCF8574::begin() {
+  _expander->pinMode(_btnPin, INPUT);
 }
 
 void Button_PCF8574::loop() {

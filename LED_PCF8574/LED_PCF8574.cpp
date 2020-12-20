@@ -13,19 +13,19 @@ LED_PCF8574::LED_PCF8574(
   int led_state
 ) {
   _pin = pin;
-  _pcf = pcf;
+  _expander = pcf;
   state = led_state;
 }
 
 void LED_PCF8574::begin() {
-	_pcf->pinMode(_pin, OUTPUT);
+  _expander->pinMode(_pin, OUTPUT, state);
 }
 
 void LED_PCF8574::loop() {
 }
 
 void LED_PCF8574::update() {
-  _pcf->digitalWrite(_pin, state);
+  _expander->digitalWrite(_pin, state);
 }
 
 void LED_PCF8574::enable() {
