@@ -12,12 +12,8 @@ MultiPlexer_PCF8574::MultiPlexer_PCF8574(uint8_t address, uint8_t sda, uint8_t s
 }
 
 void MultiPlexer_PCF8574::begin() {
-  Serial.print("Initializing PCF8574... ");
-
-  if (_expander->begin()) {
-    Serial.println("OK");
-  } else{
-    Serial.println("Error!");
+  if (!_expander->begin()) {
+    Serial.println("PCF8574 Error!");
   }
 }
 
