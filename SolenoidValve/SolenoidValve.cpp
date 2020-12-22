@@ -17,7 +17,7 @@ SolenoidValve::SolenoidValve(int relay_pin, bool normally_open) {
   _relayPin = relay_pin;
   _normallyOpen = normally_open;
 
-  _relay = new SingleChannel_Relay(WaterValvePin, normally_open);
+  _relay = new SingleChannel_Relay(_relayPin, normally_open);
 }
 
 void SolenoidValve::begin() {
