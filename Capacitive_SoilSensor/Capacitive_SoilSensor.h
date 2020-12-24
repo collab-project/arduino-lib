@@ -1,5 +1,8 @@
+/*  Copyright (c) 2020, Collab
+ *  All rights reserved
+*/
 /*
-  Capacitive_SoilSensor_Mux.h - Read Capacitive Soil Moisture Sensor.
+  Capacitive_SoilSensor.h - Read Capacitive Soil Moisture Sensor.
 */
 #ifndef Capacitive_SoilSensor_h
 #define Capacitive_SoilSensor_h
