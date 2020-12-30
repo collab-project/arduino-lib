@@ -7,15 +7,21 @@
 WaterFloatSwitch_PCF8574::WaterFloatSwitch_PCF8574(
   int switch_pin,
   MultiPlexer_PCF8574* pcf,
-  Method empty_callback
+  int empty_value
 ) {
   _switchPin = switch_pin;
   _expander = pcf;
-  _emptyCallback = empty_callback;
+  _emptyValue = empty_value;
 }
 
 void WaterFloatSwitch_PCF8574::begin() {
+  _expander->pinMode(_switchPin, INPUT);
 }
 
-void WaterFloatSwitch_PCF8574::loop() {
+int WaterFloatSwitch_PCF8574::read() {
+  return _expander->digitalRead(_switchPin);
+}
+
+bool WaterFloatSwitch_PCF8574::isEmpty() {
+  return read() == _emptyValue;
 }

@@ -5,7 +5,6 @@
 #define WaterFloatSwitch_PCF8574_h
 
 #include <Arduino.h>
-#include <Method.h>
 #include <MultiPlexer_PCF8574.h>
 
 class WaterFloatSwitch_PCF8574
@@ -14,17 +13,16 @@ class WaterFloatSwitch_PCF8574
     WaterFloatSwitch_PCF8574(
       int switch_pin,
       MultiPlexer_PCF8574* pcf,
-      Method empty_callback
+      int empty_value = LOW
     );
     void begin();
-    void loop();
+    int read();
+    bool isEmpty();
 
   private:
     int _switchPin;
+    int _emptyValue;
     MultiPlexer_PCF8574* _expander;
-
-    // callbacks
-    Method _emptyCallback;
 };
 
 #endif
