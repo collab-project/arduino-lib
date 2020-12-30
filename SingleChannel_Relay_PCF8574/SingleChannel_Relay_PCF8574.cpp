@@ -12,7 +12,7 @@ SingleChannel_Relay_PCF8574::SingleChannel_Relay_PCF8574(
 }
 
 void SingleChannel_Relay_PCF8574::begin() {
-  _expander->pinMode(_relayPin, OUTPUT);
+  _expander->pinMode(_relayPin, OUTPUT, LOW);
 }
 
 void SingleChannel_Relay_PCF8574::loop() {
