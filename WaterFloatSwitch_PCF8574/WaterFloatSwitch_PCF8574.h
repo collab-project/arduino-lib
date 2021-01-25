@@ -16,7 +16,7 @@ class WaterFloatSwitch_PCF8574
       int empty_value = LOW
     );
     void begin();
-    int read();
+    uint8_t read();
     bool isEmpty();
 
   private:

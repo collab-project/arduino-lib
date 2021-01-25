@@ -18,10 +18,11 @@ void WaterFloatSwitch_PCF8574::begin() {
   _expander->pinMode(_switchPin, INPUT);
 }
 
-int WaterFloatSwitch_PCF8574::read() {
+uint8_t WaterFloatSwitch_PCF8574::read() {
   return _expander->digitalRead(_switchPin);
 }
 
 bool WaterFloatSwitch_PCF8574::isEmpty() {
-  return read() == _emptyValue;
+  uint8_t val = read();
+  return val == _emptyValue;
 }
