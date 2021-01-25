@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 #include "Method.h"
@@ -15,6 +15,10 @@ void Method::attachCallbackIntArg(const Functor1<int> & callback) {
 
 void Method::attachCallback2IntArg(const Functor2<int, int> & callback) {
   callback2IntArg_ = callback;
+}
+
+void Method::attachCallbackFloatArg(const Functor1<float> & callback) {
+  callbackFloatArg_ = callback;
 }
 
 void Method::callback() {
@@ -35,3 +39,8 @@ void Method::callback2IntArg(int val1, int val2) {
   }
 }
 
+void Method::callbackFloatArg(float val) {
+  if (callbackFloatArg_) {
+    callbackFloatArg_(val);
+  }
+}
