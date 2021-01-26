@@ -1,8 +1,5 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
-*/
-/*
-  MultiPlexer_PCF8574.cpp
 */
 
 #include <MultiPlexer_PCF8574.h>
