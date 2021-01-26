@@ -20,18 +20,18 @@ uint8_t WaterFloatSwitch_PCF8574::read() {
   int result = _expander->digitalRead(_switchPin);
 
   if (result == HIGH) {
+    _empty = false;
+
     if (_lastState != HIGH) {
       Serial.print(millis());
       Serial.println(" - Float switch HIGH");
-
-      _empty = false;
     }
   } else if (result == LOW) {
+      _empty = true;
+
       if (_lastState != LOW) {
         Serial.print(millis());
         Serial.println(" - Float switch LOW");
-
-        _empty = true;
       }
   }
   _lastState = result;
