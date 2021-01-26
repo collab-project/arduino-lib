@@ -6,10 +6,12 @@
 
 WaterFloatSwitch_PCF8574::WaterFloatSwitch_PCF8574(
   int switch_pin,
-  MultiPlexer_PCF8574* pcf
+  MultiPlexer_PCF8574* pcf,
+  int empty_value
 ) {
   _switchPin = switch_pin;
   _expander = pcf;
+  _emptyValue = empty_value;
 }
 
 void WaterFloatSwitch_PCF8574::begin() {
@@ -17,28 +19,9 @@ void WaterFloatSwitch_PCF8574::begin() {
 }
 
 uint8_t WaterFloatSwitch_PCF8574::read() {
-  int result = _expander->digitalRead(_switchPin);
-
-  if (result == HIGH) {
-    _empty = false;
-
-    if (_lastState != HIGH) {
-      Serial.print(millis());
-      Serial.println(" - Float switch HIGH");
-    }
-  } else if (result == LOW) {
-      _empty = true;
-
-      if (_lastState != LOW) {
-        Serial.print(millis());
-        Serial.println(" - Float switch LOW");
-      }
-  }
-  _lastState = result;
-  return result;
+  return _expander->digitalRead(_switchPin, false);
 }
 
 bool WaterFloatSwitch_PCF8574::isEmpty() {
-  read();
-  return _empty;
+  return (read() == _emptyValue);
 }

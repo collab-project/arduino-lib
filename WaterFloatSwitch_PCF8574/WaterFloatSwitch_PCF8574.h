@@ -12,7 +12,8 @@ class WaterFloatSwitch_PCF8574
   public:
     WaterFloatSwitch_PCF8574(
       int switch_pin,
-      MultiPlexer_PCF8574* pcf
+      MultiPlexer_PCF8574* pcf,
+      int empty_value = LOW
     );
     void begin();
     uint8_t read();
@@ -20,8 +21,7 @@ class WaterFloatSwitch_PCF8574
 
   private:
     int _switchPin;
-    bool _empty = false;
-    int _lastState = LOW;
+    int _emptyValue;
 
     MultiPlexer_PCF8574* _expander;
 };
