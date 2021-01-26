@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 
@@ -6,12 +6,10 @@
 
 WaterFloatSwitch_PCF8574::WaterFloatSwitch_PCF8574(
   int switch_pin,
-  MultiPlexer_PCF8574* pcf,
-  int empty_value
+  MultiPlexer_PCF8574* pcf
 ) {
   _switchPin = switch_pin;
   _expander = pcf;
-  _emptyValue = empty_value;
 }
 
 void WaterFloatSwitch_PCF8574::begin() {
@@ -19,10 +17,28 @@ void WaterFloatSwitch_PCF8574::begin() {
 }
 
 uint8_t WaterFloatSwitch_PCF8574::read() {
-  return _expander->digitalRead(_switchPin);
+  int result = _expander->digitalRead(_switchPin);
+
+  if (result == HIGH) {
+    if (_lastState != HIGH) {
+      Serial.print(millis());
+      Serial.println(" - Float switch HIGH");
+
+      _empty = false;
+    }
+  } else if (result == LOW) {
+      if (_lastState != LOW) {
+        Serial.print(millis());
+        Serial.println(" - Float switch LOW");
+
+        _empty = true;
+      }
+  }
+  _lastState = result;
+  return result;
 }
 
 bool WaterFloatSwitch_PCF8574::isEmpty() {
-  uint8_t val = read();
-  return val == _emptyValue;
+  read();
+  return _empty;
 }
