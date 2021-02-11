@@ -8,10 +8,12 @@ MultiPlexer_PCF8574::MultiPlexer_PCF8574(uint8_t address, uint8_t sda, uint8_t s
   _expander = new PCF8574(address, sda, scl);
 }
 
-void MultiPlexer_PCF8574::begin() {
-  if (!_expander->begin()) {
+bool MultiPlexer_PCF8574::begin() {
+  bool result = _expander->begin();
+  if (!result) {
     Serial.println("PCF8574 Error!");
   }
+  return result;
 }
 
 void MultiPlexer_PCF8574::loop() {

@@ -15,7 +15,7 @@ class MultiPlexer_PCF8574
 {
   public:
     MultiPlexer_PCF8574(uint8_t address, uint8_t sda, uint8_t scl);
-    void begin();
+    bool begin();
     void loop();
     void pinMode(uint8_t pin, uint8_t mode, uint8_t initialValue = HIGH);
     void digitalWrite(uint8_t pin, uint8_t value);
