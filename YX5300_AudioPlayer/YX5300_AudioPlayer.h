@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -7,23 +7,35 @@
 #ifndef YX5300_AudioPlayer_h
 #define YX5300_AudioPlayer_h
 
-#define USE_SOFTWARESERIAL 0
+#ifndef USE_SOFTWARESERIAL
+// Set to 1 to use SoftwareSerial library, 0 for native serial port
+#define USE_SOFTWARESERIAL 1
+#endif
 
 #include <Arduino.h>
 #include <MD_YX5300.h>
 
-class YX5300_AudioPlayer
-{
+#if USE_SOFTWARESERIAL
+#include <SoftwareSerial.h>
+#endif
+
+class YX5300_AudioPlayer {
   public:
-    YX5300_AudioPlayer(short rx_pin, short tx_pin, int volume = 10);
+    YX5300_AudioPlayer(
+        short rx_pin,
+        short tx_pin,
+        int volume = 10
+    );
     void begin();
     void loop();
+    void query();
+    void playFolderRepeat(uint8_t folder = 1);
 
   private:
-    MD_YX5300* _player;
     int _volume;
 
-    const uint8_t PLAY_FOLDER = 1;
+    SoftwareSerial *_stream;
+    MD_YX5300 *_player;
 };
 
 #endif
