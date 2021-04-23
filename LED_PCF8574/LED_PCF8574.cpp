@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -18,7 +18,8 @@ LED_PCF8574::LED_PCF8574(
 }
 
 void LED_PCF8574::begin() {
-  _expander->pinMode(_pin, OUTPUT, state);
+  // set initial state
+  update();
 }
 
 void LED_PCF8574::loop() {

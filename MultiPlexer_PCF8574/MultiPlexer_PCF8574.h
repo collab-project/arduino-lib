@@ -15,15 +15,14 @@ class MultiPlexer_PCF8574
 {
   public:
     MultiPlexer_PCF8574(uint8_t address, uint8_t sda, uint8_t scl);
-    bool begin();
-    void loop();
-    void pinMode(uint8_t pin, uint8_t mode, uint8_t initialValue = HIGH);
+    void begin();
     void digitalWrite(uint8_t pin, uint8_t value);
-    uint8_t digitalRead(uint8_t pin, bool forceReadNow = true);
+    uint8_t digitalRead(uint8_t pin);
 
   private:
     PCF8574* _expander;
-
+    uint8_t _sdaPin;
+    uint8_t _sclPin;
 };
 
 #endif

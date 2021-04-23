@@ -15,7 +15,6 @@ WaterFloatSwitch_PCF8574::WaterFloatSwitch_PCF8574(
 }
 
 void WaterFloatSwitch_PCF8574::begin() {
-  _expander->pinMode(_switchPin, INPUT);
 }
 
 uint8_t WaterFloatSwitch_PCF8574::read() {

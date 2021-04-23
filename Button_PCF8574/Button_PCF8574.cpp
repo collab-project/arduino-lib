@@ -19,7 +19,6 @@ Button_PCF8574::Button_PCF8574(
 }
 
 void Button_PCF8574::begin() {
-  _expander->pinMode(_btnPin, INPUT);
 }
 
 void Button_PCF8574::loop() {
