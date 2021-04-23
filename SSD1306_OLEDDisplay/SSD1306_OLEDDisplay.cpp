@@ -8,7 +8,7 @@ SSD1306_OLEDDisplay::SSD1306_OLEDDisplay(int sda_pin, int scl_pin, uint8_t addre
   _sclPin = scl_pin;
   _address = address;
 
-  _display = new SSD1306Wire(0x3C, sda_pin, scl_pin, GEOMETRY_128_32);
+  _display = new SSD1306Wire(address, sda_pin, scl_pin, GEOMETRY_128_32);
 }
 
 void SSD1306_OLEDDisplay::begin() {
