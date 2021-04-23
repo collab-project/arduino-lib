@@ -29,6 +29,9 @@ class YX5300_AudioPlayer {
     void begin();
     void loop();
     void query();
+    void stop();
+    void nextTrack();
+    void playTrack(uint8_t index);
     void playFolderRepeat(uint8_t folder = 1);
 
   private:

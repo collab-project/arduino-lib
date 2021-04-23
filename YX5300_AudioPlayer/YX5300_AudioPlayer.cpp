@@ -32,7 +32,7 @@ void cbResponse(const MD_YX5300::cbData *status) {
 
     case MD_YX5300::STS_TF_REMOVE:
       // card has been removed
-      Serial.print(F("STS_TF_REMOVE"));
+      Serial.println(F("STS_TF_REMOVE"));
       break;
 
     case MD_YX5300::STS_ACK_OK:
@@ -40,8 +40,11 @@ void cbResponse(const MD_YX5300::cbData *status) {
       //Serial.print(F("STS_ACK_OK"));
       break;
 
+    case MD_YX5300::STS_FILE_END:
+      Serial.println(F("File ended."));
+      break;
+
     case MD_YX5300::STS_ERR_FILE:   Serial.print(F("STS_ERR_FILE"));   break;
-    case MD_YX5300::STS_FILE_END:   Serial.print(F("STS_FILE_END"));   break;
     case MD_YX5300::STS_INIT:       Serial.print(F("STS_INIT"));       break;
     case MD_YX5300::STS_STATUS:     Serial.print(F("STS_STATUS"));     break;
     case MD_YX5300::STS_EQUALIZER:  Serial.print(F("STS_EQUALIZER"));  break;
@@ -55,12 +58,16 @@ void cbResponse(const MD_YX5300::cbData *status) {
       Serial.println(status->data);
       break;
 
-    case MD_YX5300::STS_PLAYING:    Serial.print(F("STS_PLAYING"));    break;
+    case MD_YX5300::STS_PLAYING:
+      Serial.print(F("Playing file "));
+      Serial.println(status->data);
+      break;
+
     case MD_YX5300::STS_FLDR_FILES: Serial.print(F("STS_FLDR_FILES")); break;
     case MD_YX5300::STS_TOT_FLDR:   Serial.print(F("STS_TOT_FLDR"));   break;
     default:
       Serial.print(F("STS_??? 0x"));
-      Serial.print(status->code, HEX);
+      Serial.println(status->code, HEX);
       break;
   }
 
@@ -80,10 +87,6 @@ void YX5300_AudioPlayer::loop() {
   _player->check();
 }
 
-void YX5300_AudioPlayer::playFolderRepeat(uint8_t folder) {
-  _player->playFolderRepeat(folder);
-}
-
 void YX5300_AudioPlayer::query() {
   _player->queryFilesCount();
   _player->queryVolume();
@@ -92,3 +95,21 @@ void YX5300_AudioPlayer::query() {
   Serial.println(_player->volumeMax());
 }
 
+void YX5300_AudioPlayer::stop() {
+  _player->playStop();
+}
+
+void YX5300_AudioPlayer::playFolderRepeat(uint8_t folder) {
+  _player->playFolderRepeat(folder);
+}
+
+void YX5300_AudioPlayer::nextTrack() {
+  _player->playNext();
+}
+
+/**
+ * @param index The file indexed (0-255) to be played.
+*/
+void YX5300_AudioPlayer::playTrack(uint8_t index) {
+  _player->playTrack(index);
+}
