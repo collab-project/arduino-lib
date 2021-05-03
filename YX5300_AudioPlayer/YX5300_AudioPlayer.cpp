@@ -19,7 +19,9 @@ YX5300_AudioPlayer::YX5300_AudioPlayer(
 }
 
 void cbResponse(const MD_YX5300::cbData *status) {
-  Serial.print(F("MD_YX5300 - "));
+  if (status->code != MD_YX5300::STS_ACK_OK) {
+    Serial.print(F("MD_YX5300 - "));
+  }
 
   switch (status->code) {
     case MD_YX5300::STS_OK:
@@ -49,7 +51,6 @@ void cbResponse(const MD_YX5300::cbData *status) {
       break;
 
     case MD_YX5300::STS_ACK_OK:
-      // ignore
       //Serial.println(F("STS_ACK_OK"));
       break;
 
@@ -122,7 +123,7 @@ void YX5300_AudioPlayer::query() {
   _player->queryFilesCount();
   _player->queryVolume();
 
-  Serial.print(F("MD_YX5300 - Max volume:\t"));
+  Serial.print(F("MD_YX5300 - Max volume:\t\t"));
   Serial.println(_player->volumeMax());
 }
 
