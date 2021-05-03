@@ -18,7 +18,7 @@ void WaterFloatSwitch_PCF8574::begin() {
 }
 
 uint8_t WaterFloatSwitch_PCF8574::read() {
-  return _expander->digitalRead(_switchPin, false);
+  return _expander->digitalRead(_switchPin);
 }
 
 bool WaterFloatSwitch_PCF8574::isEmpty() {
