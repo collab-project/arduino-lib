@@ -22,9 +22,10 @@
 class YX5300_AudioPlayer {
   public:
     YX5300_AudioPlayer(
-        short rx_pin,
-        short tx_pin,
-        int volume = 10
+      short rx_pin,
+      short tx_pin,
+      uint8_t volume = 10,
+      uint32_t timeout = 200
     );
     void begin();
     void loop();
@@ -33,10 +34,19 @@ class YX5300_AudioPlayer {
     void nextTrack();
     void playTrack(uint8_t index);
     void playFolderRepeat(uint8_t folder = 1);
+    void setVolume(uint8_t volume);
+    uint8_t getMaxVolume();
+    void enableShuffle();
+    void disableShuffle();
+    void mute();
+    void unmute();
+    void wakeUp();
+    void sleep();
+    void setTimeout(uint32_t timeout = 200);
 
   private:
-    int _volume;
-
+    uint8_t _volume;
+    uint32_t _timeOut;
     SoftwareSerial *_stream;
     MD_YX5300 *_player;
 };

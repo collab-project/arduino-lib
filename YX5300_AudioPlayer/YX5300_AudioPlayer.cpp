@@ -8,11 +8,13 @@
 #include <YX5300_AudioPlayer.h>
 
 YX5300_AudioPlayer::YX5300_AudioPlayer(
-    short rx_pin,
-    short tx_pin,
-    int volume
+  short rx_pin,
+  short tx_pin,
+  uint8_t volume,
+  uint32_t timeout
 ) {
   _volume = volume;
+  _timeOut = timeout;
 
   _stream = new SoftwareSerial(rx_pin, tx_pin);
   _player = new MD_YX5300(*_stream);
@@ -94,7 +96,8 @@ void cbResponse(const MD_YX5300::cbData *status) {
       break;
 
     case MD_YX5300::STS_TOT_FLDR:
-      Serial.println(F("STS_TOT_FLDR"));
+      Serial.print(F("Total folders:\t"));
+      Serial.println(status->data);
       break;
 
     default:
@@ -112,7 +115,8 @@ void YX5300_AudioPlayer::begin() {
   _player->begin();
   _player->setSynchronous(false);
   _player->setCallback(cbResponse);
-  _player->volume(_volume);
+  setTimeout(_timeOut);
+  setVolume(_volume);
 }
 
 void YX5300_AudioPlayer::loop() {
@@ -122,9 +126,6 @@ void YX5300_AudioPlayer::loop() {
 void YX5300_AudioPlayer::query() {
   _player->queryFilesCount();
   _player->queryVolume();
-
-  Serial.print(F("MD_YX5300 - Max volume:\t\t"));
-  Serial.println(_player->volumeMax());
 }
 
 void YX5300_AudioPlayer::stop() {
@@ -148,4 +149,70 @@ void YX5300_AudioPlayer::nextTrack() {
 */
 void YX5300_AudioPlayer::playTrack(uint8_t index) {
   _player->playTrack(index);
+}
+
+/**
+ * Set the volume.
+*/
+void YX5300_AudioPlayer::setVolume(uint8_t volume) {
+  _player->volume(volume);
+}
+
+/**
+ * Return the maximum possible volume level.
+*/
+uint8_t YX5300_AudioPlayer::getMaxVolume() {
+  return _player->volumeMax();
+}
+
+/**
+ * Enable shuffle playing mode.
+*/
+void YX5300_AudioPlayer::enableShuffle() {
+  _player->shuffle(true);
+}
+
+/**
+ * Disable shuffle playing mode.
+*/
+void YX5300_AudioPlayer::disableShuffle() {
+  _player->shuffle(false);
+}
+
+/**
+ * Mute the sound output from the DAC.
+*/
+void YX5300_AudioPlayer::mute() {
+  _player->volumeMute(true);
+}
+
+/**
+ * Unmute the sound output from the DAC.
+*/
+void YX5300_AudioPlayer::unmute() {
+  _player->volumeMute(false);
+}
+
+/**
+ * Wakes up the MP3 player from sleep mode.
+*/
+void YX5300_AudioPlayer::wakeUp() {
+  _player->wakeUp();
+}
+
+/**
+ * Enables the MP3 player sleep mode.
+*/
+void YX5300_AudioPlayer::sleep() {
+  _player->sleep();
+}
+
+/**
+ * Set the device response timeout in milliseconds.
+ *
+ * If a message is not received within this time a timeout error
+ * status will be generated.
+*/
+void YX5300_AudioPlayer::setTimeout(uint32_t timeout) {
+  _player->setTimeout(timeout);
 }
