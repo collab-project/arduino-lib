@@ -32,8 +32,10 @@ class YX5300_AudioPlayer {
     void query();
     void stop();
     void nextTrack();
+    void prevTrack();
     void playTrack(uint8_t index);
     void playFolderRepeat(uint8_t folder = 1);
+    void playFolderShuffle(uint8_t folder = 1);
     void setVolume(uint8_t volume);
     uint8_t getMaxVolume();
     void enableShuffle();

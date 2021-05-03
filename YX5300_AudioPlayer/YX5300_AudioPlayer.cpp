@@ -138,10 +138,26 @@ void YX5300_AudioPlayer::playFolderRepeat(uint8_t folder) {
   _player->playFolderRepeat(folder);
 }
 
+void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
+  _player->playFolderShuffle(folder);
+}
+
+/**
+ * Play the next track.
+*/
 void YX5300_AudioPlayer::nextTrack() {
   Serial.println(F("MD_YX5300 - Play next track"));
 
   _player->playNext();
+}
+
+/**
+ * Play the previous track.
+*/
+void YX5300_AudioPlayer::prevTrack() {
+  Serial.println(F("MD_YX5300 - Play previous track"));
+
+  _player->playPrev();
 }
 
 /**
