@@ -7,7 +7,7 @@
 #ifndef BH1750_LightSensor_h
 #define BH1750_LightSensor_h
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <Wire.h>
 #include <BH1750.h>
 
