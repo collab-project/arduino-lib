@@ -7,6 +7,12 @@
 
 #include <YX5300_AudioPlayer.h>
 
+YX5300_State state;
+Method _playerCallback;
+Method _fileEndedCallback;
+Method _totalFoldersCallback;
+Method _totalFilesFolderCallback;
+
 YX5300_AudioPlayer::YX5300_AudioPlayer(
   short rx_pin,
   short tx_pin,
@@ -18,96 +24,67 @@ YX5300_AudioPlayer::YX5300_AudioPlayer(
 
   _stream = new SoftwareSerial(rx_pin, tx_pin);
   _player = new MD_YX5300(*_stream);
+
+  // callbacks
+  _playerCallback.attachCallback(
+    makeFunctor((Functor0 *)0, *this, &YX5300_AudioPlayer::onPlayerCallback)
+  );
+  _fileEndedCallback.attachCallback(
+    makeFunctor((Functor0 *)0, *this, &YX5300_AudioPlayer::onFileEnded)
+  );
+  _totalFoldersCallback.attachCallback(
+    makeFunctor((Functor0 *)0, *this, &YX5300_AudioPlayer::onTotalFolders)
+  );
+  _totalFilesFolderCallback.attachCallbackIntArg(
+    makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onFilesFolder)
+  );
 }
 
+/**
+ * Handler for callback provided by library.
+*/
 void cbResponse(const MD_YX5300::cbData *status) {
-  if (status->code != MD_YX5300::STS_ACK_OK) {
-    Serial.print(F("MD_YX5300 - "));
-  }
+  uint16_t data = status->data;
 
   switch (status->code) {
-    case MD_YX5300::STS_OK:
-      Serial.println(F("STS_OK"));
-      break;
-
-    case MD_YX5300::STS_TIMEOUT:
-      Serial.println(F("STS_TIMEOUT"));
-      break;
-
-    case MD_YX5300::STS_VERSION:
-      Serial.println(F("STS_VERSION"));
-      break;
-
-    case MD_YX5300::STS_CHECKSUM:
-      Serial.println(F("STS_CHECKSUM"));
-      break;
-
-    case MD_YX5300::STS_TF_INSERT:
-      // card has been inserted
-      Serial.println(F("Card inserted."));
-      break;
-
-    case MD_YX5300::STS_TF_REMOVE:
-      // card has been removed
-      Serial.println(F("Card removed."));
-      break;
-
-    case MD_YX5300::STS_ACK_OK:
-      //Serial.println(F("STS_ACK_OK"));
-      break;
-
-    case MD_YX5300::STS_FILE_END:
-      Serial.println(F("File ended."));
-      break;
-
-    case MD_YX5300::STS_ERR_FILE:
-      Serial.println(F("STS_ERR_FILE"));
-      break;
-
-    case MD_YX5300::STS_INIT:
-      Serial.println(F("STS_INIT"));
-      break;
-
-    case MD_YX5300::STS_STATUS:
-      Serial.println(F("STS_STATUS"));
-      break;
-
-    case MD_YX5300::STS_EQUALIZER:
-      Serial.println(F("STS_EQUALIZER"));
-      break;
-
-    case MD_YX5300::STS_VOLUME:
-      Serial.print(F("Volume:\t\t"));
-      Serial.println(status->data);
-      break;
-
-    case MD_YX5300::STS_TOT_FILES:
-      Serial.print(F("Total files:\t"));
-      Serial.println(status->data);
-      break;
-
-    case MD_YX5300::STS_PLAYING:
-      Serial.print(F("Playing file "));
-      Serial.println(status->data);
-      break;
-
     case MD_YX5300::STS_FLDR_FILES:
-      Serial.println(F("STS_FLDR_FILES"));
+      state.folders.add(data);
+
+      Serial.print(F("MD_YX5300 - Total for folder "));
+      Serial.print(state.folders.count());
+      Serial.print(F(": "));
+      Serial.println(state.folders.first());
+
+      // notify listeners
+      _totalFilesFolderCallback.callbackIntArg(data);
       break;
 
     case MD_YX5300::STS_TOT_FLDR:
-      Serial.print(F("Total folders:\t"));
-      Serial.println(status->data);
+      state.totalFolders = data;
+      Serial.print(F("MD_YX5300 - Total folders:\t"));
+      Serial.println(state.totalFolders);
+
+      // notify listeners
+      _totalFoldersCallback.callback();
+      break;
+
+    case MD_YX5300::STS_FILE_END:
+      Serial.println(F("MD_YX5300 - File ended."));
+
+      // notify listeners
+      _fileEndedCallback.callback();
+      break;
+
+    case MD_YX5300::STS_VOLUME:
+      Serial.print(F("MD_YX5300 - Volume:\t\t"));
+      Serial.println(data);
       break;
 
     default:
-      Serial.print(F("STS_??? 0x"));
-      Serial.println(status->code, HEX);
+      // notify listeners
+      _playerCallback.callback();
       break;
   }
-
-  //Serial.print(F(", 0x"));
-  //Serial.println(status->data, HEX);
 }
 
 void YX5300_AudioPlayer::begin() {
@@ -115,39 +92,81 @@ void YX5300_AudioPlayer::begin() {
   _player->begin();
   _player->setSynchronous(false);
   _player->setCallback(cbResponse);
-  setTimeout(_timeOut);
   setVolume(_volume);
+
+  // get total folders once
+  _player->queryFolderCount();
 }
 
 void YX5300_AudioPlayer::loop() {
   _player->check();
 }
 
-void YX5300_AudioPlayer::query() {
-  _player->queryFilesCount();
-  _player->queryVolume();
+/**
+ * Query the number of files in the specified folder.
+*/
+void YX5300_AudioPlayer::queryFolderFiles(uint8_t folder) {
+  _player->queryFolderFiles(folder);
 }
 
+/**
+ * Query the file currently playing.
+*/
+void YX5300_AudioPlayer::queryFile() {
+  _player->queryFile();
+}
+
+/**
+ * Request the current status setting from the device.
+*/
+void YX5300_AudioPlayer::queryStatus() {
+  _player->queryStatus();
+}
+
+/**
+ * Stop playing the current audio file.
+*/
 void YX5300_AudioPlayer::stop() {
   Serial.println(F("MD_YX5300 - Stop playback"));
 
   _player->playStop();
 }
 
+/**
+ * Set or reset the repeat playing mode for the specified folder.
+*/
 void YX5300_AudioPlayer::playFolderRepeat(uint8_t folder) {
   _player->playFolderRepeat(folder);
 }
 
+/**
+ * Shuffle playback for the specified folder.
+ *
+ * MD_YX5300's shuffle method is broken so this is a custom implementation
+ * see https://github.com/MajicDesigns/MD_YX5300/issues/2 for more
+*/
 void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
-  _player->playFolderShuffle(folder);
+  _shuffleEnabled = true;
+  _fileEnded = false;
+
+  // pick random track from folder
+  // XXX: how to use index with Set?
+  state.currentFolderIndex = folder;
+  state.currentTrackIndex = getRandomTrack(state.folders.last());
+
+  Serial.print(F("MD_YX5300 - Playing random track "));
+  Serial.print(state.currentTrackIndex);
+  Serial.print(F(" from folder "));
+  Serial.println(state.currentFolderIndex);
+
+  // start playback
+  playSpecific(state.currentFolderIndex, state.currentTrackIndex);
 }
 
 /**
  * Play the next track.
 */
 void YX5300_AudioPlayer::nextTrack() {
-  Serial.println(F("MD_YX5300 - Play next track"));
-
   _player->playNext();
 }
 
@@ -155,16 +174,22 @@ void YX5300_AudioPlayer::nextTrack() {
  * Play the previous track.
 */
 void YX5300_AudioPlayer::prevTrack() {
-  Serial.println(F("MD_YX5300 - Play previous track"));
-
   _player->playPrev();
 }
 
 /**
- * @param index The file indexed (0-255) to be played.
+ * Restart playing the current audio file.
 */
-void YX5300_AudioPlayer::playTrack(uint8_t index) {
-  _player->playTrack(index);
+void YX5300_AudioPlayer::playStart() {
+  _player->playStart();
+}
+
+/**
+ * @param folder The source folder (1-99).
+ * @param track The file indexed (0-255) to be played.
+*/
+void YX5300_AudioPlayer::playSpecific(uint8_t folder, uint8_t track) {
+  _player->playSpecific(folder, track);
 }
 
 /**
@@ -179,20 +204,6 @@ void YX5300_AudioPlayer::setVolume(uint8_t volume) {
 */
 uint8_t YX5300_AudioPlayer::getMaxVolume() {
   return _player->volumeMax();
-}
-
-/**
- * Enable shuffle playing mode.
-*/
-void YX5300_AudioPlayer::enableShuffle() {
-  _player->shuffle(true);
-}
-
-/**
- * Disable shuffle playing mode.
-*/
-void YX5300_AudioPlayer::disableShuffle() {
-  _player->shuffle(false);
 }
 
 /**
@@ -231,4 +242,153 @@ void YX5300_AudioPlayer::sleep() {
 */
 void YX5300_AudioPlayer::setTimeout(uint32_t timeout) {
   _player->setTimeout(timeout);
+}
+
+/**
+ * Get a random track.
+*/
+int YX5300_AudioPlayer::getRandomTrack(int totalTracks) {
+  if (_playList.isEmpty()) {
+    // fill array
+    for (int i = 0; i < totalTracks; i++) {
+      _playList.add(i);
+    }
+  }
+
+  int rv = random(totalTracks);
+  if (_playList.has(rv) == false) {
+    for (int i = rv; i < rv + totalTracks; i++) {
+      int idx = i % totalTracks;
+      if (_playList.has(idx)) {
+        rv = idx;
+        break;
+      }
+    }
+  }
+  _playList.sub(rv);
+
+  return rv + 1;
+}
+
+/**
+ * Triggered when file total for particular folder is available.
+*/
+void YX5300_AudioPlayer::onFilesFolder(int total) {
+  // NOTE: 4 FOLDERS SEEMS THE MAX THAT CAN BE QUERIED....??
+  // See https://github.com/MajicDesigns/MD_YX5300/issues/14#issuecomment-832939213
+  if (state.folders.count() < 4) { //state.totalFolders) {
+    // this delay seems to be needed or audio player will stall after
+    // querying 1st folder
+    delay(20);
+    queryFolderFiles(state.folders.count() + 1);
+  } else {
+    // all folders are loaded
+    Serial.print(F("MD_YX5300 - loaded "));
+    Serial.print(state.folders.count());
+    Serial.println(F(" folders."));
+    delay(20);
+  }
+}
+
+/**
+ * Triggered when file playback ended.
+*/
+void YX5300_AudioPlayer::onFileEnded() {
+  if (!_fileEnded) {
+    _fileEnded = true;
+
+    if (_shuffleEnabled) {
+      // start shuffled playback
+      //playFolderShuffle();
+    }
+  }
+}
+
+/**
+ * Triggered when total folders are reported.
+*/
+void YX5300_AudioPlayer::onTotalFolders() {
+  if (state.folders.count() < 1) {
+    // query total files in 1st folder
+    state.currentFolderIndex = 1;
+    queryFolderFiles(state.currentFolderIndex);
+  }
+}
+
+/**
+ * Called when player fires a callback.
+*/
+void YX5300_AudioPlayer::onPlayerCallback() {
+  const MD_YX5300::cbData* status = _player->getStatus();
+
+  if (status->code != MD_YX5300::STS_ACK_OK) {
+    Serial.print(F("MD_YX5300 - "));
+  }
+
+  switch (status->code) {
+    case MD_YX5300::STS_OK:
+      Serial.println(F("STS_OK"));
+      break;
+
+    case MD_YX5300::STS_TIMEOUT:
+      Serial.println(F("STS_TIMEOUT"));
+      break;
+
+    case MD_YX5300::STS_VERSION:
+      Serial.print(F("STS_VERSION: "));
+      Serial.println(status->data);
+      break;
+
+    case MD_YX5300::STS_CHECKSUM:
+      Serial.println(F("STS_CHECKSUM"));
+      break;
+
+    case MD_YX5300::STS_TF_INSERT:
+      // card has been inserted
+      Serial.println(F("Card inserted."));
+      break;
+
+    case MD_YX5300::STS_TF_REMOVE:
+      // card has been removed
+      Serial.println(F("Card removed."));
+      break;
+
+    case MD_YX5300::STS_ACK_OK:
+      //Serial.println(F("STS_ACK_OK"));
+      break;
+
+    case MD_YX5300::STS_ERR_FILE:
+      Serial.println(F("STS_ERR_FILE"));
+      break;
+
+    case MD_YX5300::STS_INIT:
+      Serial.println(F("STS_INIT"));
+      break;
+
+    case MD_YX5300::STS_STATUS:
+      Serial.println(F("STS_STATUS"));
+      break;
+
+    case MD_YX5300::STS_PLAYING:
+      Serial.print(F("Playing file "));
+      Serial.println(status->data);
+      break;
+
+    case MD_YX5300::STS_EQUALIZER:
+      Serial.println(F("STS_EQUALIZER"));
+      break;
+
+    case MD_YX5300::STS_TOT_FILES:
+      Serial.print(F("Total files:\t"));
+      Serial.println(status->data);
+      break;
+
+    default:
+      Serial.print(F("STS_??? 0x"));
+      Serial.println(status->code, HEX);
+      break;
+  }
+
+  //Serial.print(F(", 0x"));
+  //Serial.println(status->data, HEX);
 }

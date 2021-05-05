@@ -13,11 +13,20 @@
 #endif
 
 #include <Arduino.h>
+#include <set.h>
+#include <Method.h>
 #include <MD_YX5300.h>
 
 #if USE_SOFTWARESERIAL
 #include <SoftwareSerial.h>
 #endif
+
+struct YX5300_State {
+    int totalFolders;
+    int currentFolderIndex;
+    int currentTrackIndex;
+    Set folders;
+};
 
 class YX5300_AudioPlayer {
   public:
@@ -29,28 +38,43 @@ class YX5300_AudioPlayer {
     );
     void begin();
     void loop();
-    void query();
     void stop();
     void nextTrack();
     void prevTrack();
-    void playTrack(uint8_t index);
+    void playStart();
+    void playSpecific(uint8_t folder, uint8_t track);
     void playFolderRepeat(uint8_t folder = 1);
     void playFolderShuffle(uint8_t folder = 1);
-    void setVolume(uint8_t volume);
-    uint8_t getMaxVolume();
-    void enableShuffle();
-    void disableShuffle();
+
     void mute();
     void unmute();
     void wakeUp();
     void sleep();
     void setTimeout(uint32_t timeout = 200);
+    void setVolume(uint8_t volume);
+    uint8_t getMaxVolume();
+    void queryFile();
+    void queryStatus();
+    void queryFolderFiles(uint8_t folder);
 
   private:
+    bool _shuffleEnabled = false;
+    bool _fileEnded = false;
+
+    Set _playList;
     uint8_t _volume;
     uint32_t _timeOut;
-    SoftwareSerial *_stream;
+
     MD_YX5300 *_player;
+    SoftwareSerial *_stream;
+
+    int getRandomTrack(int totalTracks);
+
+    // callbacks
+    void onFileEnded();
+    void onTotalFolders();
+    void onPlayerCallback();
+    void onFilesFolder(int total);
 };
 
 #endif
