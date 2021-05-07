@@ -7,7 +7,6 @@
 
 #include <YX5300_AudioPlayer.h>
 
-YX5300_State state;
 Method _playerCallback;
 Method _fileEndedCallback;
 Method _totalFoldersCallback;
@@ -16,11 +15,13 @@ Method _totalFilesFolderCallback;
 YX5300_AudioPlayer::YX5300_AudioPlayer(
   short rx_pin,
   short tx_pin,
+  Method ready_callback,
   uint8_t volume,
   uint32_t timeout
 ) {
   _volume = volume;
   _timeOut = timeout;
+  _readyCallback = ready_callback;
 
   _stream = new SoftwareSerial(rx_pin, tx_pin);
   _player = new MD_YX5300(*_stream);
@@ -32,8 +33,8 @@ YX5300_AudioPlayer::YX5300_AudioPlayer(
   _fileEndedCallback.attachCallback(
     makeFunctor((Functor0 *)0, *this, &YX5300_AudioPlayer::onFileEnded)
   );
-  _totalFoldersCallback.attachCallback(
-    makeFunctor((Functor0 *)0, *this, &YX5300_AudioPlayer::onTotalFolders)
+  _totalFoldersCallback.attachCallbackIntArg(
+    makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onTotalFolders)
   );
   _totalFilesFolderCallback.attachCallbackIntArg(
     makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onFilesFolder)
@@ -48,24 +49,13 @@ void cbResponse(const MD_YX5300::cbData *status) {
 
   switch (status->code) {
     case MD_YX5300::STS_FLDR_FILES:
-      state.folders.add(data);
-
-      Serial.print(F("MD_YX5300 - Total for folder "));
-      Serial.print(state.folders.count());
-      Serial.print(F(": "));
-      Serial.println(state.folders.first());
-
       // notify listeners
       _totalFilesFolderCallback.callbackIntArg(data);
       break;
 
     case MD_YX5300::STS_TOT_FLDR:
-      state.totalFolders = data;
-      Serial.print(F("MD_YX5300 - Total folders:\t"));
-      Serial.println(state.totalFolders);
-
       // notify listeners
-      _totalFoldersCallback.callback();
+      _totalFoldersCallback.callbackIntArg(data);
       break;
 
     case MD_YX5300::STS_FILE_END:
@@ -95,11 +85,18 @@ void YX5300_AudioPlayer::begin() {
   setVolume(_volume);
 
   // get total folders once
-  _player->queryFolderCount();
+  queryFolderCount();
 }
 
 void YX5300_AudioPlayer::loop() {
   _player->check();
+}
+
+/**
+ * Query the number of folders on the device.
+*/
+void YX5300_AudioPlayer::queryFolderCount() {
+  _player->queryFolderCount();
 }
 
 /**
@@ -150,9 +147,8 @@ void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
   _fileEnded = false;
 
   // pick random track from folder
-  // XXX: how to use index with Set?
   state.currentFolderIndex = folder;
-  state.currentTrackIndex = getRandomTrack(state.folders.last());
+  state.currentTrackIndex = getRandomTrack(_folders.at(folder - 1));
 
   Serial.print(F("MD_YX5300 - Playing random track "));
   Serial.print(state.currentTrackIndex);
@@ -274,19 +270,44 @@ int YX5300_AudioPlayer::getRandomTrack(int totalTracks) {
  * Triggered when file total for particular folder is available.
 */
 void YX5300_AudioPlayer::onFilesFolder(int total) {
-  // NOTE: 4 FOLDERS SEEMS THE MAX THAT CAN BE QUERIED....??
-  // See https://github.com/MajicDesigns/MD_YX5300/issues/14#issuecomment-832939213
-  if (state.folders.count() < 4) { //state.totalFolders) {
+  // add new folder
+  _folders.push_back(total);
+
+  Serial.print(F("MD_YX5300 - Folder "));
+  Serial.print(_folders.size());
+  Serial.print(F(": "));
+  Serial.print(_folders.back());
+  Serial.println(F(" tracks"));
+
+  if (_folders.size() < state.totalFolders) {
     // this delay seems to be needed or audio player will stall after
-    // querying 1st folder
+    // querying 1st folder for total files
     delay(20);
-    queryFolderFiles(state.folders.count() + 1);
+    queryFolderFiles(_folders.size() + 1);
   } else {
     // all folders are loaded
-    Serial.print(F("MD_YX5300 - loaded "));
-    Serial.print(state.folders.count());
+    Serial.print(F("MD_YX5300 - Loaded "));
+    Serial.print(_folders.size());
     Serial.println(F(" folders."));
     delay(20);
+
+    // notify listeners
+    _readyCallback.callback();
+  }
+}
+
+/**
+ * Triggered when total folders are reported.
+*/
+void YX5300_AudioPlayer::onTotalFolders(int total) {
+  state.totalFolders = total;
+  Serial.print(F("MD_YX5300 - Total folders: "));
+  Serial.println(state.totalFolders);
+
+  if (_folders.size() != state.totalFolders) {
+    // query total files for all folders, starting with the first
+    state.currentFolderIndex = 1;
+    queryFolderFiles(state.currentFolderIndex);
   }
 }
 
@@ -301,17 +322,6 @@ void YX5300_AudioPlayer::onFileEnded() {
       // start shuffled playback
       //playFolderShuffle();
     }
-  }
-}
-
-/**
- * Triggered when total folders are reported.
-*/
-void YX5300_AudioPlayer::onTotalFolders() {
-  if (state.folders.count() < 1) {
-    // query total files in 1st folder
-    state.currentFolderIndex = 1;
-    queryFolderFiles(state.currentFolderIndex);
   }
 }
 
@@ -340,7 +350,8 @@ void YX5300_AudioPlayer::onPlayerCallback() {
       break;
 
     case MD_YX5300::STS_CHECKSUM:
-      Serial.println(F("STS_CHECKSUM"));
+      Serial.print(F("STS_CHECKSUM: "));
+      Serial.println(status->data);
       break;
 
     case MD_YX5300::STS_TF_INSERT:
