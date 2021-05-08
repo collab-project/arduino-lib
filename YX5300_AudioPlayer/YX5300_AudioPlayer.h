@@ -13,19 +13,12 @@
 #endif
 
 #include <Arduino.h>
-#include <set.h>
 #include <Method.h>
 #include <MD_YX5300.h>
 
 #if USE_SOFTWARESERIAL
 #include <SoftwareSerial.h>
 #endif
-
-struct YX5300_State {
-    int totalFolders;
-    int currentFolderIndex;
-    int currentTrackIndex;
-};
 
 class YX5300_AudioPlayer {
   public:
@@ -57,17 +50,18 @@ class YX5300_AudioPlayer {
     void queryFolderCount();
     void queryFolderFiles(uint8_t folder);
 
-    YX5300_State state;
+    uint32_t totalFolders;
+    uint32_t currentFolderIndex;
+    uint32_t currentTrackIndex;
 
   private:
-    bool _shuffleEnabled = false;
-    bool _fileEnded = false;
-
-    Set _playList;
-    std::vector<int> _folders;
     uint8_t _volume;
     uint32_t _timeOut;
+    bool _fileEnded = false;
+    bool _shuffleEnabled = false;
     Method _readyCallback;
+    std::vector<int> _folders;
+    std::vector<int> _playList;
 
     MD_YX5300 *_player;
     SoftwareSerial *_stream;

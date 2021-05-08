@@ -147,16 +147,16 @@ void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
   _fileEnded = false;
 
   // pick random track from folder
-  state.currentFolderIndex = folder;
-  state.currentTrackIndex = getRandomTrack(_folders.at(folder - 1));
+  currentFolderIndex = folder;
+  currentTrackIndex = getRandomTrack(_folders.at(folder - 1));
 
   Serial.print(F("MD_YX5300 - Playing random track "));
-  Serial.print(state.currentTrackIndex);
+  Serial.print(currentTrackIndex);
   Serial.print(F(" from folder "));
-  Serial.println(state.currentFolderIndex);
+  Serial.println(currentFolderIndex);
 
   // start playback
-  playSpecific(state.currentFolderIndex, state.currentTrackIndex);
+  playSpecific(currentFolderIndex, currentTrackIndex);
 }
 
 /**
@@ -181,6 +181,8 @@ void YX5300_AudioPlayer::playStart() {
 }
 
 /**
+ * Play a specific file in a folder.
+ *
  * @param folder The source folder (1-99).
  * @param track The file indexed (0-255) to be played.
 */
@@ -244,26 +246,24 @@ void YX5300_AudioPlayer::setTimeout(uint32_t timeout) {
  * Get a random track.
 */
 int YX5300_AudioPlayer::getRandomTrack(int totalTracks) {
-  if (_playList.isEmpty()) {
-    // fill array
+  if (_playList.empty()) {
+    // fill list
     for (int i = 0; i < totalTracks; i++) {
-      _playList.add(i);
+      _playList.push_back(i);
     }
+
+    // randomize seed
+    srand(time(0));
+
+    // randomize list
+    std::random_shuffle(_playList.begin(), _playList.end());
   }
 
-  int rv = random(totalTracks);
-  if (_playList.has(rv) == false) {
-    for (int i = rv; i < rv + totalTracks; i++) {
-      int idx = i % totalTracks;
-      if (_playList.has(idx)) {
-        rv = idx;
-        break;
-      }
-    }
-  }
-  _playList.sub(rv);
+  // pick first randomized track and remove from list
+  int rt = _playList.at(0);
+  _playList.erase(_playList.begin());
 
-  return rv + 1;
+  return rt + 1;
 }
 
 /**
@@ -279,7 +279,7 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
   Serial.print(_folders.back());
   Serial.println(F(" tracks"));
 
-  if (_folders.size() < state.totalFolders) {
+  if (_folders.size() < totalFolders) {
     // this delay seems to be needed or audio player will stall after
     // querying 1st folder for total files
     delay(20);
@@ -300,14 +300,14 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
  * Triggered when total folders are reported.
 */
 void YX5300_AudioPlayer::onTotalFolders(int total) {
-  state.totalFolders = total;
+  totalFolders = total;
   Serial.print(F("MD_YX5300 - Total folders: "));
-  Serial.println(state.totalFolders);
+  Serial.println(totalFolders);
 
-  if (_folders.size() != state.totalFolders) {
+  if (_folders.size() != totalFolders) {
     // query total files for all folders, starting with the first
-    state.currentFolderIndex = 1;
-    queryFolderFiles(state.currentFolderIndex);
+    currentFolderIndex = 1;
+    queryFolderFiles(currentFolderIndex);
   }
 }
 
