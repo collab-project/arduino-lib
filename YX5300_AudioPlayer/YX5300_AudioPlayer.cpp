@@ -125,6 +125,8 @@ void YX5300_AudioPlayer::stop() {
  * @param folder The source folder (1-99).
 */
 void YX5300_AudioPlayer::playFolderRepeat(uint8_t folder) {
+  _fileEnded = 0;
+
   _player->playFolderRepeat(folder);
 }
 
@@ -138,9 +140,8 @@ void YX5300_AudioPlayer::playFolderRepeat(uint8_t folder) {
 */
 void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
   _shuffleEnabled = true;
-  _fileEnded = false;
 
-  // pick random track from folder
+  // pick random track from selected folder
   currentFolderIndex = folder;
   currentTrackIndex = getRandomTrack(_folders.at(folder - 1));
 
@@ -157,6 +158,8 @@ void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
  * Play the next track.
 */
 void YX5300_AudioPlayer::nextTrack() {
+  _fileEnded = 0;
+
   _player->playNext();
 }
 
@@ -164,6 +167,8 @@ void YX5300_AudioPlayer::nextTrack() {
  * Play the previous track.
 */
 void YX5300_AudioPlayer::prevTrack() {
+  _fileEnded = 0;
+
   _player->playPrev();
 }
 
@@ -171,6 +176,8 @@ void YX5300_AudioPlayer::prevTrack() {
  * Restart playing the current audio file.
 */
 void YX5300_AudioPlayer::playStart() {
+  _fileEnded = 0;
+
   _player->playStart();
 }
 
@@ -181,6 +188,8 @@ void YX5300_AudioPlayer::playStart() {
  * @param track The file indexed (0-255) to be played.
 */
 void YX5300_AudioPlayer::playSpecific(uint8_t folder, uint8_t track) {
+  _fileEnded = 0;
+
   _player->playSpecific(folder, track);
 }
 
@@ -326,12 +335,21 @@ void YX5300_AudioPlayer::onFileEnded(int index) {
   Serial.print(F(" ended at "));
   Serial.println(millis());
 
-  if (!_fileEnded) {
-    _fileEnded = true;
-
-    if (_shuffleEnabled) {
-      // start shuffled playback
-      //playFolderShuffle();
+  if (_fileEnded == 0) {
+    // first file end status
+    _fileEnded = 1;
+  } else if (_fileEnded == 1) {
+    // second and last file end status
+    _fileEnded = 2;
+  }
+  if (_fileEnded == 2) {
+    if (_repeatEnabled) {
+      if (_shuffleEnabled) {
+        // go to next shuffled track
+        playFolderShuffle();
+      } else {
+        nextTrack();
+      }
     }
   }
 }

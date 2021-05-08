@@ -57,7 +57,8 @@ class YX5300_AudioPlayer {
   private:
     uint8_t _volume;
     uint32_t _timeOut;
-    bool _fileEnded = false;
+    int _fileEnded = 0;
+    bool _repeatEnabled = true;
     bool _shuffleEnabled = false;
     Method _readyCallback;
     std::vector<int> _folders;
