@@ -69,8 +69,8 @@ class YX5300_AudioPlayer {
     int getRandomTrack(int totalTracks);
 
     // callbacks
-    void onFileEnded();
     void onPlayerCallback();
+    void onFileEnded(int index);
     void onFilesFolder(int total);
     void onTotalFolders(int total);
 };

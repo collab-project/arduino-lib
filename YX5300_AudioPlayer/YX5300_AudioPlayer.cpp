@@ -30,8 +30,8 @@ YX5300_AudioPlayer::YX5300_AudioPlayer(
   _playerCallback.attachCallback(
     makeFunctor((Functor0 *)0, *this, &YX5300_AudioPlayer::onPlayerCallback)
   );
-  _fileEndedCallback.attachCallback(
-    makeFunctor((Functor0 *)0, *this, &YX5300_AudioPlayer::onFileEnded)
+  _fileEndedCallback.attachCallbackIntArg(
+    makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onFileEnded)
   );
   _totalFoldersCallback.attachCallbackIntArg(
     makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onTotalFolders)
@@ -49,25 +49,15 @@ void cbResponse(const MD_YX5300::cbData *status) {
 
   switch (status->code) {
     case MD_YX5300::STS_FLDR_FILES:
-      // notify listeners
       _totalFilesFolderCallback.callbackIntArg(data);
       break;
 
     case MD_YX5300::STS_TOT_FLDR:
-      // notify listeners
       _totalFoldersCallback.callbackIntArg(data);
       break;
 
     case MD_YX5300::STS_FILE_END:
-      Serial.println(F("MD_YX5300 - File ended."));
-
-      // notify listeners
-      _fileEndedCallback.callback();
-      break;
-
-    case MD_YX5300::STS_VOLUME:
-      Serial.print(F("MD_YX5300 - Volume:\t\t"));
-      Serial.println(data);
+      _fileEndedCallback.callbackIntArg(data);
       break;
 
     default:
@@ -131,6 +121,8 @@ void YX5300_AudioPlayer::stop() {
 
 /**
  * Set or reset the repeat playing mode for the specified folder.
+ *
+ * @param folder The source folder (1-99).
 */
 void YX5300_AudioPlayer::playFolderRepeat(uint8_t folder) {
   _player->playFolderRepeat(folder);
@@ -141,6 +133,8 @@ void YX5300_AudioPlayer::playFolderRepeat(uint8_t folder) {
  *
  * MD_YX5300's shuffle method is broken so this is a custom implementation
  * see https://github.com/MajicDesigns/MD_YX5300/issues/2 for more
+ *
+ * @param folder The source folder (1-99).
 */
 void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
   _shuffleEnabled = true;
@@ -192,6 +186,8 @@ void YX5300_AudioPlayer::playSpecific(uint8_t folder, uint8_t track) {
 
 /**
  * Set the volume.
+ *
+ * @param volume The volume level (0-30).
 */
 void YX5300_AudioPlayer::setVolume(uint8_t volume) {
   _player->volume(volume);
@@ -237,6 +233,8 @@ void YX5300_AudioPlayer::sleep() {
  *
  * If a message is not received within this time a timeout error
  * status will be generated.
+ *
+ * @param timeout The timeout in milliseconds.
 */
 void YX5300_AudioPlayer::setTimeout(uint32_t timeout) {
   _player->setTimeout(timeout);
@@ -244,6 +242,8 @@ void YX5300_AudioPlayer::setTimeout(uint32_t timeout) {
 
 /**
  * Get a random track.
+ *
+ * @param totalTracks Range of tracks to choose from.
 */
 int YX5300_AudioPlayer::getRandomTrack(int totalTracks) {
   if (_playList.empty()) {
@@ -268,6 +268,8 @@ int YX5300_AudioPlayer::getRandomTrack(int totalTracks) {
 
 /**
  * Triggered when file total for particular folder is available.
+ *
+ * @param total Total files found in folder.
 */
 void YX5300_AudioPlayer::onFilesFolder(int total) {
   // add new folder
@@ -298,6 +300,8 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
 
 /**
  * Triggered when total folders are reported.
+ *
+ * @param total Total folders found.
 */
 void YX5300_AudioPlayer::onTotalFolders(int total) {
   totalFolders = total;
@@ -313,8 +317,15 @@ void YX5300_AudioPlayer::onTotalFolders(int total) {
 
 /**
  * Triggered when file playback ended.
+ *
+ * @param index Index number of the file just completed.
 */
-void YX5300_AudioPlayer::onFileEnded() {
+void YX5300_AudioPlayer::onFileEnded(int index) {
+  Serial.print(F("MD_YX5300 - File "));
+  Serial.print(index);
+  Serial.print(F(" ended at "));
+  Serial.println(millis());
+
   if (!_fileEnded) {
     _fileEnded = true;
 
@@ -391,6 +402,11 @@ void YX5300_AudioPlayer::onPlayerCallback() {
 
     case MD_YX5300::STS_TOT_FILES:
       Serial.print(F("Total files:\t"));
+      Serial.println(status->data);
+      break;
+
+    case MD_YX5300::STS_VOLUME:
+      Serial.print(F("MD_YX5300 - Volume:\t\t"));
       Serial.println(status->data);
       break;
 
