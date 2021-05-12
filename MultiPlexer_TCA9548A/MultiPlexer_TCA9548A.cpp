@@ -25,3 +25,36 @@ void MultiPlexer_TCA9548A::closeChannel(uint8_t channel_nr) {
   _mux->closeChannel(channel_nr);
 }
 
+void MultiPlexer_TCA9548A::closeAll() {
+  _mux->closeAll();
+}
+
+void MultiPlexer_TCA9548A::scan() {
+  byte error, address;
+  int nDevices;
+  int delayTime = 5000;
+  nDevices = 0;
+  for (address = 1; address < 127; address++) {
+    twire.beginTransmission(address);
+    error = twire.endTransmission();
+    if (error == 0) {
+      Serial.print("I2C device found at address 0x");
+      if (address < 16) {
+        Serial.print("0");
+      }
+      Serial.println(address, HEX);
+      nDevices++;
+    }
+    else if (error == 4) {
+      Serial.print("Unknow error at address 0x");
+      if (address < 16) {
+        Serial.print("0");
+      }
+      Serial.println(address, HEX);
+    }
+  }
+  if (nDevices == 0) {
+    Serial.println("No I2C devices found\n");
+  }
+  delay(delayTime);
+}

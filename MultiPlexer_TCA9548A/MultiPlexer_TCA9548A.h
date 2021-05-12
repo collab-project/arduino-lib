@@ -15,6 +15,8 @@ class MultiPlexer_TCA9548A
     void begin(int sda_pin, int scl_pin);
     void openChannel(uint8_t channel_nr);
     void closeChannel(uint8_t channel_nr);
+    void closeAll();
+    void scan();
 
   private:
     TCA9548A* _mux;
