@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -7,20 +7,13 @@
 
 #include "SystemClock.h"
 
-/**
- * Constructor.
- *
- * @param ntp_server
- * @param gmtOffset_sec
- * @param daylightOffset_sec
- */
 SystemClock::SystemClock(
-  int scl_pin,
-  int sda_pin,
-  char* ntp_server,
-  long int gmtOffset_sec,
-  int daylightOffset_sec
-) {
+    int scl_pin,
+    int sda_pin,
+    char *ntp_server,
+    long int gmtOffset_sec,
+    int daylightOffset_sec)
+{
   _ntpServer = ntp_server;
   _gmtOffset_sec = gmtOffset_sec;
   _daylightOffset_sec = daylightOffset_sec;
@@ -35,6 +28,7 @@ void SystemClock::begin() {
 }
 
 void SystemClock::sync() {
+  /*
   Serial.print("Syncing time with ");
   Serial.println(_ntpServer);
   Serial.println();
@@ -42,9 +36,11 @@ void SystemClock::sync() {
   configTime(_gmtOffset_sec, _daylightOffset_sec, _ntpServer);
 
   setLocalTime();
+  */
 }
 
 void SystemClock::setLocalTime() {
+  /*
   struct tm timeinfo;
   if (!getLocalTime(&timeinfo)) {
     Serial.println("Failed to obtain time from NTP");
@@ -65,6 +61,7 @@ void SystemClock::setLocalTime() {
   Serial.println("Local time: ");
   Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
   Serial.println("===============================");
+  */
 }
 
 float SystemClock::getStartupTemperature() {
@@ -72,24 +69,10 @@ float SystemClock::getStartupTemperature() {
 }
 
 String SystemClock::getTime() {
-  RtcDateTime dt = _clock->getDateTime();
-  return formatTime(dt);
+  DateTime dt = _clock->now();
+  return _clock->formatTime(dt);
 }
 
 String SystemClock::getStartupTime() {
-  return formatTime(startupTime);
-}
-
-String SystemClock::formatTime(RtcDateTime dt) {
-  char tstamp[9];
-
-  snprintf_P(tstamp,
-    countof(tstamp),
-    PSTR("%02u:%02u:%02u"),
-    dt.Hour(),
-    dt.Minute(),
-    dt.Second()
-  );
-
-  return tstamp;
+  return _clock->formatTime(startupTime);
 }

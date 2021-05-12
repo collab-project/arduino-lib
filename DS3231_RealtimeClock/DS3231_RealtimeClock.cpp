@@ -3,121 +3,111 @@
 */
 #include "DS3231_RealtimeClock.h"
 
-#define countof(a) (sizeof(a) / sizeof(a[0]))
 
-void printDateTime(const RtcDateTime& dt) {
-  char datestring[20];
-
-  snprintf_P(datestring,
-    countof(datestring),
-    PSTR("%04u/%02u/%02u %02u:%02u:%02u"),
-    dt.Year(),
-    dt.Month(),
-    dt.Day(),
-    dt.Hour(),
-    dt.Minute(),
-    dt.Second()
-  );
-  Serial.print(datestring);
-}
-
-DS3231_RealtimeClock::DS3231_RealtimeClock(int scl_pin, int sda_pin) {
+DS3231_RealtimeClock::DS3231_RealtimeClock(int scl_pin, int sda_pin, uint8_t eeprom_address)
+{
   _sclPin = scl_pin;
   _sdaPin = sda_pin;
 
-  _rtc = new RtcDS3231<TwoWire>(Wire);
+  // storage
+  _storage = new AT24C32_EEPROM(eeprom_address);
+
+  // rtc
+  _rtc = new RTC_DS3231();
 }
 
 void DS3231_RealtimeClock::begin() {
-  // initialize rtc
-  _rtc->Begin(_sdaPin, _sclPin);
-
-  RtcDateTime build_date = getBuildDate();
-  Serial.print("Build date: ");
-  printDateTime(build_date);
-  Serial.println();
-
-  if (!_rtc->IsDateTimeValid()) {
-    if (_rtc->LastError() != 0) {
-      // we have a communications error
-      // see https://www.arduino.cc/en/Reference/WireEndTransmission for 
-      // what the number means
-      Serial.print("RTC communications error = ");
-            Serial.println(_rtc->LastError());
-        }
-        else
-        {
-            // Common Causes:
-            //    1) first time you ran and the device wasn't running yet
-            //    2) the battery on the device is low or even missing
-            Serial.println("RTC lost confidence in the DateTime!");
-
-            // following line sets the RTC to the date & time this sketch was compiled
-            // it will also reset the valid flag internally unless the Rtc device is
-            // having an issue
-            _rtc->SetDateTime(build_date);
-        }
-    }
-
-    if (!_rtc->GetIsRunning()) {
-      activate();
-    }
-
-    // print current time
-    startupTime = getDateTime();
-    Serial.print("Local time: ");
-    printDateTime(startupTime);
-    Serial.println();
-
-    // set current temperature
-    startupTemperature = getTemperature();
-}
-
-void DS3231_RealtimeClock::loop() {
-}
-
-void DS3231_RealtimeClock::activate() {
-  Serial.println("RTC was not actively running, starting now");
-
-  _rtc->SetIsRunning(true);
-}
-
-RtcDateTime DS3231_RealtimeClock::getDateTime() {
-  if (!_rtc->GetIsRunning()) {
-    activate();
+  // rtc
+  Wire.begin(_sdaPin, _sclPin);
+  Wire.beginTransmission(DS3231_ADDRESS);
+  if (Wire.endTransmission() != 0) {
+    Serial.println("Initializing DS3231... Error!");
+    Serial.flush();
   }
-  // never assume the Rtc was last configured by you, so
-  // just clear them to your needed state
-  _rtc->Enable32kHzPin(false);
-  _rtc->SetSquareWavePin(DS3231SquareWavePin_ModeNone);
 
-  return _rtc->GetDateTime();
-}
+  if (_rtc->lostPower()) {
+    // when time needs to be set on a new device, or after a battery power
+    // loss, the following line sets the RTC to the date and time this
+    // project was compiled
+    _rtc->adjust(DateTime(F(__DATE__), F(__TIME__)));
 
-void DS3231_RealtimeClock::update(RtcDateTime new_dt) {
-  if (!_rtc->GetIsRunning()) {
-    activate();
+    // fix offset
+    //adjust(now().unixtime() + (60 * 60));
+
+    Serial.println("DS3231: updated time.");
   }
-  Serial.print("Setting RTC time to: ");
-  printDateTime(new_dt);
+
+  // store and print startup datetime
+  startupTime = now();
+
+  Serial.print("Local time:\t");
+  Serial.print(getStartupTime());
   Serial.println();
 
-  _rtc->SetDateTime(new_dt);
-
-  Serial.print("RTC time now: ");
-  printDateTime(getDateTime());
-  Serial.println();
+  // set current temperature
+  startupTemperature = getTemperature();
 }
 
-RtcDateTime DS3231_RealtimeClock::getBuildDate() {
-  return RtcDateTime(__DATE__, __TIME__);
+DateTime DS3231_RealtimeClock::now() {
+  return _rtc->now();
+}
+
+void DS3231_RealtimeClock::adjust(unsigned long actualTime) {
+  // check if it's a meaningful value in the future
+  if (actualTime > 1611178509) {
+    Serial.print("Synced time:\t");
+    Serial.println(formatDateTime(DateTime(actualTime)));
+
+    // update rtc
+    _rtc->adjust(DateTime(actualTime));
+  }
+}
+
+DateTime DS3231_RealtimeClock::load(int address) {
+  int addr = address;
+  char data[16];
+  byte b = _storage->read_byte(addr);
+
+  while (b != 0) {
+    data[addr] = (char)b;
+    addr++;
+    // access an address from the memory
+    b = _storage->read_byte(addr);
+  }
+
+  uint32_t timestamp = atol(data);
+
+  return DateTime(SECONDS_FROM_1970_TO_2000 + timestamp);
+}
+
+void DS3231_RealtimeClock::save(DateTime timestamp, int address) {
+  int addr = address;
+
+  // store the timestamp
+  uint32_t sec = timestamp.secondstime();
+  char data[16];
+  itoa(sec, data, 10);
+
+  // write to EEPROM memory
+  _storage->write_page(addr, (byte *)data, sizeof(data));
+}
+
+String DS3231_RealtimeClock::getStartupTime() {
+  return formatDateTime(startupTime);
+}
+
+String DS3231_RealtimeClock::formatTime(DateTime dt) {
+  return dt.timestamp(DateTime::TIMESTAMP_TIME);
+}
+
+String DS3231_RealtimeClock::formatDate(DateTime dt) {
+  return dt.timestamp(DateTime::TIMESTAMP_DATE);
+}
+
+String DS3231_RealtimeClock::formatDateTime(DateTime dt) {
+  return formatDate(dt) + " " + formatTime(dt);
 }
 
 float DS3231_RealtimeClock::getTemperature() {
-  if (!_rtc->GetIsRunning()) {
-    activate();
-  }
-  RtcTemperature temp = _rtc->GetTemperature();
-
-  return temp.AsFloatDegC();
+  return _rtc->getTemperature();
 }

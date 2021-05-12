@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -7,11 +7,9 @@
 #ifndef SystemClock_h
 #define SystemClock_h
 
-#include "Arduino.h"
-#include "time.h"
+#include <Arduino.h>
+#include <RTClib.h>
 #include <DS3231_RealtimeClock.h>
-
-#define countof(a) (sizeof(a) / sizeof(a[0]))
 
 class SystemClock
 {
@@ -19,7 +17,7 @@ class SystemClock
     SystemClock(
         int scl_pin,
         int sda_pin,
-        char* ntpServer = "pool.ntp.org",
+        char *ntpServer = "pool.ntp.org",
         long int gmtOffset_sec = 3600,
         int daylightOffset_sec = 3600
     );
@@ -29,7 +27,7 @@ class SystemClock
     float getStartupTemperature();
     String getTime();
     String getStartupTime();
-    RtcDateTime startupTime;
+    DateTime startupTime;
 
   private:
     char* _ntpServer;
@@ -37,7 +35,7 @@ class SystemClock
     int _daylightOffset_sec;
     DS3231_RealtimeClock* _clock;
 
-    String formatTime(RtcDateTime dt);
+    String formatTime(DateTime dt);
 };
 
 #endif

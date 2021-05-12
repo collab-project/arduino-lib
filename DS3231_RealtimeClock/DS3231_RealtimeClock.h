@@ -4,30 +4,34 @@
 #ifndef DS3231_RealtimeClock_h
 #define DS3231_RealtimeClock_h
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <Wire.h>
-#include <RtcDS3231.h>
+#include <RTClib.h>
+#include <AT24C32_EEPROM.h>
+
+#define LAST_RUN_ADDRESS 0
 
 class DS3231_RealtimeClock
 {
   public:
-    DS3231_RealtimeClock() {};
-    DS3231_RealtimeClock(
-      int scl_pin,
-      int sda_pin
-    );
+    DS3231_RealtimeClock(int scl_pin = -1, int sda_pin = -1, uint8_t eeprom_address = 0x57);
     void begin();
-    void loop();
-    void activate();
+    DateTime now();
+    DateTime load(int address = 0);
+    void save(DateTime timestamp, int address = 0);
+    void adjust(unsigned long actualTime);
+    String formatTime(DateTime dt);
+    String formatDate(DateTime dt);
+    String formatDateTime(DateTime dt);
+    String getStartupTime();
     float getTemperature();
-    RtcDateTime getDateTime();
-    RtcDateTime getBuildDate();
-    void update(RtcDateTime new_dt);
-    RtcDateTime startupTime;
+
+    DateTime startupTime;
     float startupTemperature;
 
   private:
-    RtcDS3231<TwoWire>* _rtc;
+    RTC_DS3231 *_rtc;
+    AT24C32_EEPROM *_storage;
     int _sclPin;
     int _sdaPin;
 };
