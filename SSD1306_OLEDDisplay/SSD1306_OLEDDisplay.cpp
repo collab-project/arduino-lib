@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020-2021, Collab
+ *  All rights reserved
+*/
 /*
   SSD1306_OLEDDisplay.cpp - Control SSD1306 OLED display.
 */
