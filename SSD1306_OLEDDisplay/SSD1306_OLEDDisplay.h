@@ -13,8 +13,7 @@
 
 class SSD1306_OLEDDisplay {
   public:
-    SSD1306_OLEDDisplay() {};
-    SSD1306_OLEDDisplay(int sda_pin, int scl_pin, uint8_t address = 0x3C);
+    SSD1306_OLEDDisplay(int sda_pin = -1, int scl_pin = -1, uint8_t address = 0x3C);
     void begin();
     void loop();
     void disable();

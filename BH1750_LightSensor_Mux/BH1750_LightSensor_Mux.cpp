@@ -7,28 +7,18 @@
 #include "BH1750_LightSensor_Mux.h"
 
 BH1750_LightSensor_Mux::BH1750_LightSensor_Mux(
-    MultiPlexer_TCA9548A* i2c,
-    int scl_pin,
-    int sda_pin,
-    int address,
-    int bus_nr,
-    int clock_speed)
-{
-  _sclPin = scl_pin;
-  _sdaPin = sda_pin;
+  MultiPlexer_TCA9548A* i2c,
+  int address
+) {
+  _i2c = i2c;
   _address = address;
-  _clockSpeed = clock_speed;
-  _busNr = bus_nr;
 }
 
 void BH1750_LightSensor_Mux::begin() {
 }
 
 float BH1750_LightSensor_Mux::read() {
-  // init I2C bus for every read!
-  _i2c = new TwoWire(_busNr);
   _lightMeter = new BH1750();
-  _i2c->begin(_sdaPin, _sclPin, _clockSpeed);
 
   // make sure all is good
   if (_lightMeter->begin(BH1750::CONTINUOUS_HIGH_RES_MODE, _address, _i2c)) {

@@ -4,14 +4,24 @@
 /*
   SSD1306_OLEDDisplay_Mux.cpp - Control SSD1306 OLED display using TCA9548A expander.
 */
-#include "SSD1306_OLEDDisplay_Mux.h"
 
-SSD1306_OLEDDisplay_Mux::SSD1306_OLEDDisplay_Mux(int sda_pin, int scl_pin, uint8_t address) {
-  _sdaPin = sda_pin;
-  _sclPin = scl_pin;
+#include <MultiPlexer_TCA9548A.h>
+#include <SSD1306_OLEDDisplay_Mux.h>
+
+SSD1306_OLEDDisplay_Mux::SSD1306_OLEDDisplay_Mux(
+  MultiPlexer_TCA9548A* expander,
+  uint8_t address,
+  OLEDDISPLAY_GEOMETRY size
+) {
+  _expander = expander;
   _address = address;
 
-  _display = new SSD1306Wire(address, sda_pin, scl_pin, GEOMETRY_128_32);
+  _display = new SSD1306Wire(
+    address,
+    _expander->sdaPin,
+    _expander->sclPin,
+    size
+  );
 }
 
 void SSD1306_OLEDDisplay_Mux::begin() {
