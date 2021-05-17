@@ -12,13 +12,13 @@
 
 class YL83_RainSensor_MCP3008 {
   public:
-    YL83_RainSensor_MCP3008(int rain_pin, MultiPlexer_MCP3008* adc);
+    YL83_RainSensor_MCP3008(MultiPlexer_MCP3008* adc, int channel);
     void begin();
     int measure();
     int measurePercentage();
 
   private:
-    int _rainPin;
+    int _channel;
     MultiPlexer_MCP3008 *_adc;
 };
 

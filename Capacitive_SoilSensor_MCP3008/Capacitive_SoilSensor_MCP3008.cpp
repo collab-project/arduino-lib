@@ -3,18 +3,23 @@
 */
 #include "Capacitive_SoilSensor_MCP3008.h"
 
-Capacitive_SoilSensor_MCP3008::Capacitive_SoilSensor_MCP3008(int pin, int wet, int dry) {
-  _pin = pin;
+Capacitive_SoilSensor_MCP3008::Capacitive_SoilSensor_MCP3008(
+  MultiPlexer_MCP3008* adc,
+  int channel,
+  int wet,
+  int dry
+) {
+  _adc = adc;
+  _channel = channel;
   _wet = wet;
   _dry = dry;
 }
 
 void Capacitive_SoilSensor_MCP3008::begin() {
-  pinMode(_pin, INPUT);
 }
 
 int Capacitive_SoilSensor_MCP3008::measure() {
-  return analogRead(_pin);
+  return _adc->read(_channel);
 }
 
 int Capacitive_SoilSensor_MCP3008::measurePercentage() {
