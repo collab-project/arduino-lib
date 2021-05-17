@@ -21,22 +21,27 @@ BH1750_LightSensor_Mux::BH1750_LightSensor_Mux(
 }
 
 void BH1750_LightSensor_Mux::begin() {
-  _expander->switchChannel(_expanderChannel);
+  _expander->openChannel(_expanderChannel);
 
   if (_lightMeter->begin(_modus, _address, &Wire1)) {
     // Serial.println(F("BH1750 ready."));
   } else {
     Serial.println(F("Error initialising BH1750 light sensor"));
   }
+
+  _expander->closeChannel(_expanderChannel);
 }
 
 float BH1750_LightSensor_Mux::read() {
-  _expander->switchChannel(_expanderChannel);
+  _expander->openChannel(_expanderChannel);
 
   float lux = _lightMeter->readLightLevel();
   if (lux == -1) {
     // try one more time
     lux = _lightMeter->readLightLevel();
   }
+
+  _expander->closeChannel(_expanderChannel);
+
   return lux;
 }

@@ -23,13 +23,15 @@ BME280_BarometerSensor_Mux::BME280_BarometerSensor_Mux(
 }
 
 void BME280_BarometerSensor_Mux::begin() {
-  _expander->switchChannel(_expanderChannel);
+  _expander->openChannel(_expanderChannel);
 
   bool status;
   status = _sensor->begin(_address, &Wire1);
   if (!status) {
     Serial.println("Could not find a valid BME280 sensor, check wiring!");
   }
+
+  _expander->closeChannel(_expanderChannel);
 }
 
 float BME280_BarometerSensor_Mux::getTemperature() {
@@ -49,7 +51,7 @@ float BME280_BarometerSensor_Mux::getHumidity() {
 }
 
 BME280_Result BME280_BarometerSensor_Mux::readAll() {
-  _expander->switchChannel(_expanderChannel);
+  _expander->openChannel(_expanderChannel);
 
   BME280_Result result;
 
@@ -57,6 +59,8 @@ BME280_Result BME280_BarometerSensor_Mux::readAll() {
   result.pressure = getPressure();
   result.humidity = getHumidity();
   result.altitude = getAltitude();
+
+  _expander->closeChannel(_expanderChannel);
 
   return result;
 }
