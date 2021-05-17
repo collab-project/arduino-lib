@@ -15,8 +15,10 @@
 class BH1750_LightSensor_Mux {
   public:
     BH1750_LightSensor_Mux(
-      MultiPlexer_TCA9548A* i2c,
-      int address = 0x23
+      MultiPlexer_TCA9548A* expander,
+      uint8_t expander_channel,
+      int address = 0x23,
+      BH1750::Mode modus = BH1750::Mode::CONTINUOUS_HIGH_RES_MODE
     );
     void begin();
     float read();
@@ -24,7 +26,9 @@ class BH1750_LightSensor_Mux {
   private:
     int _address;
     BH1750* _lightMeter;
-    MultiPlexer_TCA9548A* _i2c;
+    BH1750::Mode _modus;
+    uint8_t _expanderChannel;
+    MultiPlexer_TCA9548A* _expander;
 };
 
 #endif
