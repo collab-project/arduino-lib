@@ -1,18 +1,18 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
   WaterFlowMeter.cpp - Control water flow meter.
 */
 
-#include "WaterFlowMeter.h"
+#include <WaterFlowMeter.h>
 
 FlowMeter* _sensor;
 
-// define an 'interrupt service handler' (ISR) for every interrupt pin you use
+// define an 'interrupt service handler' (ISR)
 void countPulse() {
-    // let our flow meter count the pulses
-    _sensor->count();
+  // let our flow meter count the pulses
+  _sensor->count();
 }
 
 WaterFlowMeter::WaterFlowMeter(int pin, const char * ns) {
