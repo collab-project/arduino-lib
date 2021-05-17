@@ -12,20 +12,24 @@
 #include <SPI.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
+#include <MultiPlexer_TCA9548A.h>
 
 struct BME280_Result {
-    float array[4];
+    float temperature;
+    float pressure;
+    float altitude;
+    float humidity;
 };
 
 class BME280_BarometerSensor_Mux {
   public:
     BME280_BarometerSensor_Mux(
-        int scl_pin,
-        int sda_pin,
-        int addresss = 0x76,
-        int bus_nr = 1,
+        MultiPlexer_TCA9548A* expander,
+        uint8_t expander_channel = 0,
+        int address = 0x76,
         float sea_level_pressure = 1013,
-        int clock_speed = 100000);
+        int clock_speed = 100000
+    );
     void begin();
     float getTemperature();
     float getPressure();
@@ -34,13 +38,13 @@ class BME280_BarometerSensor_Mux {
     BME280_Result readAll();
 
   private:
-    Adafruit_BME280* _sensor;
-    TwoWire* _i2c;
-    int _sclPin;
-    int _sdaPin;
+    uint8_t _expanderChannel;
     int _address;
     int _clockSpeed;
     float _seaLevelPressure;
+
+    Adafruit_BME280* _sensor;
+    MultiPlexer_TCA9548A* _expander;
 };
 
 #endif
