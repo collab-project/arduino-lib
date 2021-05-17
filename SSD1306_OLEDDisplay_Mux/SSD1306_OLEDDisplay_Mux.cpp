@@ -1,26 +1,36 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2021, Collab
  *  All rights reserved
 */
 /*
-  SSD1306_OLEDDisplay.cpp - Control SSD1306 OLED display.
+  SSD1306_OLEDDisplay_Mux.cpp - Control SSD1306 OLED display using TCA9548A expander.
 */
-#include "SSD1306_OLEDDisplay.h"
 
-SSD1306_OLEDDisplay::SSD1306_OLEDDisplay(int sda_pin, int scl_pin, uint8_t address) {
-  _sdaPin = sda_pin;
-  _sclPin = scl_pin;
+#include <MultiPlexer_TCA9548A.h>
+#include <SSD1306_OLEDDisplay_Mux.h>
+
+SSD1306_OLEDDisplay_Mux::SSD1306_OLEDDisplay_Mux(
+  MultiPlexer_TCA9548A* expander,
+  uint8_t address,
+  OLEDDISPLAY_GEOMETRY size
+) {
+  _expander = expander;
   _address = address;
 
-  _display = new SSD1306Wire(address, sda_pin, scl_pin, GEOMETRY_128_32);
+  _display = new SSD1306Wire(
+    address,
+    _expander->sdaPin,
+    _expander->sclPin,
+    size
+  );
 }
 
-void SSD1306_OLEDDisplay::begin() {
+void SSD1306_OLEDDisplay_Mux::begin() {
   _display->init();
   _display->clear();
   _display->flipScreenVertically();
 }
 
-void SSD1306_OLEDDisplay::writeBig(String msg) {
+void SSD1306_OLEDDisplay_Mux::writeBig(String msg) {
   _display->init();
   _display->flipScreenVertically();
   _display->setTextAlignment(TEXT_ALIGN_CENTER);
@@ -31,7 +41,7 @@ void SSD1306_OLEDDisplay::writeBig(String msg) {
   _display->display();
 }
 
-void SSD1306_OLEDDisplay::writeSmall(String msg) {
+void SSD1306_OLEDDisplay_Mux::writeSmall(String msg) {
   _display->init();
   _display->clear();
   _display->flipScreenVertically();
@@ -43,14 +53,14 @@ void SSD1306_OLEDDisplay::writeSmall(String msg) {
   _display->display();
 }
 
-void SSD1306_OLEDDisplay::disable() {
+void SSD1306_OLEDDisplay_Mux::disable() {
     _enabled = false;
     _display->init();
     _display->clear();
     _display->displayOff();
 }
 
-void SSD1306_OLEDDisplay::enable() {
+void SSD1306_OLEDDisplay_Mux::enable() {
   if (!_enabled) {
     _enabled = true;
     _display->displayOn();

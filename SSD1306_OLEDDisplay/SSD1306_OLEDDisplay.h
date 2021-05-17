@@ -1,17 +1,19 @@
+/*  Copyright (c) 2020-2021, Collab
+ *  All rights reserved
+*/
 /*
   SSD1306_OLEDDisplay.h - Control SSD1306 OLED display.
 */
 #ifndef SSD1306_OLEDDisplay_h
 #define SSD1306_OLEDDisplay_h
 
-#include "Arduino.h"
-#include "SSD1306Wire.h"
-#include "fonts.h"
+#include <Arduino.h>
+#include <SSD1306Wire.h>
+#include <SSD1306_OLEDDisplay_Fonts.h>
 
 class SSD1306_OLEDDisplay {
   public:
-    SSD1306_OLEDDisplay() {};
-    SSD1306_OLEDDisplay(int sda_pin, int scl_pin, uint8_t address = 0x3C);
+    SSD1306_OLEDDisplay(int sda_pin = -1, int scl_pin = -1, uint8_t address = 0x3C);
     void begin();
     void loop();
     void disable();

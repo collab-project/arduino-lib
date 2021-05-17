@@ -15,23 +15,16 @@
 class BH1750_LightSensor_Mux {
   public:
     BH1750_LightSensor_Mux(
-        MultiPlexer_TCA9548A* i2c,
-        int scl_pin,
-        int sda_pin,
-        int address = 0x23,
-        int bus_nr = 0,
-        int clock_speed = 100000);
+      MultiPlexer_TCA9548A* i2c,
+      int address = 0x23
+    );
     void begin();
     float read();
 
   private:
-    BH1750* _lightMeter;
-    TwoWire* _i2c;
-    int _sclPin;
-    int _sdaPin;
     int _address;
-    int _busNr;
-    int _clockSpeed;
+    BH1750* _lightMeter;
+    MultiPlexer_TCA9548A* _i2c;
 };
 
 #endif
