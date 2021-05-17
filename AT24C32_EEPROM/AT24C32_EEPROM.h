@@ -11,7 +11,6 @@ class AT24C32_EEPROM
 {
   public:
     AT24C32_EEPROM(uint8_t eeprom_address);
-
     byte read_byte(unsigned int eeaddress);
     void write_byte(unsigned int eeaddress, byte data);
     void write_page(unsigned int eeaddresspage, byte* data, byte length);
