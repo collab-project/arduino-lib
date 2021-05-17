@@ -1,3 +1,6 @@
+/*  Copyright (c) 2021, Collab
+ *  All rights reserved
+*/
 /*
   MultiPlexer_TCA9548A.h - Control TCA9548A I2C multiplexer.
 */
@@ -11,16 +14,13 @@
 class MultiPlexer_TCA9548A
 {
   public:
-    MultiPlexer_TCA9548A(int sda_pin, int scl_pin, int i2c_addr = 0x70);
+    MultiPlexer_TCA9548A(int i2c_addr = 0x70);
     void begin();
     void scan();
     void closeAll();
     void openChannel(uint8_t channel_nr);
     void closeChannel(uint8_t channel_nr);
-
-    int sdaPin;
-    int sclPin;
-    TwoWire wireBus;
+    void switchChannel(uint8_t channel_nr);
 
   private:
     TCA9548A* _mux;
