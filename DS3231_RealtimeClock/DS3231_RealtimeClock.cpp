@@ -1,11 +1,12 @@
+/*  Copyright (c) 2020-2021, Collab
+ *  All rights reserved
+*/
 /*
   DS3231_RealtimeClock.cpp - Read and write to a DS3231 realtime clock.
 */
 #include "DS3231_RealtimeClock.h"
 
-
-DS3231_RealtimeClock::DS3231_RealtimeClock(int scl_pin, int sda_pin, uint8_t eeprom_address)
-{
+DS3231_RealtimeClock::DS3231_RealtimeClock(int scl_pin, int sda_pin, uint8_t eeprom_address) {
   _sclPin = scl_pin;
   _sdaPin = sda_pin;
 

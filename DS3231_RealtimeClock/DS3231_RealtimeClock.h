@@ -1,3 +1,6 @@
+/*  Copyright (c) 2020-2021, Collab
+ *  All rights reserved
+*/
 /*
   DS3231_RealtimeClock.h - Read and write to a DS3231 realtime clock.
 */
