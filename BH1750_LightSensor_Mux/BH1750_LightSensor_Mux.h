@@ -9,7 +9,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <BH1750.h>
+#include <BH1750_WE.h>
 #include <MultiPlexer_TCA9548A.h>
 
 class BH1750_LightSensor_Mux {
@@ -18,16 +18,17 @@ class BH1750_LightSensor_Mux {
       MultiPlexer_TCA9548A* expander,
       uint8_t expander_channel,
       int address = 0x23,
-      BH1750::Mode modus = BH1750::Mode::CONTINUOUS_HIGH_RES_MODE
+      BH1750Mode modus = BH1750Mode::CHM
     );
     void begin();
     float read();
 
   private:
     int _address;
-    BH1750* _lightMeter;
-    BH1750::Mode _modus;
+    BH1750Mode _modus;
     uint8_t _expanderChannel;
+
+    BH1750_WE* _lightMeter;
     MultiPlexer_TCA9548A* _expander;
 };
 
