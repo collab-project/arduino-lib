@@ -23,9 +23,8 @@ BH1750_LightSensor_Mux::BH1750_LightSensor_Mux(
 void BH1750_LightSensor_Mux::begin() {
   _expander->openChannel(_expanderChannel);
 
-  if (_lightMeter->begin(_modus, _address, &Wire1)) {
-    // Serial.println(F("BH1750 ready."));
-  } else {
+  bool status = _lightMeter->begin(_modus, _address, &Wire1);
+  if (!status) {
     Serial.println(F("Error initialising BH1750 light sensor"));
   }
 

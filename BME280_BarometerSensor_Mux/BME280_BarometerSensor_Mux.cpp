@@ -25,10 +25,9 @@ BME280_BarometerSensor_Mux::BME280_BarometerSensor_Mux(
 void BME280_BarometerSensor_Mux::begin() {
   _expander->openChannel(_expanderChannel);
 
-  bool status;
-  status = _sensor->begin(_address, &Wire1);
+  bool status = _sensor->begin(_address, &Wire1);
   if (!status) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
+    Serial.println(F("Error initialising BME280 sensor"));
   }
 
   _expander->closeChannel(_expanderChannel);
