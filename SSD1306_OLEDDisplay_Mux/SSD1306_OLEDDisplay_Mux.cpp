@@ -24,42 +24,44 @@ SSD1306_OLEDDisplay_Mux::SSD1306_OLEDDisplay_Mux(
 }
 
 void SSD1306_OLEDDisplay_Mux::begin() {
-  _expander->switchChannel(_expanderChannel);
+  _expander->openChannel(_expanderChannel);
 
   _display->init();
   _display->clear();
-
   if (_flipVertical) {
     _display->flipScreenVertically();
   }
+  _display->setTextAlignment(TEXT_ALIGN_CENTER);
+
+  _expander->closeChannel(_expanderChannel);
 }
 
 void SSD1306_OLEDDisplay_Mux::writeBig(String msg) {
-  _display->init();
-  _display->flipScreenVertically();
-  _display->setTextAlignment(TEXT_ALIGN_CENTER);
+  _expander->openChannel(_expanderChannel);
+
+  _display->clear();
   _display->setFont(Arimo_Regular_30);
 
   _display->drawString(64, 0, msg);
-
   _display->display();
+
+  _expander->closeChannel(_expanderChannel);
 }
 
 void SSD1306_OLEDDisplay_Mux::writeSmall(String msg) {
-  _display->init();
+  _expander->openChannel(_expanderChannel);
+
   _display->clear();
-  _display->flipScreenVertically();
-  _display->setTextAlignment(TEXT_ALIGN_CENTER);
   _display->setFont(Arimo_Regular_20);
 
   _display->drawString(64, 4, msg);
-
   _display->display();
+
+  _expander->closeChannel(_expanderChannel);
 }
 
 void SSD1306_OLEDDisplay_Mux::disable() {
     _enabled = false;
-    _display->init();
     _display->clear();
     _display->displayOff();
 }
