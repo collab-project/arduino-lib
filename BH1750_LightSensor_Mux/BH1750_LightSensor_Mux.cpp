@@ -33,6 +33,10 @@ float BH1750_LightSensor_Mux::read() {
   _expander->openChannel(_expanderChannel);
 
   float lux = _lightMeter->getLux();
+  if (lux == -1 || lux == 54612.50) {
+    // try one more time when receiving an invalid value
+    lux = _lightMeter->getLux();
+  }
 
   _expander->closeChannel(_expanderChannel);
 
