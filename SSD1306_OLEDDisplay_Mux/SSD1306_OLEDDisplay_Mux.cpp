@@ -28,10 +28,11 @@ void SSD1306_OLEDDisplay_Mux::begin() {
 
   _display->init();
   _display->clear();
-  if (_flipVertical) {
+  if (_flipVertical == true) {
     _display->flipScreenVertically();
   }
   _display->setTextAlignment(TEXT_ALIGN_CENTER);
+  _display->setFont(Arimo_Regular_30);
 
   _expander->closeChannel(_expanderChannel);
 }
@@ -40,8 +41,6 @@ void SSD1306_OLEDDisplay_Mux::writeBig(String msg) {
   _expander->openChannel(_expanderChannel);
 
   _display->clear();
-  _display->setFont(Arimo_Regular_30);
-
   _display->drawString(64, 0, msg);
   _display->display();
 
@@ -65,6 +64,7 @@ void SSD1306_OLEDDisplay_Mux::disable() {
 
   _enabled = false;
   _display->clear();
+  _display->display();
   _display->displayOff();
 
   _expander->closeChannel(_expanderChannel);
