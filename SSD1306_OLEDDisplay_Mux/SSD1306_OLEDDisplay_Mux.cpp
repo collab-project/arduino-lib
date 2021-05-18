@@ -61,14 +61,23 @@ void SSD1306_OLEDDisplay_Mux::writeSmall(String msg) {
 }
 
 void SSD1306_OLEDDisplay_Mux::disable() {
-    _enabled = false;
-    _display->clear();
-    _display->displayOff();
+  _expander->openChannel(_expanderChannel);
+
+  _enabled = false;
+  _display->clear();
+  _display->displayOff();
+
+  _expander->closeChannel(_expanderChannel);
 }
 
 void SSD1306_OLEDDisplay_Mux::enable() {
   if (!_enabled) {
     _enabled = true;
+
+    _expander->openChannel(_expanderChannel);
+
     _display->displayOn();
+
+    _expander->closeChannel(_expanderChannel);
   }
 }
