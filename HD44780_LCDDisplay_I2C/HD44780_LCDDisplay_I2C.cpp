@@ -1,26 +1,20 @@
 /*
-* Copyright (c) 2020-2021 Collab
+* Copyright (c) 2021 Collab
 * All rights reserved
 */
 /*
-  HD44780_LCDDisplay.cpp - Control 16x2 LCD display.
+  HD44780_LCDDisplay_I2C.cpp - Control 16x2 LCD I2C display.
 */
 
-#include "HD44780_LCDDisplay.h"
+#include "HD44780_LCDDisplay_I2C.h"
 
 /**
  * Constructor.
  */
-HD44780_LCDDisplay::HD44780_LCDDisplay(
+HD44780_LCDDisplay_I2C::HD44780_LCDDisplay_I2C(
   int rows,
   int columns,
-  int rs,
-  int en,
-  int d4,
-  int d5,
-  int d6,
-  int d7,
-  int bl,
+  uint8_t address,
   int blLevel
 ) {
   _rows = rows;
@@ -30,13 +24,13 @@ HD44780_LCDDisplay::HD44780_LCDDisplay(
      backlightActive = false;
    }
 
-  _lcd = new LiquidCrystal(rs, en, d4, d5, d6, d7, bl, POSITIVE);
+  _lcd = new LiquidCrystal_I2C(address);
 }
 
 /**
  * Initialize communication interface and LCD.
  */
-void HD44780_LCDDisplay::begin() {
+void HD44780_LCDDisplay_I2C::begin() {
   // init LCD
   _lcd->begin(_columns, _rows);
 }
@@ -46,21 +40,21 @@ void HD44780_LCDDisplay::begin() {
  *
  * @param msg String data to print on display.
  */
-void HD44780_LCDDisplay::print(String msg) {
+void HD44780_LCDDisplay_I2C::print(String msg) {
   _lcd->print(msg);
 }
 
 /**
  * Clear the display and home the cursor.
  */
-void HD44780_LCDDisplay::clear() {
+void HD44780_LCDDisplay_I2C::clear() {
   _lcd->clear();
 }
 
 /**
  * Home the cursor.
  */
-void HD44780_LCDDisplay::home() {
+void HD44780_LCDDisplay_I2C::home() {
   _lcd->home();
 }
 
@@ -70,14 +64,14 @@ void HD44780_LCDDisplay::home() {
  * @param col Column position.
  * @param row Row position.
  */
-void HD44780_LCDDisplay::setCursor(int col, int row) {
+void HD44780_LCDDisplay_I2C::setCursor(int col, int row) {
   _lcd->setCursor(col, row);
 }
 
 /**
  * Disable screen and backlight.
  */
-void HD44780_LCDDisplay::dim() {
+void HD44780_LCDDisplay_I2C::dim() {
   _lcd->off();
 
   backlightActive = false;
@@ -86,7 +80,7 @@ void HD44780_LCDDisplay::dim() {
 /**
  * Enable screen and backlight.
  */
-void HD44780_LCDDisplay::enable() {
+void HD44780_LCDDisplay_I2C::enable() {
   _lcd->on();
 
   backlightActive = true;

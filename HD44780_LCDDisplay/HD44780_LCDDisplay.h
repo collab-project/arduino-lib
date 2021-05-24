@@ -1,4 +1,8 @@
 /*
+* Copyright (c) 2020-2021 Collab
+* All rights reserved
+*/
+/*
   HD44780_LCDDisplay.h - Control 16x2 LCD display.
 */
 #ifndef HD44780_LCDDisplay_h
