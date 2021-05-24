@@ -24,15 +24,16 @@ HD44780_LCDDisplay_I2C::HD44780_LCDDisplay_I2C(
      backlightActive = false;
    }
 
-  _lcd = new LiquidCrystal_I2C(address);
+  _lcd = new LiquidCrystal_I2C(address, _columns, _rows);
 }
 
 /**
  * Initialize communication interface and LCD.
  */
 void HD44780_LCDDisplay_I2C::begin() {
-  // init LCD
-  _lcd->begin(_columns, _rows);
+  // Initiate the LCD:
+  _lcd->init();
+  _lcd->backlight();
 }
 
 /**
