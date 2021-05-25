@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -24,20 +24,41 @@ class JQ6500_MP3Player
     void begin();
     void loop();
 
+    // general
+    void reset();
     byte getStatus();
+    unsigned int getTotalFiles(int source);
+    unsigned int getTotalFolders(int source);
+    void setSource(int source);
+    int getLoopMode();
+    void setLoopMode(int loopMode);
+
+    // playback
+    void play();
+    void pause();
+    void next();
+    void nextFolder();
+    void prev();
+    void prevFolder();
+    void playSpecific(unsigned int folder, unsigned int track);
+
+    // volume
     int getVolume();
     void setVolume(int volume);
-    void setSource(int source);
+    void volumeUp();
+    void volumeDown();
+
+    // equalizer
     int getEqualizer();
     void setEqualizer(int equalizerMode);
-    unsigned int getTotalFiles(int source);
-    void playSpecific(unsigned int folder, unsigned int track);
 
   private:
     JQ6500_Serial* _player;
-    long _baudRate;
+
     int _volume;
     int _source;
+    long _baudRate;
+    int _loopMode;
     int _equalizerMode;
 };
 

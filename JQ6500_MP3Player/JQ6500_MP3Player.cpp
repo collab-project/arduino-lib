@@ -22,34 +22,58 @@ JQ6500_MP3Player::JQ6500_MP3Player(
 
 void JQ6500_MP3Player::begin() {
   _player->begin(_baudRate);
-  _player->reset();
+  reset();
 
   setSource(_source);
   setVolume(_volume);
 
-  _player->setLoopMode(MP3_LOOP_ALL);
-
-  unsigned int totalLocalFiles = getTotalFiles(MP3_SRC_BUILTIN);
-  Serial.print("Local files:\t");
-  Serial.println(totalLocalFiles);
-
-  unsigned int totalSDFiles = getTotalFiles(MP3_SRC_SDCARD);
-  Serial.print("SD-card files:\t");
-  Serial.println(totalSDFiles);
-
-  Serial.print("Volume:\t\t");
-  Serial.println(getVolume());
-
-  Serial.print("Loop mode:\t");
-  Serial.println(_player->getLoopMode());
+  setLoopMode(MP3_LOOP_ALL);
 
   if (getStatus() != MP3_STATUS_PLAYING) {
-    _player->next();
+    next();
   }
+}
+
+void JQ6500_MP3Player::play() {
+  _player->play();
+}
+
+void JQ6500_MP3Player::pause() {
+  _player->pause();
+}
+
+void JQ6500_MP3Player::next() {
+  _player->next();
+}
+
+void JQ6500_MP3Player::nextFolder() {
+  _player->nextFolder();
+}
+
+void JQ6500_MP3Player::prev() {
+  _player->prev();
+}
+
+void JQ6500_MP3Player::prevFolder() {
+  _player->prevFolder();
 }
 
 void JQ6500_MP3Player::playSpecific(unsigned int folder, unsigned int track) {
   _player->playFileNumberInFolderNumber(folder, track);
+}
+
+void JQ6500_MP3Player::reset() {
+  _player->reset();
+}
+
+int JQ6500_MP3Player::getLoopMode() {
+  _loopMode = _player->getLoopMode();
+  return _loopMode;
+}
+
+void JQ6500_MP3Player::setLoopMode(int loopMode) {
+  _loopMode = loopMode;
+  _player->setLoopMode(_loopMode);
 }
 
 int JQ6500_MP3Player::getVolume() {
@@ -60,6 +84,14 @@ int JQ6500_MP3Player::getVolume() {
 void JQ6500_MP3Player::setVolume(int volume) {
   _volume = volume;
   _player->setVolume(_volume);
+}
+
+void JQ6500_MP3Player::volumeUp() {
+  _player->volumeUp();
+}
+
+void JQ6500_MP3Player::volumeDown() {
+  _player->volumeDn();
 }
 
 void JQ6500_MP3Player::setSource(int source) {
@@ -79,6 +111,10 @@ void JQ6500_MP3Player::setEqualizer(int equalizerMode) {
 
 unsigned int JQ6500_MP3Player::getTotalFiles(int source) {
   return _player->countFiles(source);
+}
+
+unsigned int JQ6500_MP3Player::getTotalFolders(int source) {
+  return _player->countFolders(source);
 }
 
 byte JQ6500_MP3Player::getStatus() {
