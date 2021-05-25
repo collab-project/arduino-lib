@@ -24,16 +24,15 @@ HD44780_LCDDisplay_I2C::HD44780_LCDDisplay_I2C(
      backlightActive = false;
    }
 
-  _lcd = new LiquidCrystal_I2C(address, _columns, _rows);
+  lcd = new LiquidCrystal_I2C(address, _columns, _rows);
 }
 
 /**
  * Initialize communication interface and LCD.
  */
 void HD44780_LCDDisplay_I2C::begin() {
-  // Initiate the LCD:
-  _lcd->init();
-  _lcd->backlight();
+  lcd->init();
+  lcd->backlight();
 }
 
 /**
@@ -42,21 +41,25 @@ void HD44780_LCDDisplay_I2C::begin() {
  * @param msg String data to print on display.
  */
 void HD44780_LCDDisplay_I2C::print(String msg) {
-  _lcd->print(msg);
+  lcd->print(msg);
+}
+
+size_t HD44780_LCDDisplay_I2C::write(uint8_t value) {
+  return lcd->write(value);
 }
 
 /**
  * Clear the display and home the cursor.
  */
 void HD44780_LCDDisplay_I2C::clear() {
-  _lcd->clear();
+  lcd->clear();
 }
 
 /**
  * Home the cursor.
  */
 void HD44780_LCDDisplay_I2C::home() {
-  _lcd->home();
+  lcd->home();
 }
 
 /**
@@ -66,14 +69,24 @@ void HD44780_LCDDisplay_I2C::home() {
  * @param row Row position.
  */
 void HD44780_LCDDisplay_I2C::setCursor(int col, int row) {
-  _lcd->setCursor(col, row);
+  lcd->setCursor(col, row);
+}
+
+/**
+ * Add custom character.
+ *
+ * @param location
+ * @param charmap
+ */
+void HD44780_LCDDisplay_I2C::createChar(uint8_t location, uint8_t charmap[]) {
+  lcd->createChar(location, charmap);
 }
 
 /**
  * Disable screen and backlight.
  */
 void HD44780_LCDDisplay_I2C::dim() {
-  _lcd->off();
+  lcd->off();
 
   backlightActive = false;
 }
@@ -82,7 +95,7 @@ void HD44780_LCDDisplay_I2C::dim() {
  * Enable screen and backlight.
  */
 void HD44780_LCDDisplay_I2C::enable() {
-  _lcd->on();
+  lcd->on();
 
   backlightActive = true;
 }

@@ -22,14 +22,15 @@ class HD44780_LCDDisplay_I2C {
     void enable();
     void print(String msg);
     void setCursor(int col, int row);
+    void createChar(uint8_t location, uint8_t charmap[]);
+    size_t write(uint8_t value);
 
     bool backlightActive = true;
+    LiquidCrystal_I2C* lcd;
 
   private:
     int _rows;
     int _columns;
-
-    LiquidCrystal_I2C* _lcd;
 };
 
 #endif
