@@ -12,7 +12,7 @@ BME280_BarometerSensor::BME280_BarometerSensor(
   int address,
   int bus_nr,
   float sea_level_pressure,
-  int clock_speed
+  long clock_speed
 ) {
   _sclPin = scl_pin;
   _sdaPin = sda_pin;

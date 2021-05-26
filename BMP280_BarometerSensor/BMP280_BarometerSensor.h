@@ -44,7 +44,7 @@ class BMP280_BarometerSensor
     int _sdaPin;
     int _address;
     int _busNr;
-    int _clockSpeed;
+    long _clockSpeed;
     float _seaLevelPressure;
 };
 

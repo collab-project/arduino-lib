@@ -27,7 +27,7 @@ class BME280_BarometerSensor
       int addresss = 0x76,
       int bus_nr = 1,
       float sea_level_pressure = 1013,
-      int clock_speed = 100000
+      long clock_speed = 100000
     );
     void begin();
     void loop();
@@ -43,7 +43,7 @@ class BME280_BarometerSensor
     int _sclPin;
     int _sdaPin;
     int _address;
-    int _clockSpeed;
+    long _clockSpeed;
     float _seaLevelPressure;
 };
 
