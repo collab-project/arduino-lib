@@ -20,6 +20,9 @@ JQ6500_MP3Player::JQ6500_MP3Player(
   _baudRate = baud_rate;
 }
 
+/**
+ * Setup device.
+ */
 void JQ6500_MP3Player::begin() {
   _player->begin(_baudRate);
   reset();
@@ -34,89 +37,149 @@ void JQ6500_MP3Player::begin() {
   }
 }
 
+/**
+ * Start playback.
+ */
 void JQ6500_MP3Player::play() {
   _player->play();
 }
 
+/**
+ * Pause playback.
+ */
 void JQ6500_MP3Player::pause() {
   _player->pause();
 }
 
+/**
+ * Play next track.
+ */
 void JQ6500_MP3Player::next() {
   _player->next();
 }
 
+/**
+ * Play next folder.
+ */
 void JQ6500_MP3Player::nextFolder() {
   _player->nextFolder();
 }
 
+/**
+ * Play previous track.
+ */
 void JQ6500_MP3Player::prev() {
   _player->prev();
 }
 
+/**
+ * Play previous folder.
+ */
 void JQ6500_MP3Player::prevFolder() {
   _player->prevFolder();
 }
 
+/**
+ * Play a specific file in a specific folder.
+ */
 void JQ6500_MP3Player::playSpecific(unsigned int folder, unsigned int track) {
   _player->playFileNumberInFolderNumber(folder, track);
 }
 
+/**
+ * Reset the device (softly).
+ */
 void JQ6500_MP3Player::reset() {
   _player->reset();
 }
 
+/**
+ * Get loop mode.
+ */
 int JQ6500_MP3Player::getLoopMode() {
   _loopMode = _player->getLoopMode();
   return _loopMode;
 }
 
+/**
+ * Set loop mode.
+ */
 void JQ6500_MP3Player::setLoopMode(int loopMode) {
   _loopMode = loopMode;
   _player->setLoopMode(_loopMode);
 }
 
+/**
+ * Get volume.
+ */
 int JQ6500_MP3Player::getVolume() {
   _volume = _player->getVolume();
   return _volume;
 }
 
+/**
+ * Set volume.
+ */
 void JQ6500_MP3Player::setVolume(int volume) {
   _volume = volume;
   _player->setVolume(_volume);
 }
 
+/**
+ * Increase the volume by 1.
+ */
 void JQ6500_MP3Player::volumeUp() {
   _player->volumeUp();
 }
 
+/**
+ * Decrease the volume by 1.
+ */
 void JQ6500_MP3Player::volumeDown() {
   _player->volumeDn();
 }
 
+/**
+ * Set the source to read data from.
+ */
 void JQ6500_MP3Player::setSource(int source) {
   _source = source;
   _player->setSource(_source);
 }
 
+/**
+ * Get equalizer mode.
+ */
 int JQ6500_MP3Player::getEqualizer() {
   _equalizerMode = _player->getEqualizer();
   return _equalizerMode;
 }
 
+/**
+ * Set equalizer mode.
+ */
 void JQ6500_MP3Player::setEqualizer(int equalizerMode) {
   _equalizerMode = equalizerMode;
   _player->setEqualizer(_equalizerMode);
 }
 
+/**
+ * Count the number of files on the specified media.
+ */
 unsigned int JQ6500_MP3Player::getTotalFiles(int source) {
   return _player->countFiles(source);
 }
 
+/**
+ * Count the number of folders on the specified media.
+ */
 unsigned int JQ6500_MP3Player::getTotalFolders(int source) {
   return _player->countFolders(source);
 }
 
+/**
+ * Get the status from the device.
+ */
 byte JQ6500_MP3Player::getStatus() {
   return _player->getStatus();
 }
