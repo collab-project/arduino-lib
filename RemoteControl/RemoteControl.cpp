@@ -10,9 +10,9 @@
 
 RemoteControl::RemoteControl(
   int recv_pin,
-  int led_pin,
   Method cmd_recv_cb,
-  bool led_feedback
+  bool led_feedback,
+  int led_pin
 ) {
   _receivePin = recv_pin;
   _ledPin = led_pin;
@@ -22,7 +22,11 @@ RemoteControl::RemoteControl(
 
 void RemoteControl::begin() {
   // start the receiver
-  IrReceiver.begin(_receivePin, _ledFeedback, _ledPin);
+  if (_ledFeedback == false) {
+    IrReceiver.begin(_receivePin, _ledFeedback);
+  } else {
+    IrReceiver.begin(_receivePin, _ledFeedback, _ledPin);
+  }
 }
 
 /*
@@ -31,12 +35,14 @@ void RemoteControl::begin() {
 */
 void RemoteControl::loop() {
   if (IrReceiver.decode()) {
+    // enable for verbose logging
+    //printSummary();
+
     // enable receiving of the next value
     IrReceiver.resume();
 
     // check the received data and perform actions according to the received command
-    // ignore 0 because it interferes with the MP3 audio player
-    if (IrReceiver.decodedIRData.command != 0) {
+    if (IrReceiver.decodedIRData.protocol != UNKNOWN) {
       _cmdReceiveCallback.callbackIntArg(IrReceiver.decodedIRData.command);
 
       Serial.print(millis());
@@ -47,4 +53,15 @@ void RemoteControl::loop() {
       }
     }
   }
+}
+
+void RemoteControl::printSummary() {
+  // print a short summary of received data
+  IrReceiver.printIRResultShort(&Serial);
+
+  if (IrReceiver.decodedIRData.protocol == UNKNOWN) {
+      // unknown protocol, print more info
+      IrReceiver.printIRResultRawFormatted(&Serial, true);
+  }
+  Serial.println();
 }

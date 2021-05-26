@@ -18,12 +18,13 @@ class RemoteControl
   public:
     RemoteControl(
       int pin,
-      int led_pin,
       Method cmd_recv_cb,
-      bool led_feedback = ENABLE_LED_FEEDBACK
+      bool led_feedback = ENABLE_LED_FEEDBACK,
+      int led_pin = 0
     );
     void begin();
     void loop();
+    void printSummary();
 
   private:
     int _receivePin;
