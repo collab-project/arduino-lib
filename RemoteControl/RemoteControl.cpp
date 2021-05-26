@@ -43,14 +43,16 @@ void RemoteControl::loop() {
 
     // check the received data and perform actions according to the received command
     if (IrReceiver.decodedIRData.protocol != UNKNOWN) {
-      _cmdReceiveCallback.callbackIntArg(IrReceiver.decodedIRData.command);
-
-      Serial.print(millis());
-      Serial.print(" - Received IR flag: ");
-      Serial.println(IrReceiver.decodedIRData.flags);
-      if (IrReceiver.decodedIRData.flags == IRDATA_FLAGS_IS_REPEAT) {
-        Serial.println("REPEAT");
+      int repeat = 0;
+      // check for repeat
+      if (IrReceiver.decodedIRData.flags & (IRDATA_FLAGS_IS_AUTO_REPEAT | IRDATA_FLAGS_IS_REPEAT)) {
+          if (IrReceiver.decodedIRData.flags & IRDATA_FLAGS_IS_AUTO_REPEAT) {
+            // XXX: not sure what auto repeat is supposed to do
+          }
+          repeat = 1;
       }
+      // notify listeners
+      _cmdReceiveCallback.callback2IntArg(IrReceiver.decodedIRData.command, repeat);
     }
   }
 }
