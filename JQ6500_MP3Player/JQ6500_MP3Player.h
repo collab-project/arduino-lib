@@ -27,8 +27,8 @@ class JQ6500_MP3Player
     // general
     void reset();
     byte getStatus();
-    unsigned int getTotalFiles(int source);
-    unsigned int getTotalFolders(int source);
+    unsigned int getTotalFiles(byte source = MP3_SRC_SDCARD);
+    unsigned int getTotalFolders(byte source = MP3_SRC_SDCARD);
     void setSource(int source);
     int getLoopMode();
     void setLoopMode(int loopMode);

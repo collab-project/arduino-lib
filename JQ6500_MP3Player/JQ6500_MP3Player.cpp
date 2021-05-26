@@ -29,9 +29,9 @@ void JQ6500_MP3Player::begin() {
 
   setSource(_source);
   setVolume(_volume);
-  getEqualizer();
+  //getEqualizer();
 
-  setLoopMode(MP3_LOOP_ALL);
+  setLoopMode(MP3_LOOP_FOLDER);
 }
 
 /**
@@ -163,14 +163,14 @@ void JQ6500_MP3Player::setLoopMode(int loopMode) {
 /**
  * Count the number of files on the specified media.
  */
-unsigned int JQ6500_MP3Player::getTotalFiles(int source) {
+unsigned int JQ6500_MP3Player::getTotalFiles(byte source) {
   return _player->countFiles(source);
 }
 
 /**
  * Count the number of folders on the specified media.
  */
-unsigned int JQ6500_MP3Player::getTotalFolders(int source) {
+unsigned int JQ6500_MP3Player::getTotalFolders(byte source) {
   return _player->countFolders(source);
 }
 
