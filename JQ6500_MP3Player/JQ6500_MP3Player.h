@@ -36,10 +36,10 @@ class JQ6500_MP3Player
     // playback
     void play();
     void pause();
-    void next();
+    void nextTrack();
     void nextFolder();
-    void prev();
-    void prevFolder();
+    void previousTrack();
+    void previousFolder();
     void playSpecific(unsigned int folder, unsigned int track);
 
     // volume

@@ -29,12 +29,9 @@ void JQ6500_MP3Player::begin() {
 
   setSource(_source);
   setVolume(_volume);
+  getEqualizer();
 
   setLoopMode(MP3_LOOP_ALL);
-
-  if (getStatus() != MP3_STATUS_PLAYING) {
-    next();
-  }
 }
 
 /**
@@ -54,7 +51,7 @@ void JQ6500_MP3Player::pause() {
 /**
  * Play next track.
  */
-void JQ6500_MP3Player::next() {
+void JQ6500_MP3Player::nextTrack() {
   _player->next();
 }
 
@@ -68,14 +65,14 @@ void JQ6500_MP3Player::nextFolder() {
 /**
  * Play previous track.
  */
-void JQ6500_MP3Player::prev() {
+void JQ6500_MP3Player::previousTrack() {
   _player->prev();
 }
 
 /**
  * Play previous folder.
  */
-void JQ6500_MP3Player::prevFolder() {
+void JQ6500_MP3Player::previousFolder() {
   _player->prevFolder();
 }
 
@@ -91,22 +88,6 @@ void JQ6500_MP3Player::playSpecific(unsigned int folder, unsigned int track) {
  */
 void JQ6500_MP3Player::reset() {
   _player->reset();
-}
-
-/**
- * Get loop mode.
- */
-int JQ6500_MP3Player::getLoopMode() {
-  _loopMode = _player->getLoopMode();
-  return _loopMode;
-}
-
-/**
- * Set loop mode.
- */
-void JQ6500_MP3Player::setLoopMode(int loopMode) {
-  _loopMode = loopMode;
-  _player->setLoopMode(_loopMode);
 }
 
 /**
@@ -161,6 +142,22 @@ int JQ6500_MP3Player::getEqualizer() {
 void JQ6500_MP3Player::setEqualizer(int equalizerMode) {
   _equalizerMode = equalizerMode;
   _player->setEqualizer(_equalizerMode);
+}
+
+/**
+ * Get loop mode.
+ */
+int JQ6500_MP3Player::getLoopMode() {
+  _loopMode = _player->getLoopMode();
+  return _loopMode;
+}
+
+/**
+ * Set loop mode.
+ */
+void JQ6500_MP3Player::setLoopMode(int loopMode) {
+  _loopMode = loopMode;
+  _player->setLoopMode(_loopMode);
 }
 
 /**
