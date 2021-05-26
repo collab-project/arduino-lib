@@ -28,7 +28,7 @@ class BMP280_BarometerSensor
       int addresss = 0x76,
       int bus_nr = 1,
       float sea_level_pressure = 1013,
-      int clock_speed = 100000
+      long clock_speed = 100000
     );
     void begin();
     void loop();
