@@ -8,23 +8,24 @@
 #include <JQ6500_MP3Player.h>
 
 JQ6500_MP3Player::JQ6500_MP3Player(
-  short rx_pin,
-  short tx_pin,
+  HardwareSerial* serial,
   int volume,
   int source,
   long baud_rate
 ) {
-  _player = new JQ6500_Serial(rx_pin, tx_pin);
+  _serial = serial;
   _volume = volume;
   _source = source;
   _baudRate = baud_rate;
+
+  _player = new JQ6500_Serial(_serial);
 }
 
 /**
  * Setup device.
  */
 void JQ6500_MP3Player::begin() {
-  _player->begin(_baudRate);
+  _serial->begin(_baudRate);
   reset();
 
   setSource(_source);

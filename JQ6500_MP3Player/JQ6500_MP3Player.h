@@ -8,15 +8,13 @@
 #define JQ6500_MP3Player_h
 
 #include <Arduino.h>
-#include <SoftwareSerial.h>
 #include <JQ6500_Serial.h>
 
 class JQ6500_MP3Player
 {
   public:
     JQ6500_MP3Player(
-      short rx_pin,
-      short tx_pin,
+      HardwareSerial* serial,
       int volume = 10,
       int source = MP3_SRC_SDCARD,
       long baud_rate = 9600
@@ -53,6 +51,7 @@ class JQ6500_MP3Player
     void setEqualizer(int equalizerMode);
 
   private:
+    HardwareSerial* _serial;
     JQ6500_Serial* _player;
 
     int _volume;
