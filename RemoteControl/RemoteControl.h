@@ -27,6 +27,7 @@ class RemoteControl
     void printSummary();
 
   private:
+    bool _debug = false;
     int _receivePin;
     int _ledPin;
     bool _ledFeedback;

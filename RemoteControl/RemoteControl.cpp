@@ -36,7 +36,9 @@ void RemoteControl::begin() {
 void RemoteControl::loop() {
   if (IrReceiver.decode()) {
     // enable for verbose logging
-    //printSummary();
+    if (_debug) {
+      printSummary();
+    }
 
     // enable receiving of the next value
     IrReceiver.resume();
