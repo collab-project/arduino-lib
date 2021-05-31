@@ -20,16 +20,17 @@ class RemoteControl
       int pin,
       Method cmd_recv_cb,
       bool led_feedback = ENABLE_LED_FEEDBACK,
-      int led_pin = 0
+      int led_pin = 0,
+      bool debug = false
     );
     void begin();
     void loop();
     void printSummary();
 
   private:
-    bool _debug = false;
-    int _receivePin;
+    bool _debug;
     int _ledPin;
+    int _receivePin;
     bool _ledFeedback;
     Method _cmdReceiveCallback;
 };

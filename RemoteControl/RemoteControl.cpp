@@ -12,10 +12,12 @@ RemoteControl::RemoteControl(
   int recv_pin,
   Method cmd_recv_cb,
   bool led_feedback,
-  int led_pin
+  int led_pin,
+  bool debug
 ) {
   _receivePin = recv_pin;
   _ledPin = led_pin;
+  _debug = debug;
   _ledFeedback = led_feedback;
   _cmdReceiveCallback = cmd_recv_cb;
 }
@@ -67,5 +69,4 @@ void RemoteControl::printSummary() {
       // unknown protocol, print more info
       IrReceiver.printIRResultRawFormatted(&Serial, true);
   }
-  Serial.println();
 }
