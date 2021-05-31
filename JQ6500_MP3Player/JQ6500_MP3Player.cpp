@@ -7,12 +7,14 @@
 
 #include <JQ6500_MP3Player.h>
 
+#if defined(ESP32)
 JQ6500_MP3Player::JQ6500_MP3Player(
-  HardwareSerial* serial,
+  HardwareSerial * serial,
   int volume,
   int source,
   long baud_rate
 ) {
+  _hwSerial = true;
   _serial = serial;
   _volume = volume;
   _source = source;
@@ -20,14 +22,36 @@ JQ6500_MP3Player::JQ6500_MP3Player(
 
   _player = new JQ6500_Serial(_serial);
 }
+#endif
+
+#if defined(__AVR__) || defined(ESP8266)
+JQ6500_MP3Player::JQ6500_MP3Player(
+  SoftwareSerial * serial,
+  int volume,
+  int source,
+  long baud_rate
+) {
+  _hwSerial = false;
+  _serial = serial;
+  _volume = volume;
+  _source = source;
+  _baudRate = baud_rate;
+
+  _player = new JQ6500_Serial(_serial);
+}
+#endif
 
 /**
  * Setup device.
  */
 void JQ6500_MP3Player::begin() {
-  _serial->begin(_baudRate);
-  reset();
+  #if defined(__AVR__) || defined(ESP8266)
+  static_cast<SoftwareSerial*>(_serial)->begin(_baudRate);
+  #else
+  static_cast<HardwareSerial*>(_serial)->begin(_baudRate);
+  #endif
 
+  reset();
   setSource(_source);
   setVolume(_volume);
   //getEqualizer();

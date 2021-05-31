@@ -10,15 +10,28 @@
 #include <Arduino.h>
 #include <JQ6500_Serial.h>
 
+#if defined(__AVR__) || defined(ESP8266)
+#include <SoftwareSerial.h>
+#endif
+
 class JQ6500_MP3Player
 {
   public:
+    #if defined(__AVR__) || defined(ESP8266)
     JQ6500_MP3Player(
-      HardwareSerial* serial,
+      SoftwareSerial * serial,
       int volume = 10,
       int source = MP3_SRC_SDCARD,
       long baud_rate = 9600
     );
+    #elif defined(ESP32)
+    JQ6500_MP3Player(
+      HardwareSerial * serial,
+      int volume = 10,
+      int source = MP3_SRC_SDCARD,
+      long baud_rate = 9600
+    );
+    #endif
     void begin();
     void loop();
 
@@ -51,13 +64,14 @@ class JQ6500_MP3Player
     void setEqualizer(int equalizerMode);
 
   private:
-    HardwareSerial* _serial;
+    Stream * _serial;
     JQ6500_Serial* _player;
 
     int _volume;
     int _source;
-    long _baudRate;
     int _loopMode;
+    long _baudRate;
+    bool _hwSerial;
     int _equalizerMode;
 };
 
