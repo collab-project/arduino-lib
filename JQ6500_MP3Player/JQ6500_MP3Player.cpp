@@ -45,15 +45,26 @@ JQ6500_MP3Player::JQ6500_MP3Player(
  * Setup device.
  */
 void JQ6500_MP3Player::begin() {
+  // start serial
   #if defined(__AVR__) || defined(ESP8266)
   static_cast<SoftwareSerial*>(_serial)->begin(_baudRate);
   #else
   static_cast<HardwareSerial*>(_serial)->begin(_baudRate);
   #endif
 
+  // reset device
   reset();
   setSource(_source);
-  setVolume(_volume);
+
+  // volume
+  if (_volume != -1) {
+    // override volume
+    setVolume(_volume);
+  } else {
+    // get last volume
+    getVolume();
+  }
+
   //getEqualizer();
 
   setLoopMode(MP3_LOOP_FOLDER);
@@ -134,15 +145,27 @@ void JQ6500_MP3Player::setVolume(int volume) {
 /**
  * Increase the volume by 1.
  */
-void JQ6500_MP3Player::volumeUp() {
-  _player->volumeUp();
+int JQ6500_MP3Player::volumeUp() {
+  if (_volume < _maxVolume) {
+    _volume += 1;
+
+    _player->volumeUp();
+  }
+
+  return _volume;
 }
 
 /**
  * Decrease the volume by 1.
  */
-void JQ6500_MP3Player::volumeDown() {
-  _player->volumeDn();
+int JQ6500_MP3Player::volumeDown() {
+  if (_volume > _minVolume) {
+    _volume -= 1;
+
+    _player->volumeDn();
+  }
+
+  return _volume;
 }
 
 /**

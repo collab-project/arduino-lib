@@ -20,14 +20,14 @@ class JQ6500_MP3Player
     #if defined(__AVR__) || defined(ESP8266)
     JQ6500_MP3Player(
       SoftwareSerial * serial,
-      int volume = 10,
+      int volume = -1,
       int source = MP3_SRC_SDCARD,
       long baud_rate = 9600
     );
     #elif defined(ESP32)
     JQ6500_MP3Player(
       HardwareSerial * serial,
-      int volume = 10,
+      int volume = -1,
       int source = MP3_SRC_SDCARD,
       long baud_rate = 9600
     );
@@ -55,9 +55,9 @@ class JQ6500_MP3Player
 
     // volume
     int getVolume();
+    int volumeUp();
+    int volumeDown();
     void setVolume(int volume);
-    void volumeUp();
-    void volumeDown();
 
     // equalizer
     int getEqualizer();
@@ -66,6 +66,9 @@ class JQ6500_MP3Player
   private:
     Stream * _serial;
     JQ6500_Serial* _player;
+
+    const int _minVolume = 0;
+    const int _maxVolume = 30;
 
     int _volume;
     int _source;
