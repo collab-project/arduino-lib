@@ -54,9 +54,14 @@ void JQ6500_MP3Player::begin() {
   static_cast<HardwareSerial*>(_serial)->begin(_baudRate);
   #endif
 
+  m = millis();
+
   // reset device
   reset();
   setSource(_source);
+
+  // set default loopmode
+  setLoopMode(MP3_LOOP_ALL);
 
   getEqualizer();
   getLoopMode();
@@ -65,8 +70,6 @@ void JQ6500_MP3Player::begin() {
   totalSDFolders = getTotalFolders();
   totalSDFiles = getTotalFiles();
   getCurrentFileName();
-
-  setLoopMode(MP3_LOOP_FOLDER);
 
   // volume
   // Note: do this as last call, otherwise it won't be
@@ -77,6 +80,20 @@ void JQ6500_MP3Player::begin() {
   } else {
     // get last volume
     getVolume();
+  }
+}
+
+void JQ6500_MP3Player::loop() {
+  // XXX: only do check if playback is active (determine manually)
+  // XXX: fire event when currentFileName changed
+  if (m < (millis() - _waitTime)) {
+    // avoid getStatus, it's slow!
+    //if ((getStatus() == MP3_STATUS_PLAYING)) {
+      Serial.print(F("Current File: "));
+      getCurrentFileName();
+      Serial.println(currentFileName);
+    //}
+    m = millis();
   }
 }
 
@@ -205,6 +222,23 @@ void JQ6500_MP3Player::setEqualizer(int mode) {
 }
 
 /**
+ * Cycle through available equalizer modes.
+ */
+void JQ6500_MP3Player::cycleEqualizer() {
+  if (equalizerMode < TOTAL_EQ_MODES - 1) {
+    equalizerMode += 1;
+  } else {
+    equalizerMode = 0;
+  }
+
+  setEqualizer(equalizerMode);
+}
+
+const char* JQ6500_MP3Player::getEqualizerModeName() {
+  return equalizerModes[equalizerMode];
+}
+
+/**
  * Get loop mode.
  */
 int JQ6500_MP3Player::getLoopMode() {
@@ -213,12 +247,29 @@ int JQ6500_MP3Player::getLoopMode() {
   return loopMode;
 }
 
+const char* JQ6500_MP3Player::getLoopModeName() {
+  return loopModes[loopMode];
+}
+
 /**
  * Set loop mode.
  */
 void JQ6500_MP3Player::setLoopMode(int mode) {
   loopMode = mode;
   _player->setLoopMode(loopMode);
+}
+
+/**
+ * Cycle through available loop modes.
+ */
+void JQ6500_MP3Player::cycleLoopMode() {
+  if (loopMode < TOTAL_LOOP_MODES - 1) {
+    loopMode += 1;
+  } else {
+    loopMode = 0;
+  }
+
+  setLoopMode(loopMode);
 }
 
 /**
@@ -270,18 +321,4 @@ unsigned int JQ6500_MP3Player::currentFilePosition() {
  */
 byte JQ6500_MP3Player::getStatus() {
   return _player->getStatus();
-}
-
-void JQ6500_MP3Player::loop() {
-  /*
-  // DONT PUT THIS IN LOOP, IT SLOWS FASTLED DOWN
-  if (_player->getStatus() != MP3_STATUS_PLAYING) {
-    _player->next();
-  }*/
-  /*
-  char buffer[20];
-  _player->currentFileName(buffer, sizeof(buffer));
-  Serial.print("Now playing: ");
-  Serial.println(buffer);
-  */
 }

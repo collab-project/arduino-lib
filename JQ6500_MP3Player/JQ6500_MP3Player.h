@@ -40,12 +40,7 @@ class JQ6500_MP3Player
     byte getStatus();
     void setSource(int source);
 
-    // loop
-    int loopMode;
-    int getLoopMode();
-    void setLoopMode(int mode);
-
-    // position
+    // file system
     char currentFileName[4];
     void getCurrentFileName();
     unsigned int currentFileIndex(byte source = MP3_SRC_SDCARD);
@@ -72,10 +67,23 @@ class JQ6500_MP3Player
     int volumeDown();
     void setVolume(int newVolume);
 
+    // loop
+    int loopMode;
+    uint8_t TOTAL_LOOP_MODES = 3;
+    const char *loopModes[3] = {"All", "Folder", "Single"};
+    int getLoopMode();
+    const char* getLoopModeName();
+    void setLoopMode(int mode);
+    void cycleLoopMode();
+
     // equalizer
-    int equalizerMode;
+    int equalizerMode = 0;
+    uint8_t TOTAL_EQ_MODES = 6;
+    const char *equalizerModes[6] = {"Normal", "Pop", "Rock", "Jazz", "Classic", "Bass"};
     int getEqualizer();
+    const char* getEqualizerModeName();
     void setEqualizer(int mode);
+    void cycleEqualizer();
 
   private:
     Stream * _serial;
@@ -83,10 +91,12 @@ class JQ6500_MP3Player
 
     const int _minVolume = 0;
     const int _maxVolume = 30;
+    const int _waitTime = 2000;
 
     int _source;
     long _baudRate;
     bool _hwSerial;
+    unsigned long m;
 };
 
 #endif
