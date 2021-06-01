@@ -24,6 +24,7 @@ class HD44780_LCDDisplay_I2C {
     void setCursor(int col, int row);
     void createChar(uint8_t location, uint8_t charmap[]);
     size_t write(uint8_t value);
+    void toggleBacklight();
 
     bool backlightActive = true;
     LiquidCrystal_I2C* lcd;

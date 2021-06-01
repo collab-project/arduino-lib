@@ -86,7 +86,7 @@ void HD44780_LCDDisplay_I2C::createChar(uint8_t location, uint8_t charmap[]) {
  * Disable screen and backlight.
  */
 void HD44780_LCDDisplay_I2C::dim() {
-  lcd->off();
+  lcd->noBacklight();
 
   backlightActive = false;
 }
@@ -95,7 +95,20 @@ void HD44780_LCDDisplay_I2C::dim() {
  * Enable screen and backlight.
  */
 void HD44780_LCDDisplay_I2C::enable() {
-  lcd->on();
+  lcd->backlight();
 
   backlightActive = true;
+}
+
+/**
+ * Toggle screen and backlight.
+ */
+void HD44780_LCDDisplay_I2C::toggleBacklight() {
+  backlightActive = !backlightActive;
+
+  if (backlightActive) {
+    enable();
+  } else {
+    dim();
+  }
 }
