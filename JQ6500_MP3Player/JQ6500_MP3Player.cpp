@@ -10,15 +10,16 @@
 #if defined(ESP32)
 JQ6500_MP3Player::JQ6500_MP3Player(
   HardwareSerial * serial,
-  int volume,
+  int initial_volume,
   int source,
   long baud_rate
 ) {
   _hwSerial = true;
   _serial = serial;
-  _volume = volume;
   _source = source;
   _baudRate = baud_rate;
+
+  volume = initial_volume;
 
   _player = new JQ6500_Serial(_serial);
 }
@@ -27,15 +28,16 @@ JQ6500_MP3Player::JQ6500_MP3Player(
 #if defined(__AVR__) || defined(ESP8266)
 JQ6500_MP3Player::JQ6500_MP3Player(
   SoftwareSerial * serial,
-  int volume,
+  int initial_volume,
   int source,
   long baud_rate
 ) {
   _hwSerial = false;
   _serial = serial;
-  _volume = volume;
   _source = source;
   _baudRate = baud_rate;
+
+  volume = initial_volume;
 
   _player = new JQ6500_Serial(_serial);
 }
@@ -56,18 +58,26 @@ void JQ6500_MP3Player::begin() {
   reset();
   setSource(_source);
 
+  getEqualizer();
+  getLoopMode();
+
+  // position
+  totalSDFolders = getTotalFolders();
+  totalSDFiles = getTotalFiles();
+  getCurrentFileName();
+
+  setLoopMode(MP3_LOOP_FOLDER);
+
   // volume
-  if (_volume != -1) {
+  // Note: do this as last call, otherwise it won't be
+  // properly set...
+  if (volume != -1) {
     // override volume
-    setVolume(_volume);
+    setVolume(volume);
   } else {
     // get last volume
     getVolume();
   }
-
-  //getEqualizer();
-
-  setLoopMode(MP3_LOOP_FOLDER);
 }
 
 /**
@@ -130,42 +140,42 @@ void JQ6500_MP3Player::reset() {
  * Get volume.
  */
 int JQ6500_MP3Player::getVolume() {
-  _volume = _player->getVolume();
-  return _volume;
+  volume = _player->getVolume();
+  return volume;
 }
 
 /**
  * Set volume.
  */
-void JQ6500_MP3Player::setVolume(int volume) {
-  _volume = volume;
-  _player->setVolume(_volume);
+void JQ6500_MP3Player::setVolume(int newVolume) {
+  volume = newVolume;
+  _player->setVolume(volume);
 }
 
 /**
  * Increase the volume by 1.
  */
 int JQ6500_MP3Player::volumeUp() {
-  if (_volume < _maxVolume) {
-    _volume += 1;
+  if (volume < _maxVolume) {
+    volume += 1;
 
     _player->volumeUp();
   }
 
-  return _volume;
+  return volume;
 }
 
 /**
  * Decrease the volume by 1.
  */
 int JQ6500_MP3Player::volumeDown() {
-  if (_volume > _minVolume) {
-    _volume -= 1;
+  if (volume > _minVolume) {
+    volume -= 1;
 
     _player->volumeDn();
   }
 
-  return _volume;
+  return volume;
 }
 
 /**
@@ -180,32 +190,35 @@ void JQ6500_MP3Player::setSource(int source) {
  * Get equalizer mode.
  */
 int JQ6500_MP3Player::getEqualizer() {
-  _equalizerMode = _player->getEqualizer();
-  return _equalizerMode;
+  equalizerMode = _player->getEqualizer();
+
+  return equalizerMode;
 }
 
 /**
  * Set equalizer mode.
  */
-void JQ6500_MP3Player::setEqualizer(int equalizerMode) {
-  _equalizerMode = equalizerMode;
-  _player->setEqualizer(_equalizerMode);
+void JQ6500_MP3Player::setEqualizer(int mode) {
+  equalizerMode = mode;
+
+  _player->setEqualizer(equalizerMode);
 }
 
 /**
  * Get loop mode.
  */
 int JQ6500_MP3Player::getLoopMode() {
-  _loopMode = _player->getLoopMode();
-  return _loopMode;
+  loopMode = _player->getLoopMode();
+
+  return loopMode;
 }
 
 /**
  * Set loop mode.
  */
-void JQ6500_MP3Player::setLoopMode(int loopMode) {
-  _loopMode = loopMode;
-  _player->setLoopMode(_loopMode);
+void JQ6500_MP3Player::setLoopMode(int mode) {
+  loopMode = mode;
+  _player->setLoopMode(loopMode);
 }
 
 /**
@@ -220,6 +233,36 @@ unsigned int JQ6500_MP3Player::getTotalFiles(byte source) {
  */
 unsigned int JQ6500_MP3Player::getTotalFolders(byte source) {
   return _player->countFolders(source);
+}
+
+/**
+ * Get the name of the "current" file on the SD Card.
+ */
+void JQ6500_MP3Player::getCurrentFileName() {
+  _player->currentFileName(currentFileName, sizeof(currentFileName));
+}
+
+/**
+ * For the currently playing (or paused, or file that would be
+ * played next if stopped)file, return the file's (FAT table)
+ * index number.
+ */
+unsigned int JQ6500_MP3Player::currentFileIndex(byte source) {
+  return _player->currentFileIndexNumber(source);
+}
+
+/**
+ * Get total length in seconds of the currently playing or paused file.
+ */
+unsigned int JQ6500_MP3Player::currentFileLength() {
+  return _player->currentFileLengthInSeconds();
+}
+
+/**
+ * Get current position in seconds of the currently playing or paused file.
+ */
+unsigned int JQ6500_MP3Player::currentFilePosition() {
+  return _player->currentFilePositionInSeconds();
 }
 
 /**

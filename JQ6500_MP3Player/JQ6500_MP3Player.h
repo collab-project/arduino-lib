@@ -20,14 +20,14 @@ class JQ6500_MP3Player
     #if defined(__AVR__) || defined(ESP8266)
     JQ6500_MP3Player(
       SoftwareSerial * serial,
-      int volume = -1,
+      int initial_volume = -1,
       int source = MP3_SRC_SDCARD,
       long baud_rate = 9600
     );
     #elif defined(ESP32)
     JQ6500_MP3Player(
       HardwareSerial * serial,
-      int volume = -1,
+      int initial_volume = -1,
       int source = MP3_SRC_SDCARD,
       long baud_rate = 9600
     );
@@ -38,11 +38,23 @@ class JQ6500_MP3Player
     // general
     void reset();
     byte getStatus();
+    void setSource(int source);
+
+    // loop
+    int loopMode;
+    int getLoopMode();
+    void setLoopMode(int mode);
+
+    // position
+    char currentFileName[4];
+    void getCurrentFileName();
+    unsigned int currentFileIndex(byte source = MP3_SRC_SDCARD);
+    unsigned int currentFileLength();
+    unsigned int currentFilePosition();
     unsigned int getTotalFiles(byte source = MP3_SRC_SDCARD);
     unsigned int getTotalFolders(byte source = MP3_SRC_SDCARD);
-    void setSource(int source);
-    int getLoopMode();
-    void setLoopMode(int loopMode);
+    unsigned int totalSDFiles;
+    unsigned int totalSDFolders;
 
     // playback
     void play();
@@ -54,14 +66,16 @@ class JQ6500_MP3Player
     void playSpecific(unsigned int folder, unsigned int track);
 
     // volume
+    int volume;
     int getVolume();
     int volumeUp();
     int volumeDown();
-    void setVolume(int volume);
+    void setVolume(int newVolume);
 
     // equalizer
+    int equalizerMode;
     int getEqualizer();
-    void setEqualizer(int equalizerMode);
+    void setEqualizer(int mode);
 
   private:
     Stream * _serial;
@@ -70,12 +84,9 @@ class JQ6500_MP3Player
     const int _minVolume = 0;
     const int _maxVolume = 30;
 
-    int _volume;
     int _source;
-    int _loopMode;
     long _baudRate;
     bool _hwSerial;
-    int _equalizerMode;
 };
 
 #endif
