@@ -8,6 +8,7 @@
 #define JQ6500_MP3Player_h
 
 #include <Arduino.h>
+#include <Method.h>
 #include <JQ6500_Serial.h>
 
 #if defined(__AVR__) || defined(ESP8266)
@@ -20,6 +21,7 @@ class JQ6500_MP3Player
     #if defined(__AVR__) || defined(ESP8266)
     JQ6500_MP3Player(
       SoftwareSerial * serial,
+      Method change_callback,
       int initial_volume = -1,
       int source = MP3_SRC_SDCARD,
       long baud_rate = 9600
@@ -27,6 +29,7 @@ class JQ6500_MP3Player
     #elif defined(ESP32)
     JQ6500_MP3Player(
       HardwareSerial * serial,
+      Method change_callback,
       int initial_volume = -1,
       int source = MP3_SRC_SDCARD,
       long baud_rate = 9600
@@ -97,6 +100,8 @@ class JQ6500_MP3Player
     long _baudRate;
     bool _hwSerial;
     unsigned long m;
+
+    Method _changeCallback;
 };
 
 #endif

@@ -10,6 +10,7 @@
 #if defined(ESP32)
 JQ6500_MP3Player::JQ6500_MP3Player(
   HardwareSerial * serial,
+  Method change_callback,
   int initial_volume,
   int source,
   long baud_rate
@@ -18,6 +19,7 @@ JQ6500_MP3Player::JQ6500_MP3Player(
   _serial = serial;
   _source = source;
   _baudRate = baud_rate;
+  _changeCallback = change_callback;
 
   volume = initial_volume;
 
@@ -28,6 +30,7 @@ JQ6500_MP3Player::JQ6500_MP3Player(
 #if defined(__AVR__) || defined(ESP8266)
 JQ6500_MP3Player::JQ6500_MP3Player(
   SoftwareSerial * serial,
+  Method change_callback,
   int initial_volume,
   int source,
   long baud_rate
@@ -36,6 +39,7 @@ JQ6500_MP3Player::JQ6500_MP3Player(
   _serial = serial;
   _source = source;
   _baudRate = baud_rate;
+  _changeCallback = change_callback;
 
   volume = initial_volume;
 
@@ -85,14 +89,19 @@ void JQ6500_MP3Player::begin() {
 
 void JQ6500_MP3Player::loop() {
   // XXX: only do check if playback is active (determine manually)
-  // XXX: fire event when currentFileName changed
   if (m < (millis() - _waitTime)) {
-    // avoid getStatus, it's slow!
-    //if ((getStatus() == MP3_STATUS_PLAYING)) {
-      Serial.print(F("Current File: "));
+    char cfname[4];
+    _player->currentFileName(cfname, sizeof(cfname));
+
+    // fire event when currentFileName changes
+    if (String(cfname) != currentFileName) {
+      // get name
       getCurrentFileName();
-      Serial.println(currentFileName);
-    //}
+
+      // notify listeners
+      _changeCallback.callback();
+    }
+
     m = millis();
   }
 }
