@@ -90,12 +90,13 @@ void JQ6500_MP3Player::begin() {
 void JQ6500_MP3Player::loop() {
   // XXX: only do check if playback is active (determine manually)
   if (m < (millis() - _waitTime)) {
+    // get reference to existing name
     char cfname[4];
     _player->currentFileName(cfname, sizeof(cfname));
 
     // fire event when currentFileName changes
     if (String(cfname) != currentFileName) {
-      // get name
+      // get new name
       getCurrentFileName();
 
       // notify listeners
@@ -202,6 +203,26 @@ int JQ6500_MP3Player::volumeDown() {
   }
 
   return volume;
+}
+
+/**
+ * Mute volume.
+ */
+void JQ6500_MP3Player::mute() {
+  if (_previousVolume != 0 && volume != 0) {
+    _previousVolume = volume;
+
+    setVolume(0);
+  }
+}
+
+/**
+ * Unmute volume.
+ */
+void JQ6500_MP3Player::unmute() {
+  if (volume == 0) {
+    setVolume(_previousVolume);
+  }
 }
 
 /**

@@ -68,6 +68,8 @@ class JQ6500_MP3Player
     int getVolume();
     int volumeUp();
     int volumeDown();
+    void mute();
+    void unmute();
     void setVolume(int newVolume);
 
     // loop
@@ -92,6 +94,7 @@ class JQ6500_MP3Player
     Stream * _serial;
     JQ6500_Serial* _player;
 
+    int _previousVolume;
     const int _minVolume = 0;
     const int _maxVolume = 30;
     const int _waitTime = 2000;
