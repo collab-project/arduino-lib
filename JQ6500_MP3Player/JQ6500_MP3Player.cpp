@@ -58,7 +58,7 @@ void JQ6500_MP3Player::begin() {
   static_cast<HardwareSerial*>(_serial)->begin(_baudRate);
   #endif
 
-  m = millis();
+  _loopWait = millis();
 
   // reset device
   reset();
@@ -88,8 +88,7 @@ void JQ6500_MP3Player::begin() {
 }
 
 void JQ6500_MP3Player::loop() {
-  // XXX: only do check if playback is active (determine manually)
-  if (m < (millis() - _waitTime)) {
+  if (_loopWait < (millis() - _waitTime)) {
     // get reference to existing name
     char cfname[4];
     _player->currentFileName(cfname, sizeof(cfname));
@@ -103,7 +102,7 @@ void JQ6500_MP3Player::loop() {
       _changeCallback.callback();
     }
 
-    m = millis();
+    _loopWait = millis();
   }
 }
 
@@ -154,6 +153,26 @@ void JQ6500_MP3Player::previousFolder() {
  */
 void JQ6500_MP3Player::playSpecific(unsigned int folder, unsigned int track) {
   _player->playFileNumberInFolderNumber(folder, track);
+}
+
+/**
+ * Play a specific file based on it's (FAT table) index number.
+ */
+void JQ6500_MP3Player::playIndex(unsigned int track) {
+  _player->playFileByIndexNumber(track);
+}
+
+/**
+ * Shuffle playback across all tracks.
+*/
+void JQ6500_MP3Player::playShuffle() {
+  _shuffleEnabled = true;
+
+  // pick random track
+  int randomTrack = getRandomTrack(totalSDFiles);
+
+  // start playback
+  playIndex(randomTrack);
 }
 
 /**
@@ -344,6 +363,32 @@ unsigned int JQ6500_MP3Player::currentFileLength() {
  */
 unsigned int JQ6500_MP3Player::currentFilePosition() {
   return _player->currentFilePositionInSeconds();
+}
+
+/**
+ * Get a random track.
+ *
+ * @param totalTracks Range of tracks to choose from.
+*/
+int JQ6500_MP3Player::getRandomTrack(int totalTracks) {
+  if (_playList.empty()) {
+    // fill list
+    for (int i = 0; i < totalTracks; i++) {
+      _playList.push_back(i);
+    }
+
+    // randomize seed
+    srand(time(0));
+
+    // randomize list
+    std::random_shuffle(_playList.begin(), _playList.end());
+  }
+
+  // pick first randomized track and remove from list
+  int rt = _playList.at(0);
+  _playList.erase(_playList.begin());
+
+  return rt + 1;
 }
 
 /**

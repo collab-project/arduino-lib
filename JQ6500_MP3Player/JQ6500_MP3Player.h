@@ -61,6 +61,8 @@ class JQ6500_MP3Player
     void nextFolder();
     void previousTrack();
     void previousFolder();
+    void playShuffle();
+    void playIndex(unsigned int track);
     void playSpecific(unsigned int folder, unsigned int track);
 
     // volume
@@ -74,8 +76,8 @@ class JQ6500_MP3Player
 
     // loop
     int loopMode;
-    uint8_t TOTAL_LOOP_MODES = 3;
-    const char *loopModes[3] = {"All", "Folder", "Single"};
+    uint8_t TOTAL_LOOP_MODES = 4;
+    const char *loopModes[4] = {"All", "Folder", "Single"};
     int getLoopMode();
     const char* getLoopModeName();
     void setLoopMode(int mode);
@@ -102,7 +104,12 @@ class JQ6500_MP3Player
     int _source;
     long _baudRate;
     bool _hwSerial;
-    unsigned long m;
+    unsigned long _loopWait;
+    bool _shuffleEnabled = false;
+    std::vector<int> _folders;
+    std::vector<int> _playList;
+
+    int getRandomTrack(int totalTracks);
 
     Method _changeCallback;
 };
