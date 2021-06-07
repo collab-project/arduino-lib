@@ -15,10 +15,9 @@ Method _totalFilesFolderCallback;
 #if defined(ESP32)
 YX5300_AudioPlayer::YX5300_AudioPlayer(
   HardwareSerial * serial,
-  Method change_callback,
-  int initial_volume,
-  int source,
-  long baud_rate
+  Method ready_callback,
+  uint8_t volume,
+  uint32_t timeout
 ) {
   _hwSerial = true;
   _volume = volume;
