@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -15,7 +15,6 @@ Button::Button(int btn_pin, int pin_mode) {
 
 void Button::begin(Method callback) {
   pinMode(_btnPin, _pinMode);
-  digitalWrite(_btnPin, _lastBtnState);
 
   _callback = callback;
 }
@@ -25,17 +24,17 @@ void Button::loop() {
 }
 
 void Button::read() {
-  int powerButtonReading = digitalRead(_btnPin);
+  int val = digitalRead(_btnPin);
 
   // if the switch changed, due to noise or pressing
-  if (powerButtonReading != _lastBtnState) {
+  if (val != _lastBtnState) {
     // reset the debouncing timer
     _lastDebounceTime = millis();
   }
   if ((millis() - _lastDebounceTime) > _debounceDelay) {
     // if the button state has changed
-    if (powerButtonReading != _currentBtnState) {
-      _currentBtnState = powerButtonReading;
+    if (val != _currentBtnState) {
+      _currentBtnState = val;
 
       // only toggle if the new button state is HIGH
       if (_currentBtnState == HIGH) {
@@ -44,5 +43,5 @@ void Button::read() {
     }
   }
   // save the switch reading
-  _lastBtnState = powerButtonReading;
+  _lastBtnState = val;
 }

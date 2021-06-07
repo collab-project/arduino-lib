@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -13,7 +13,6 @@
 class Button
 {
   public:
-    Button() {};
     Button(int btn_pin, int pin_mode = INPUT);
     void loop();
     void begin(Method callback);
