@@ -101,10 +101,13 @@ void YX5300_AudioPlayer::begin() {
   static_cast<HardwareSerial*>(_stream)->begin(MD_YX5300::SERIAL_BPS);
   #endif
 
+  // init device
   _player->begin();
   _player->setSynchronous(false);
   _player->setCallback(cbResponse);
-  setVolume(_volume);
+
+  // setting volume here screws up serial
+  //setVolume(_volume);
 
   // get total folders once
   queryFolderCount();
@@ -364,16 +367,12 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
   Serial.println(F(" tracks"));
 
   if (_folders.size() < totalFolders) {
-    // this delay seems to be needed or audio player will stall after
-    // querying 1st folder for total files
-    //delay(20);
     queryFolderFiles(_folders.size() + 1);
   } else {
     // all folders are loaded
     Serial.print(F("MD_YX5300 - Finished loading "));
     Serial.print(_folders.size());
     Serial.println(F(" folders."));
-    //delay(20);
 
     // notify listeners
     _readyCallback.callback();
