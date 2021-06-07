@@ -12,21 +12,48 @@ Method _fileEndedCallback;
 Method _totalFoldersCallback;
 Method _totalFilesFolderCallback;
 
+#if defined(ESP32)
 YX5300_AudioPlayer::YX5300_AudioPlayer(
-  short rx_pin,
-  short tx_pin,
-  Method ready_callback,
-  uint8_t volume,
-  uint32_t timeout
+  HardwareSerial * serial,
+  Method change_callback,
+  int initial_volume,
+  int source,
+  long baud_rate
 ) {
+  _hwSerial = true;
   _volume = volume;
   _timeOut = timeout;
   _readyCallback = ready_callback;
 
-  _stream = new SoftwareSerial(rx_pin, tx_pin);
+  _stream = serial;
   _player = new MD_YX5300(*_stream);
 
   // callbacks
+  setupCallbacks();
+}
+#endif
+
+#if defined(__AVR__) || defined(ESP8266)
+YX5300_AudioPlayer::YX5300_AudioPlayer(
+  SoftwareSerial * serial,
+  Method ready_callback,
+  uint8_t volume,
+  uint32_t timeout
+) {
+  _hwSerial = false;
+  _volume = volume;
+  _timeOut = timeout;
+  _readyCallback = ready_callback;
+
+  _stream = serial;
+  _player = new MD_YX5300(*_stream);
+
+  // callbacks
+  setupCallbacks();
+}
+#endif
+
+void YX5300_AudioPlayer::setupCallbacks() {
   _playerCallback.attachCallback(
     makeFunctor((Functor0 *)0, *this, &YX5300_AudioPlayer::onPlayerCallback)
   );
@@ -68,7 +95,13 @@ void cbResponse(const MD_YX5300::cbData *status) {
 }
 
 void YX5300_AudioPlayer::begin() {
-  _stream->begin(MD_YX5300::SERIAL_BPS);
+  // start serial
+  #if defined(__AVR__) || defined(ESP8266)
+  static_cast<SoftwareSerial*>(_stream)->begin(MD_YX5300::SERIAL_BPS);
+  #else
+  static_cast<HardwareSerial*>(_stream)->begin(MD_YX5300::SERIAL_BPS);
+  #endif
+
   _player->begin();
   _player->setSynchronous(false);
   _player->setCallback(cbResponse);
@@ -141,17 +174,25 @@ void YX5300_AudioPlayer::playFolderRepeat(uint8_t folder) {
 void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
   _shuffleEnabled = true;
 
-  // pick random track from selected folder
-  currentFolderIndex = folder;
-  currentTrackIndex = getRandomTrack(_folders.at(folder - 1));
+  // pick random track
+  currentTrack = getRandomTrack(folder);
 
   Serial.print(F("MD_YX5300 - Playing random track "));
-  Serial.print(currentTrackIndex);
+  Serial.print(currentTrack.index);
   Serial.print(F(" from folder "));
-  Serial.println(currentFolderIndex);
+  Serial.println(currentTrack.folder);
 
   // start playback
-  playSpecific(currentFolderIndex, currentTrackIndex);
+  playSpecific(currentTrack.folder, currentTrack.index);
+}
+
+/**
+ * Shuffle playback across all folders.
+*/
+void YX5300_AudioPlayer::playShuffle() {
+  _shuffleAll = true;
+
+  playFolderShuffle();
 }
 
 /**
@@ -251,14 +292,37 @@ void YX5300_AudioPlayer::setTimeout(uint32_t timeout) {
 
 /**
  * Get a random track.
- *
- * @param totalTracks Range of tracks to choose from.
 */
-int YX5300_AudioPlayer::getRandomTrack(int totalTracks) {
+Track YX5300_AudioPlayer::getRandomTrack(uint8_t folder) {
   if (_playList.empty()) {
-    // fill list
-    for (int i = 0; i < totalTracks; i++) {
-      _playList.push_back(i);
+    unsigned int i = 0;
+    unsigned int totalTracks;
+
+    if (!_shuffleAll) {
+      // only shuffle selected folder
+      totalTracks = _folders.at(folder - 1);
+      // fill tracks
+      for (i = 0; i < totalTracks; i++) {
+        Track trk = addTrack(i + 1, folder);
+
+        _playList.push_back(trk);
+      }
+    } else {
+      // shuffle all folders
+      int prevTotal = 0;
+      for (unsigned int j = 0; j < _folders.size(); j++) {
+        totalTracks = _folders.at(j);
+
+        if (j > 0) {
+            prevTotal += _folders.at(j - 1);
+        }
+        // fill tracks
+        for (i = 0; i < totalTracks; i++) {
+          Track trk = addTrack(i + 1 + prevTotal, j + 1);
+
+          _playList.push_back(trk);
+        }
+      }
     }
 
     // randomize seed
@@ -268,11 +332,21 @@ int YX5300_AudioPlayer::getRandomTrack(int totalTracks) {
     std::random_shuffle(_playList.begin(), _playList.end());
   }
 
-  // pick first randomized track and remove from list
-  int rt = _playList.at(0);
+  // pick first randomized track and remove it from the list
+  Track tr = _playList.at(0);
   _playList.erase(_playList.begin());
 
-  return rt + 1;
+  return tr;
+}
+
+/**
+ * Add track.
+*/
+Track YX5300_AudioPlayer::addTrack(uint8_t index, uint8_t folder) {
+  Track trk;
+  trk.index = index;
+  trk.folder = folder;
+  return trk;
 }
 
 /**
@@ -297,7 +371,7 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
     queryFolderFiles(_folders.size() + 1);
   } else {
     // all folders are loaded
-    Serial.print(F("MD_YX5300 - Loaded "));
+    Serial.print(F("MD_YX5300 - Finished loading "));
     Serial.print(_folders.size());
     Serial.println(F(" folders."));
     //delay(20);
@@ -319,8 +393,7 @@ void YX5300_AudioPlayer::onTotalFolders(int total) {
 
   if (_folders.size() != totalFolders) {
     // query total files for all folders, starting with the first
-    currentFolderIndex = 1;
-    queryFolderFiles(currentFolderIndex);
+    queryFolderFiles(1);
   }
 }
 
@@ -335,6 +408,7 @@ void YX5300_AudioPlayer::onFileEnded(int index) {
   Serial.print(F(" ended at "));
   Serial.println(millis());
 
+  // workaround for https://github.com/MajicDesigns/MD_YX5300/issues/14
   if (_fileEnded == 0) {
     // first file end status
     _fileEnded = 1;

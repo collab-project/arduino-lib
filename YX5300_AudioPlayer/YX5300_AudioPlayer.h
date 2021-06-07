@@ -7,34 +7,43 @@
 #ifndef YX5300_AudioPlayer_h
 #define YX5300_AudioPlayer_h
 
-#ifndef USE_SOFTWARESERIAL
-// Set to 1 to use SoftwareSerial library, 0 for native serial port
-#define USE_SOFTWARESERIAL 1
-#endif
-
 #include <Arduino.h>
 #include <Method.h>
 #include <MD_YX5300.h>
 
-#if USE_SOFTWARESERIAL
+#if defined(__AVR__) || defined(ESP8266)
 #include <SoftwareSerial.h>
 #endif
 
+struct Track {
+  uint8_t index;
+  uint8_t folder;
+};
+
 class YX5300_AudioPlayer {
   public:
+    #if defined(__AVR__) || defined(ESP8266)
     YX5300_AudioPlayer(
-      short rx_pin,
-      short tx_pin,
+      SoftwareSerial * serial,
       Method ready_callback,
       uint8_t volume = 10,
       uint32_t timeout = 200
     );
+    #elif defined(ESP32)
+    YX5300_AudioPlayer(
+      HardwareSerial * serial,
+      Method ready_callback,
+      uint8_t volume = 10,
+      uint32_t timeout = 200
+    );
+    #endif
     void begin();
     void loop();
     void stop();
     void nextTrack();
     void prevTrack();
     void playStart();
+    void playShuffle();
     void playSpecific(uint8_t folder, uint8_t track);
     void playFolderRepeat(uint8_t folder = 1);
     void playFolderShuffle(uint8_t folder = 1);
@@ -48,26 +57,29 @@ class YX5300_AudioPlayer {
     void queryFile();
     void queryStatus();
     void queryFolderCount();
-    void queryFolderFiles(uint8_t folder);
+    void queryFolderFiles(uint8_t folder = 1);
 
     uint32_t totalFolders;
-    uint32_t currentFolderIndex;
-    uint32_t currentTrackIndex;
+    Track currentTrack;
 
   private:
+    bool _hwSerial;
     uint8_t _volume;
     uint32_t _timeOut;
     int _fileEnded = 0;
     bool _repeatEnabled = true;
     bool _shuffleEnabled = false;
+    bool _shuffleAll = true;
     Method _readyCallback;
     std::vector<int> _folders;
-    std::vector<int> _playList;
+    std::vector<Track> _playList;
 
+    Stream * _stream;
     MD_YX5300 *_player;
-    SoftwareSerial *_stream;
 
-    int getRandomTrack(int totalTracks);
+    void setupCallbacks();
+    Track getRandomTrack(uint8_t folder = 1);
+    Track addTrack(uint8_t index, uint8_t folder);
 
     // callbacks
     void onPlayerCallback();
