@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -10,7 +10,8 @@
 
 #include <Arduino.h>
 #include <Method.h>
-#include <RotaryEncoder.h>
+#include <Button.h>
+#include <ESP32Encoder.h>
 
 class KY040_RotaryEncoderESP32
 {
@@ -39,9 +40,11 @@ class KY040_RotaryEncoderESP32
     int _pinA;
     int _pinB;
     int _btnPin;
-    int _buttonState = 0;
-    int16_t _position = 0;
-    int16_t _value = 0;
+    int32_t _position = 0;
+    int32_t _value = 0;
+
+    Button *_btn;
+    ESP32Encoder *_encoder;
 
     // callback
     Method _btnPressCallback;

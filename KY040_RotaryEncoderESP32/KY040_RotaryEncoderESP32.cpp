@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -6,19 +6,6 @@
 */
 
 #include "KY040_RotaryEncoderESP32.h"
-
-// declared here so functions below can access it
-RotaryEncoder* _encoder;
-
-void encoderISR()
-{
-  _encoder->readAB();
-}
-
-void encoderButtonISR()
-{
-  _encoder->readPushButton();
-}
 
 KY040_RotaryEncoderESP32::KY040_RotaryEncoderESP32(
     int a_pin,
@@ -33,20 +20,22 @@ KY040_RotaryEncoderESP32::KY040_RotaryEncoderESP32(
   _btnPressCallback = btnPress_callback;
   _encoderCallback = encoder_callback;
 
-  _encoder = new RotaryEncoder(_pinA, _pinB, _btnPin);
+  _encoder = new ESP32Encoder();
+  _btn = new Button(_btnPin, INPUT_PULLUP);
 }
 
 void KY040_RotaryEncoderESP32::begin() {
-  _encoder->begin();
+  // encoder
+  _encoder->attachHalfQuad(_pinA, _pinB);
+  _position = _encoder->getCount();
 
-  attachInterrupt(digitalPinToInterrupt(_pinA), encoderISR, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(_btnPin), encoderButtonISR, FALLING);
-
-  _position = _encoder->getPosition();
+  // button
+  _btn->begin(_btnPressCallback);
 }
 
 void KY040_RotaryEncoderESP32::loop() {
-  _value = _encoder->getPosition();
+  // encoder
+  _value = _encoder->getCount();
   if (_position != _value) {
     if (_value > _position) {
       rotation = EventType::ROTARY_CCW;
@@ -59,7 +48,6 @@ void KY040_RotaryEncoderESP32::loop() {
     _encoderCallback.callback();
   }
 
-  if (_encoder->getPushButton() == true) {
-    _btnPressCallback.callback();
-  }
+  // button
+  _btn->loop();
 }
