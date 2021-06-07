@@ -262,7 +262,7 @@ int YX5300_AudioPlayer::getRandomTrack(int totalTracks) {
     }
 
     // randomize seed
-    srand(time(0));
+    srand(random(10));
 
     // randomize list
     std::random_shuffle(_playList.begin(), _playList.end());
@@ -293,14 +293,14 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
   if (_folders.size() < totalFolders) {
     // this delay seems to be needed or audio player will stall after
     // querying 1st folder for total files
-    delay(20);
+    //delay(20);
     queryFolderFiles(_folders.size() + 1);
   } else {
     // all folders are loaded
     Serial.print(F("MD_YX5300 - Loaded "));
     Serial.print(_folders.size());
     Serial.println(F(" folders."));
-    delay(20);
+    //delay(20);
 
     // notify listeners
     _readyCallback.callback();
