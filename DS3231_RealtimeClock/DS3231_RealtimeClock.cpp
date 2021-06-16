@@ -41,10 +41,6 @@ void DS3231_RealtimeClock::begin() {
   // store and print startup datetime
   startupTime = now();
 
-  Serial.print("Local time:\t");
-  Serial.print(getStartupTime());
-  Serial.println();
-
   // set current temperature
   startupTemperature = getTemperature();
 }
