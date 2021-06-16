@@ -68,8 +68,12 @@ float SystemClock::getStartupTemperature() {
   return _clock->startupTemperature;
 }
 
+DateTime SystemClock::now() {
+  return _clock->now();
+}
+
 String SystemClock::getTime() {
-  DateTime dt = _clock->now();
+  DateTime dt = now();
   return _clock->formatTime(dt);
 }
 

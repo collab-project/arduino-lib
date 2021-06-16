@@ -25,6 +25,7 @@ class SystemClock
     void begin();
     void setLocalTime();
     float getStartupTemperature();
+    DateTime now();
     String getTime();
     String getStartupTime();
     DateTime startupTime;
