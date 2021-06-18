@@ -42,37 +42,30 @@ void DS18B20_TemperatureSensors::scan() {
   totalTempSensors = _tempSensors->getDeviceCount();
 
   // locate devices on the bus
-  Serial.print(F("Locating temperature sensors... "));
-  Serial.print(F("Found "));
-  Serial.print(totalTempSensors, DEC);
-  Serial.println(F(" sensors."));
-  Serial.println();
+  Log.info(F("Locating temperature sensors... " CR));
+  Log.info(F("Found %d sensors." CR), totalTempSensors);
+  Log.info(CR);
 
   // loop through each device, print out address
   for (_deviceIndex=0; _deviceIndex<totalTempSensors; _deviceIndex++) {
     // Search the wire for address
     if (_tempSensors->getAddress(_tempDeviceAddress, _deviceIndex)) {
-      Serial.print(F("Found device "));
-      Serial.print(_deviceIndex, DEC);
-      Serial.print(F(" with address: "));
+      Log.info(F("Found device %d with address: "), _deviceIndex);
       printAddress(_tempDeviceAddress);
-      Serial.println();
+      Log.info(CR);
     } else {
-      Serial.print(F("Found ghost device at "));
-      Serial.print(_deviceIndex, DEC);
-      Serial.print(F(" but could not detect address. Check power and cabling"));
+      Log.warning(F("Found ghost device at %d but could not detect address. Check power and cabling!" CR), _deviceIndex);
     }
   }
-  Serial.println("---------------------------------------------");
-  Serial.println();
+  Log.info(F("---------------------------------------------" CR));
+  Log.info(CR);
 }
 
 void DS18B20_TemperatureSensors::printAddress(DeviceAddress deviceAddress) {
   // prints a temperature sensor address
   for (uint8_t i = 0; i < 8; i++) {
     if (deviceAddress[i] < 16) {
-      Serial.print(F("0"));
-      Serial.print(deviceAddress[i], HEX);
+      Log.info(F("%d" CR), deviceAddress[i]);
     }
   }
 }

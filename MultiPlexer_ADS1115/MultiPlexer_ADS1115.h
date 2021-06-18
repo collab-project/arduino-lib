@@ -6,6 +6,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+#include <ArduinoLog.h>
 #include <ADS1115_WE.h>
 
 struct ADS1115Result {

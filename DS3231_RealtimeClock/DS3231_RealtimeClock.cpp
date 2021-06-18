@@ -22,8 +22,7 @@ void DS3231_RealtimeClock::begin() {
   Wire.begin(_sdaPin, _sclPin);
   Wire.beginTransmission(DS3231_ADDRESS);
   if (Wire.endTransmission() != 0) {
-    Serial.println("Initializing DS3231... Error!");
-    Serial.flush();
+    Log.warning(F("Initializing DS3231... Error!" CR));
   }
 
   if (_rtc->lostPower()) {
@@ -35,7 +34,7 @@ void DS3231_RealtimeClock::begin() {
     // fix offset
     //adjust(now().unixtime() + (60 * 60));
 
-    Serial.println("DS3231: updated time.");
+    Log.info(F("DS3231: updated time." CR));
   }
 
   // store and print startup datetime
@@ -52,8 +51,9 @@ DateTime DS3231_RealtimeClock::now() {
 void DS3231_RealtimeClock::adjust(unsigned long actualTime) {
   // check if it's a meaningful value in the future
   if (actualTime > 1611178509) {
-    Serial.print("Synced time:\t");
-    Serial.println(formatDateTime(DateTime(actualTime)));
+    Log.info(F("Synced time:\t%s" CR),
+      formatDateTime(DateTime(actualTime))
+    );
 
     // update rtc
     _rtc->adjust(DateTime(actualTime));

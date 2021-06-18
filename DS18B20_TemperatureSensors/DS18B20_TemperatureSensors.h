@@ -6,6 +6,7 @@
 
 #include <Arduino.h>
 #include <OneWire.h>
+#include <ArduinoLog.h>
 #include <DallasTemperature.h>
 
 class DS18B20_TemperatureSensors

@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -6,7 +6,9 @@
 */
 #include "BH1750_LightSensor.h"
 
-BH1750_LightSensor::BH1750_LightSensor(int scl_pin, int sda_pin, int address, int bus_nr, int clock_speed) {
+BH1750_LightSensor::BH1750_LightSensor(
+  int scl_pin, int sda_pin, int address, int bus_nr, int clock_speed
+) {
   _sclPin = scl_pin;
   _sdaPin = sda_pin;
   _address = address;
@@ -28,9 +30,9 @@ float BH1750_LightSensor::read() {
 
   // make sure all is good
   if (_lightMeter->begin(BH1750::CONTINUOUS_HIGH_RES_MODE, _address, _i2c)) {
-    // Serial.println(F("BH1750 ready."));
+    // Log.info(F("BH1750 ready." CR));
   } else {
-    Serial.println(F("Error initialising BH1750"));
+    Log.warning(F("Error initialising BH1750" CR));
   }
 
   float lux = _lightMeter->readLightLevel();

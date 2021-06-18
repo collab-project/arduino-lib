@@ -45,7 +45,7 @@ void BMP280_BarometerSensor::begin() {
   bool status;
   status = _sensor->begin(_address);
   if (!status) {
-    Serial.println(F("Could not find a valid BMP280 sensor, check wiring!"));
+    Log.warning(F("Could not find a valid BMP280 sensor, check wiring!" CR));
   }
 
   _sensor->setSampling(

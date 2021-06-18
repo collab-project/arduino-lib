@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -10,6 +10,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <BH1750.h>
+#include <ArduinoLog.h>
 
 class BH1750_LightSensor
 {

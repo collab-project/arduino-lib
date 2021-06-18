@@ -27,7 +27,7 @@ void BME280_BarometerSensor_Mux::begin() {
 
   bool status = _sensor->begin(_address, &Wire1);
   if (!status) {
-    Serial.println(F("Error initialising BME280 sensor"));
+    Log.warning(F("Error initialising BME280 sensor" CR));
   }
 
   _expander->closeChannel(_expanderChannel);

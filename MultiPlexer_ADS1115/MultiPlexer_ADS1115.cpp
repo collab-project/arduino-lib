@@ -16,7 +16,7 @@ MultiPlexer_ADS1115::MultiPlexer_ADS1115(
 
 void MultiPlexer_ADS1115::begin() {
   if (!_adc->init()) {
-    Serial.println("ADS1115 not connected!");
+    Log.info(F("ADS1115 not connected!" CR));
   }
 
   /* Set the voltage range of the ADC to adjust the gain

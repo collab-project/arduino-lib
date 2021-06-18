@@ -10,6 +10,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <RTClib.h>
+#include <ArduinoLog.h>
 #include <AT24C32_EEPROM.h>
 
 #define LAST_RUN_ADDRESS 0

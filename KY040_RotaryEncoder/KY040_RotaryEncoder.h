@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -15,6 +15,7 @@
 #include <Arduino.h>
 #include <Method.h>
 #include <TimerOne.h>
+#include <ArduinoLog.h>
 #include <ClickEncoder.h>
 #include <EnableInterrupt.h>
 

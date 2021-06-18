@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -29,7 +29,7 @@ void BME280_BarometerSensor::begin() {
   bool status;
   status = _sensor->begin(_address, _i2c);
   if (!status) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
+    Log.warning(F("Could not find a valid BME280 sensor, check wiring!" CR));
   }
 }
 

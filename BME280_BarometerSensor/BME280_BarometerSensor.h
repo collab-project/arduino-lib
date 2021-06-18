@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -7,9 +7,10 @@
 #ifndef BME280_BarometerSensor_h
 #define BME280_BarometerSensor_h
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
+#include <ArduinoLog.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 

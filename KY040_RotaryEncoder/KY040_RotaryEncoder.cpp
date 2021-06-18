@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020, Collab
+/*  Copyright (c) 2020-2021, Collab
  *  All rights reserved
 */
 /*
@@ -59,7 +59,7 @@ void KY040_RotaryEncoder::loop() {
 
   ClickEncoder::Button b = _encoder->getButton();
   if (b != ClickEncoder::Open) {
-    #define VERBOSECASE(label) case label: Serial.println(#label); break;
+    #define VERBOSECASE(label) case label: Log.info(#label CR); break;
     switch (b) {
       VERBOSECASE(ClickEncoder::Held)
       VERBOSECASE(ClickEncoder::Released)
@@ -68,10 +68,11 @@ void KY040_RotaryEncoder::loop() {
         _btnPressCallback.callback();
         break;
       case ClickEncoder::DoubleClicked:
-        Serial.println("ClickEncoder::DoubleClicked");
+        Log.info(F("ClickEncoder::DoubleClicked" CR));
         _encoder->setAccelerationEnabled(!_encoder->getAccelerationEnabled());
-        Serial.print("  Acceleration is ");
-        Serial.println((_encoder->getAccelerationEnabled()) ? "enabled" : "disabled");
+        Log.info(F("  Acceleration is %s" CR),
+          (_encoder->getAccelerationEnabled()) ? "enabled" : "disabled"
+        );
         break;
     }
   }

@@ -10,6 +10,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
+#include <ArduinoLog.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 #include <MultiPlexer_TCA9548A.h>

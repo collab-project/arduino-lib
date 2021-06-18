@@ -149,7 +149,7 @@ void YX5300_AudioPlayer::queryStatus() {
  * Stop playing the current audio file.
 */
 void YX5300_AudioPlayer::stop() {
-  Serial.println(F("MD_YX5300 - Stop playback"));
+  Log.info(F("MD_YX5300 - Stop playback" CR));
 
   _player->playStop();
 }

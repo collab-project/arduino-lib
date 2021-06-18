@@ -10,6 +10,7 @@
 #include <Arduino.h>
 #include <Method.h>
 #include <MD_YX5300.h>
+#include <ArduinoLog.h>
 
 #if defined(__AVR__) || defined(ESP8266)
 #include <SoftwareSerial.h>
