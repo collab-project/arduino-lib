@@ -11,6 +11,7 @@ Method _playerCallback;
 Method _fileEndedCallback;
 Method _totalFoldersCallback;
 Method _totalFilesFolderCallback;
+Method _equalizerModeCallback;
 
 #if defined(ESP32)
 YX5300_AudioPlayer::YX5300_AudioPlayer(
@@ -65,6 +66,9 @@ void YX5300_AudioPlayer::setupCallbacks() {
   _totalFilesFolderCallback.attachCallbackIntArg(
     makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onFilesFolder)
   );
+  _equalizerModeCallback.attachCallbackIntArg(
+    makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onEqualizerMode)
+  );
 }
 
 /**
@@ -86,8 +90,11 @@ void cbResponse(const MD_YX5300::cbData *status) {
       _fileEndedCallback.callbackIntArg(data);
       break;
 
+    case MD_YX5300::STS_EQUALIZER:
+      _equalizerModeCallback.callbackIntArg(data);
+      break;
+
     default:
-      // notify listeners
       _playerCallback.callback();
       break;
   }
@@ -139,6 +146,13 @@ void YX5300_AudioPlayer::queryFile() {
 }
 
 /**
+ * Request the current equalizer setting from the device.
+*/
+void YX5300_AudioPlayer::queryEqualizer() {
+  _player->queryEqualizer();
+}
+
+/**
  * Request the current status setting from the device.
 */
 void YX5300_AudioPlayer::queryStatus() {
@@ -160,8 +174,6 @@ void YX5300_AudioPlayer::stop() {
  * @param folder The source folder (1-99).
 */
 void YX5300_AudioPlayer::playFolderRepeat(uint8_t folder) {
-  _fileEnded = 0;
-
   _player->playFolderRepeat(folder);
 }
 
@@ -182,7 +194,6 @@ void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
   Log.info(F("MD_YX5300 - Playing random track %d from folder %d" CR),
     currentTrack.index, currentTrack.folder
   );
-  Log.info(CR);
 
   // start playback
   playSpecific(currentTrack.folder, currentTrack.index);
@@ -201,8 +212,6 @@ void YX5300_AudioPlayer::playShuffle() {
  * Play the next track.
 */
 void YX5300_AudioPlayer::nextTrack() {
-  _fileEnded = 0;
-
   _player->playNext();
 }
 
@@ -210,8 +219,6 @@ void YX5300_AudioPlayer::nextTrack() {
  * Play the previous track.
 */
 void YX5300_AudioPlayer::prevTrack() {
-  _fileEnded = 0;
-
   _player->playPrev();
 }
 
@@ -219,8 +226,6 @@ void YX5300_AudioPlayer::prevTrack() {
  * Restart playing the current audio file.
 */
 void YX5300_AudioPlayer::playStart() {
-  _fileEnded = 0;
-
   _player->playStart();
 }
 
@@ -231,8 +236,6 @@ void YX5300_AudioPlayer::playStart() {
  * @param track The file indexed (0-255) to be played.
 */
 void YX5300_AudioPlayer::playSpecific(uint8_t folder, uint8_t track) {
-  _fileEnded = 0;
-
   _player->playSpecific(folder, track);
 }
 
@@ -290,6 +293,17 @@ void YX5300_AudioPlayer::sleep() {
 */
 void YX5300_AudioPlayer::setTimeout(uint32_t timeout) {
   _player->setTimeout(timeout);
+}
+
+/**
+ * Set equalizer mode.
+ *
+ * @param mode The new equalizer mode.
+*/
+void YX5300_AudioPlayer::setEqualizerMode(uint8_t mode) {
+  equalizerMode = mode;
+
+  _player->equalizer(equalizerMode);
 }
 
 /**
@@ -373,8 +387,8 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
       _folders.size()
     );
 
-    // notify listeners
-    _readyCallback.callback();
+    // query equalizer
+    queryEqualizer();
   }
 }
 
@@ -411,8 +425,10 @@ void YX5300_AudioPlayer::onFileEnded(int index) {
     _fileEnded = 2;
   }
   if (_fileEnded == 2) {
-    if (_repeatEnabled) {
-      if (_shuffleEnabled) {
+    _fileEnded = 0;
+
+    if (_repeatEnabled == true) {
+      if (_shuffleEnabled == true) {
         // go to next shuffled track
         playFolderShuffle();
       } else {
@@ -420,6 +436,20 @@ void YX5300_AudioPlayer::onFileEnded(int index) {
       }
     }
   }
+}
+
+/**
+ * Triggered when equalizer mode is requested.
+ *
+ * @param mode Current equalizer mode.
+*/
+void YX5300_AudioPlayer::onEqualizerMode(int mode) {
+  Log.info(F("MD_YX5300 - Equalizer mode: %d" CR), mode);
+
+  equalizerMode = mode;
+
+  // notify listeners
+  _readyCallback.callback();
 }
 
 /**
@@ -473,10 +503,6 @@ void YX5300_AudioPlayer::onPlayerCallback() {
 
     case MD_YX5300::STS_PLAYING:
       Log.info(F("MD_YX5300 - Playing file %d" CR), status->data);
-      break;
-
-    case MD_YX5300::STS_EQUALIZER:
-      Log.info(F("MD_YX5300 - STS_EQUALIZER" CR));
       break;
 
     case MD_YX5300::STS_TOT_FILES:

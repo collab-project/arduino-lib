@@ -54,12 +54,15 @@ class YX5300_AudioPlayer {
     void sleep();
     void setTimeout(uint32_t timeout = 200);
     void setVolume(uint8_t volume);
+    void setEqualizerMode(uint8_t mode);
     uint8_t getMaxVolume();
     void queryFile();
     void queryStatus();
+    void queryEqualizer();
     void queryFolderCount();
     void queryFolderFiles(uint8_t folder = 1);
 
+    int equalizerMode = 0;
     uint32_t totalFolders;
     Track currentTrack;
 
@@ -87,6 +90,7 @@ class YX5300_AudioPlayer {
     void onFileEnded(int index);
     void onFilesFolder(int total);
     void onTotalFolders(int total);
+    void onEqualizerMode(int mode);
 };
 
 #endif
