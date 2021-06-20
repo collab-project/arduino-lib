@@ -62,6 +62,7 @@ class YX5300_AudioPlayer {
     void queryFolderCount();
     void queryFolderFiles(uint8_t folder = 1);
 
+    String label = "MD_YX5300";
     int equalizerMode = 0;
     uint32_t totalFolders;
     Track currentTrack;

@@ -163,7 +163,7 @@ void YX5300_AudioPlayer::queryStatus() {
  * Stop playing the current audio file.
 */
 void YX5300_AudioPlayer::stop() {
-  Log.info(F("MD_YX5300 - Stop playback" CR));
+  Log.info(F("%s - Stop playback" CR), label);
 
   _player->playStop();
 }
@@ -191,8 +191,8 @@ void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
   // pick random track
   currentTrack = getRandomTrack(folder);
 
-  Log.info(F("MD_YX5300 - Playing random track %d from folder %d" CR),
-    currentTrack.index, currentTrack.folder
+  Log.info(F("%s - Playing random track %d from folder %d" CR),
+    label, currentTrack.index, currentTrack.folder
   );
 
   // start playback
@@ -374,17 +374,16 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
   // add new folder
   _folders.push_back(total);
 
-  Log.info(F("MD_YX5300 - Folder %d: %d tracks" CR),
-    _folders.size(),
-    _folders.back()
+  Log.info(F("%s - Folder %d: %d tracks" CR),
+    label, _folders.size(), _folders.back()
   );
 
   if (_folders.size() < totalFolders) {
     queryFolderFiles(_folders.size() + 1);
   } else {
     // all folders are loaded
-    Log.info(F("MD_YX5300 - Finished loading %d folders." CR),
-      _folders.size()
+    Log.info(F("%s - Finished loading %d folders." CR),
+      label, _folders.size()
     );
 
     // query equalizer
@@ -400,7 +399,7 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
 void YX5300_AudioPlayer::onTotalFolders(int total) {
   totalFolders = total;
 
-  Log.info(F("MD_YX5300 - Total folders: %d" CR), totalFolders);
+  Log.info(F("%s - Total folders: %d" CR), label, totalFolders);
 
   if (_folders.size() != totalFolders) {
     // query total files for all folders, starting with the first
@@ -414,7 +413,7 @@ void YX5300_AudioPlayer::onTotalFolders(int total) {
  * @param index Index number of the file just completed.
 */
 void YX5300_AudioPlayer::onFileEnded(int index) {
-  Log.info(F("MD_YX5300 - File %d ended" CR), index);
+  Log.info(F("%s - File %d ended" CR), label, index);
 
   // workaround for https://github.com/MajicDesigns/MD_YX5300/issues/14
   if (_fileEnded == 0) {
@@ -444,7 +443,7 @@ void YX5300_AudioPlayer::onFileEnded(int index) {
  * @param mode Current equalizer mode.
 */
 void YX5300_AudioPlayer::onEqualizerMode(int mode) {
-  Log.info(F("MD_YX5300 - Equalizer mode: %d" CR), mode);
+  Log.info(F("%s - Equalizer mode: %d" CR), label, mode);
 
   equalizerMode = mode;
 
@@ -460,61 +459,61 @@ void YX5300_AudioPlayer::onPlayerCallback() {
 
   switch (status->code) {
     case MD_YX5300::STS_OK:
-      Log.info(F("MD_YX5300 - STS_OK" CR));
+      Log.info(F("%s - STS_OK" CR), label);
       break;
 
     case MD_YX5300::STS_TIMEOUT:
-      Log.info(F("MD_YX5300 - STS_TIMEOUT" CR));
+      Log.info(F("%s - STS_TIMEOUT" CR), label);
       break;
 
     case MD_YX5300::STS_VERSION:
-      Log.info(F("MD_YX5300 - STS_VERSION: %d" CR), status->data);
+      Log.info(F("%s - STS_VERSION: %d" CR), label, status->data);
       break;
 
     case MD_YX5300::STS_CHECKSUM:
-      Log.info(F("MD_YX5300 - STS_CHECKSUM: %d" CR), status->data);
+      Log.info(F("%s - STS_CHECKSUM: %d" CR), label, status->data);
       break;
 
     case MD_YX5300::STS_TF_INSERT:
       // card has been inserted
-      Log.info(F("MD_YX5300 - Card inserted." CR));
+      Log.info(F("%s - Card inserted." CR), label);
       break;
 
     case MD_YX5300::STS_TF_REMOVE:
       // card has been removed
-      Log.info(F("MD_YX5300 - Card removed." CR));
+      Log.info(F("%s - Card removed." CR), label);
       break;
 
     case MD_YX5300::STS_ACK_OK:
-      //Log.info(F("MD_YX5300 - STS_ACK_OK" CR));
+      //Log.info(F("%s - STS_ACK_OK" CR), label);
       break;
 
     case MD_YX5300::STS_ERR_FILE:
-      Log.info(F("MD_YX5300 - STS_ERR_FILE" CR));
+      Log.info(F("%s - STS_ERR_FILE" CR), label);
       break;
 
     case MD_YX5300::STS_INIT:
-      Log.info(F("MD_YX5300 - STS_INIT" CR));
+      Log.info(F("%s - STS_INIT" CR), label);
       break;
 
     case MD_YX5300::STS_STATUS:
-      Log.info(F("MD_YX5300 - STS_STATUS" CR));
+      Log.info(F("%s - STS_STATUS" CR), label);
       break;
 
     case MD_YX5300::STS_PLAYING:
-      Log.info(F("MD_YX5300 - Playing file %d" CR), status->data);
+      Log.info(F("%s - Playing file %d" CR), label, status->data);
       break;
 
     case MD_YX5300::STS_TOT_FILES:
-      Log.info(F("MD_YX5300 - Total files:\t%d" CR), status->data);
+      Log.info(F("%s - Total files:\t%d" CR), label, status->data);
       break;
 
     case MD_YX5300::STS_VOLUME:
-      Log.info(F("MD_YX5300 - Volume:\t\t%d" CR), status->data);
+      Log.info(F("%s - Volume:\t\t%d" CR), label, status->data);
       break;
 
     default:
-      Log.info(F("MD_YX5300 - STS_??? 0x"));
+      Log.info(F("%s - STS_??? 0x"), label);
       Serial.println(status->code, HEX);
       break;
   }
