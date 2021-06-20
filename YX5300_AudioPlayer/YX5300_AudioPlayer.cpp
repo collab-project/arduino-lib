@@ -179,10 +179,10 @@ void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
   // pick random track
   currentTrack = getRandomTrack(folder);
 
-  Serial.print(F("MD_YX5300 - Playing random track "));
-  Serial.print(currentTrack.index);
-  Serial.print(F(" from folder "));
-  Serial.println(currentTrack.folder);
+  Log.info(F("MD_YX5300 - Playing random track %d from folder %d" CR),
+    currentTrack.index, currentTrack.folder
+  );
+  Log.info(CR);
 
   // start playback
   playSpecific(currentTrack.folder, currentTrack.index);
@@ -360,19 +360,18 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
   // add new folder
   _folders.push_back(total);
 
-  Serial.print(F("MD_YX5300 - Folder "));
-  Serial.print(_folders.size());
-  Serial.print(F(": "));
-  Serial.print(_folders.back());
-  Serial.println(F(" tracks"));
+  Log.info(F("MD_YX5300 - Folder %d: %d tracks" CR),
+    _folders.size(),
+    _folders.back()
+  );
 
   if (_folders.size() < totalFolders) {
     queryFolderFiles(_folders.size() + 1);
   } else {
     // all folders are loaded
-    Serial.print(F("MD_YX5300 - Finished loading "));
-    Serial.print(_folders.size());
-    Serial.println(F(" folders."));
+    Log.info(F("MD_YX5300 - Finished loading %d folders." CR),
+      _folders.size()
+    );
 
     // notify listeners
     _readyCallback.callback();
@@ -386,8 +385,8 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
 */
 void YX5300_AudioPlayer::onTotalFolders(int total) {
   totalFolders = total;
-  Serial.print(F("MD_YX5300 - Total folders: "));
-  Serial.println(totalFolders);
+
+  Log.info(F("MD_YX5300 - Total folders: %d" CR), totalFolders);
 
   if (_folders.size() != totalFolders) {
     // query total files for all folders, starting with the first
@@ -401,10 +400,7 @@ void YX5300_AudioPlayer::onTotalFolders(int total) {
  * @param index Index number of the file just completed.
 */
 void YX5300_AudioPlayer::onFileEnded(int index) {
-  Serial.print(F("MD_YX5300 - File "));
-  Serial.print(index);
-  Serial.print(F(" ended at "));
-  Serial.println(millis());
+  Log.info(F("MD_YX5300 - File %d ended" CR), index);
 
   // workaround for https://github.com/MajicDesigns/MD_YX5300/issues/14
   if (_fileEnded == 0) {
@@ -432,80 +428,70 @@ void YX5300_AudioPlayer::onFileEnded(int index) {
 void YX5300_AudioPlayer::onPlayerCallback() {
   const MD_YX5300::cbData* status = _player->getStatus();
 
-  if (status->code != MD_YX5300::STS_ACK_OK) {
-    Serial.print(F("MD_YX5300 - "));
-  }
-
   switch (status->code) {
     case MD_YX5300::STS_OK:
-      Serial.println(F("STS_OK"));
+      Log.info(F("MD_YX5300 - STS_OK" CR));
       break;
 
     case MD_YX5300::STS_TIMEOUT:
-      Serial.println(F("STS_TIMEOUT"));
+      Log.info(F("MD_YX5300 - STS_TIMEOUT" CR));
       break;
 
     case MD_YX5300::STS_VERSION:
-      Serial.print(F("STS_VERSION: "));
-      Serial.println(status->data);
+      Log.info(F("MD_YX5300 - STS_VERSION: %d" CR), status->data);
       break;
 
     case MD_YX5300::STS_CHECKSUM:
-      Serial.print(F("STS_CHECKSUM: "));
-      Serial.println(status->data);
+      Log.info(F("MD_YX5300 - STS_CHECKSUM: %d" CR), status->data);
       break;
 
     case MD_YX5300::STS_TF_INSERT:
       // card has been inserted
-      Serial.println(F("Card inserted."));
+      Log.info(F("MD_YX5300 - Card inserted." CR));
       break;
 
     case MD_YX5300::STS_TF_REMOVE:
       // card has been removed
-      Serial.println(F("Card removed."));
+      Log.info(F("MD_YX5300 - Card removed." CR));
       break;
 
     case MD_YX5300::STS_ACK_OK:
-      //Serial.println(F("STS_ACK_OK"));
+      //Log.info(F("MD_YX5300 - STS_ACK_OK" CR));
       break;
 
     case MD_YX5300::STS_ERR_FILE:
-      Serial.println(F("STS_ERR_FILE"));
+      Log.info(F("MD_YX5300 - STS_ERR_FILE" CR));
       break;
 
     case MD_YX5300::STS_INIT:
-      Serial.println(F("STS_INIT"));
+      Log.info(F("MD_YX5300 - STS_INIT" CR));
       break;
 
     case MD_YX5300::STS_STATUS:
-      Serial.println(F("STS_STATUS"));
+      Log.info(F("MD_YX5300 - STS_STATUS" CR));
       break;
 
     case MD_YX5300::STS_PLAYING:
-      Serial.print(F("Playing file "));
-      Serial.println(status->data);
+      Log.info(F("MD_YX5300 - Playing file %d" CR), status->data);
       break;
 
     case MD_YX5300::STS_EQUALIZER:
-      Serial.println(F("STS_EQUALIZER"));
+      Log.info(F("MD_YX5300 - STS_EQUALIZER" CR));
       break;
 
     case MD_YX5300::STS_TOT_FILES:
-      Serial.print(F("Total files:\t"));
-      Serial.println(status->data);
+      Log.info(F("MD_YX5300 - Total files:\t%d" CR), status->data);
       break;
 
     case MD_YX5300::STS_VOLUME:
-      Serial.print(F("MD_YX5300 - Volume:\t\t"));
-      Serial.println(status->data);
+      Log.info(F("MD_YX5300 - Volume:\t\t%d" CR), status->data);
       break;
 
     default:
-      Serial.print(F("STS_??? 0x"));
+      Log.info(F("MD_YX5300 - STS_??? 0x"));
       Serial.println(status->code, HEX);
       break;
   }
 
-  //Serial.print(F(", 0x"));
-  //Serial.println(status->data, HEX);
+  //Log.info(F(", 0x" CR), status->data);
 }
