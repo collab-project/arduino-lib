@@ -413,8 +413,6 @@ void YX5300_AudioPlayer::onTotalFolders(int total) {
  * @param index Index number of the file just completed.
 */
 void YX5300_AudioPlayer::onFileEnded(int index) {
-  Log.info(F("%s - File %d ended" CR), label, index);
-
   // workaround for https://github.com/MajicDesigns/MD_YX5300/issues/14
   if (_fileEnded == 0) {
     // first file end status
@@ -424,6 +422,8 @@ void YX5300_AudioPlayer::onFileEnded(int index) {
     _fileEnded = 2;
   }
   if (_fileEnded == 2) {
+    Log.info(F("%s - File %d ended" CR), label, index);
+
     _fileEnded = 0;
 
     if (_repeatEnabled == true) {
