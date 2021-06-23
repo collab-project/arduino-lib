@@ -386,8 +386,8 @@ void YX5300_AudioPlayer::onFilesFolder(int total) {
       label, _folders.size()
     );
 
-    // query equalizer
-    queryEqualizer();
+    // notify listeners
+    _readyCallback.callback();
   }
 }
 
@@ -446,9 +446,6 @@ void YX5300_AudioPlayer::onEqualizerMode(int mode) {
   Log.info(F("%s - Equalizer mode: %d" CR), label, mode);
 
   equalizerMode = mode;
-
-  // notify listeners
-  _readyCallback.callback();
 }
 
 /**
