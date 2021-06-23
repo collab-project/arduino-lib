@@ -71,7 +71,7 @@ class YX5300_AudioPlayer {
     bool _hwSerial;
     uint8_t _volume;
     uint32_t _timeOut;
-    int _fileEnded = 0;
+    int _trackEnded = 0;
     bool _repeatEnabled = true;
     bool _shuffleEnabled = false;
     bool _shuffleAll = true;
@@ -88,10 +88,10 @@ class YX5300_AudioPlayer {
 
     // callbacks
     void onPlayerCallback();
-    void onFileEnded(int index);
-    void onFilesFolder(int total);
+    void onTrackEnded(int index);
     void onTotalFolders(int total);
     void onEqualizerMode(int mode);
+    void onFilesTotalInFolder(int total);
 };
 
 #endif

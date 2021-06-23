@@ -8,7 +8,7 @@
 #include <YX5300_AudioPlayer.h>
 
 Method _playerCallback;
-Method _fileEndedCallback;
+Method _trackEndedCallback;
 Method _totalFoldersCallback;
 Method _totalFilesFolderCallback;
 Method _equalizerModeCallback;
@@ -57,14 +57,14 @@ void YX5300_AudioPlayer::setupCallbacks() {
   _playerCallback.attachCallback(
     makeFunctor((Functor0 *)0, *this, &YX5300_AudioPlayer::onPlayerCallback)
   );
-  _fileEndedCallback.attachCallbackIntArg(
-    makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onFileEnded)
+  _trackEndedCallback.attachCallbackIntArg(
+    makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onTrackEnded)
   );
   _totalFoldersCallback.attachCallbackIntArg(
     makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onTotalFolders)
   );
   _totalFilesFolderCallback.attachCallbackIntArg(
-    makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onFilesFolder)
+    makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onFilesTotalInFolder)
   );
   _equalizerModeCallback.attachCallbackIntArg(
     makeFunctor((Functor1<int> *)0, *this, &YX5300_AudioPlayer::onEqualizerMode)
@@ -87,7 +87,7 @@ void cbResponse(const MD_YX5300::cbData *status) {
       break;
 
     case MD_YX5300::STS_FILE_END:
-      _fileEndedCallback.callbackIntArg(data);
+      _trackEndedCallback.callbackIntArg(data);
       break;
 
     case MD_YX5300::STS_EQUALIZER:
@@ -370,7 +370,7 @@ Track YX5300_AudioPlayer::addTrack(uint8_t index, uint8_t folder) {
  *
  * @param total Total files found in folder.
 */
-void YX5300_AudioPlayer::onFilesFolder(int total) {
+void YX5300_AudioPlayer::onFilesTotalInFolder(int total) {
   // add new folder
   _folders.push_back(total);
 
@@ -410,21 +410,21 @@ void YX5300_AudioPlayer::onTotalFolders(int total) {
 /**
  * Triggered when file playback ended.
  *
- * @param index Index number of the file just completed.
+ * @param index Index number of the file that just finished playback.
 */
-void YX5300_AudioPlayer::onFileEnded(int index) {
+void YX5300_AudioPlayer::onTrackEnded(int index) {
   // workaround for https://github.com/MajicDesigns/MD_YX5300/issues/14
-  if (_fileEnded == 0) {
+  if (_trackEnded == 0) {
     // first file end status
-    _fileEnded = 1;
-  } else if (_fileEnded == 1) {
+    _trackEnded = 1;
+  } else if (_trackEnded == 1) {
     // second and last file end status
-    _fileEnded = 2;
+    _trackEnded = 2;
   }
-  if (_fileEnded == 2) {
-    Log.info(F("%s - File %d ended" CR), label, index);
+  if (_trackEnded == 2) {
+    Log.info(F("%s - Track %d ended" CR), label, index);
 
-    _fileEnded = 0;
+    _trackEnded = 0;
 
     if (_repeatEnabled == true) {
       if (_shuffleEnabled == true) {
