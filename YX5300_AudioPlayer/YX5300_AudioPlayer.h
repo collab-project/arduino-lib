@@ -55,6 +55,7 @@ class YX5300_AudioPlayer {
     void setTimeout(uint32_t timeout = 200);
     void setVolume(uint8_t volume);
     void setEqualizerMode(uint8_t mode);
+    void setTrackList(const char *folders[], const char *tracks[]);
     uint8_t getMaxVolume();
     void queryFile();
     void queryStatus();
@@ -63,6 +64,7 @@ class YX5300_AudioPlayer {
     void queryFolderFiles(uint8_t folder = 1);
 
     String label = "MD_YX5300";
+
     int equalizerMode = 0;
     uint32_t totalFolders;
     Track currentTrack;
@@ -72,12 +74,16 @@ class YX5300_AudioPlayer {
     uint8_t _volume;
     uint32_t _timeOut;
     int _trackEnded = 0;
+
     bool _repeatEnabled = true;
     bool _shuffleEnabled = false;
     bool _shuffleAll = true;
-    Method _readyCallback;
+
     std::vector<int> _folders;
     std::vector<Track> _playList;
+    std::vector<Track> _playListCompleted;
+
+    Method _readyCallback;
 
     Stream * _stream;
     MD_YX5300 *_player;

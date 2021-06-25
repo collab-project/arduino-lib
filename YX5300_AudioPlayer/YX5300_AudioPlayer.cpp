@@ -125,6 +125,24 @@ void YX5300_AudioPlayer::loop() {
 }
 
 /**
+ * Set track list.
+ *
+ * @param folders
+ * @param tracks
+*/
+void YX5300_AudioPlayer::setTrackList(const char *folders[], const char *tracks[]) {
+  int i = 0;
+  byte folderCount = sizeof(folders) / sizeof(folders[0]);
+  for (i = 0; i < folderCount; i++) {
+    Log.info(F("Folder: %s" CR), folders[i]);
+  }
+  byte trackCount = sizeof(tracks) / sizeof(tracks[0]);
+  for (i = 0; i < trackCount; i++) {
+    Log.info(F("Track: %s" CR), tracks[i]);
+  }
+}
+
+/**
  * Query the number of folders on the device.
 */
 void YX5300_AudioPlayer::queryFolderCount() {
@@ -212,14 +230,30 @@ void YX5300_AudioPlayer::playShuffle() {
  * Play the next track.
 */
 void YX5300_AudioPlayer::nextTrack() {
-  _player->playNext();
+  if (!_shuffleEnabled) {
+    _player->playNext();
+  } else {
+    playFolderShuffle();
+  }
 }
 
 /**
  * Play the previous track.
 */
 void YX5300_AudioPlayer::prevTrack() {
-  _player->playPrev();
+  if (!_shuffleEnabled) {
+    _player->playPrev();
+  } else {
+    if (_playListCompleted.size() > 0) {
+      // get and remove last element
+      Track trk = _playListCompleted.back();
+      playSpecific(trk.folder, trk.index);
+
+      _playList.pop_back();
+    } else {
+      _player->playPrev();
+    }
+  }
 }
 
 /**
@@ -308,9 +342,13 @@ void YX5300_AudioPlayer::setEqualizerMode(uint8_t mode) {
 
 /**
  * Get a random track.
+ *
+ * @param folder The source folder (1-99).
 */
 Track YX5300_AudioPlayer::getRandomTrack(uint8_t folder) {
   if (_playList.empty()) {
+    _playListCompleted.clear();
+
     unsigned int i = 0;
     unsigned int totalTracks;
 
@@ -348,8 +386,11 @@ Track YX5300_AudioPlayer::getRandomTrack(uint8_t folder) {
     std::random_shuffle(_playList.begin(), _playList.end());
   }
 
-  // pick first randomized track and remove it from the list
+  // pick first randomized track, remove it from the playlis,
+  // and add it to the completed playlist.
   Track tr = _playList.at(0);
+
+  _playListCompleted.push_back(tr);
   _playList.erase(_playList.begin());
 
   return tr;
