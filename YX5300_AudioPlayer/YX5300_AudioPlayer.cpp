@@ -130,15 +130,20 @@ void YX5300_AudioPlayer::loop() {
  * @param folders
  * @param tracks
 */
-void YX5300_AudioPlayer::setTrackList(const char *folders[], const char *tracks[]) {
-  int i = 0;
-  byte folderCount = sizeof(folders) / sizeof(folders[0]);
-  for (i = 0; i < folderCount; i++) {
-    Log.info(F("Folder: %s" CR), folders[i]);
-  }
-  byte trackCount = sizeof(tracks) / sizeof(tracks[0]);
-  for (i = 0; i < trackCount; i++) {
-    Log.info(F("Track: %s" CR), tracks[i]);
+void YX5300_AudioPlayer::setTrackList(std::vector<String> folders, std::vector<String> tracks) {
+  // save track information
+  for (size_t x = 0; x < _playList.size(); ++x) {
+    Track item = _playList.at(x);
+    _playList.at(x).title = tracks.at(item.index - 1);
+    _playList.at(x).album = folders.at(item.folder - 1);
+    /*
+    Log.info(F("Track %d in folder %d: %s (%s)" CR),
+      item.index,
+      item.folder,
+      item.title.c_str(),
+      item.album.c_str()
+    );
+    */
   }
 }
 
@@ -212,6 +217,9 @@ void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
   Log.info(F("%s - Playing random track %d from folder %d" CR),
     label, currentTrack.index, currentTrack.folder
   );
+  if (currentTrack.title.length() > 0 && currentTrack.album.length() > 0) {
+    Log.info(F("         %s (%s)" CR), currentTrack.title.c_str(), currentTrack.album.c_str());
+  }
 
   // start playback
   playSpecific(currentTrack.folder, currentTrack.index);
@@ -340,12 +348,7 @@ void YX5300_AudioPlayer::setEqualizerMode(uint8_t mode) {
   _player->equalizer(equalizerMode);
 }
 
-/**
- * Get a random track.
- *
- * @param folder The source folder (1-99).
-*/
-Track YX5300_AudioPlayer::getRandomTrack(uint8_t folder) {
+void YX5300_AudioPlayer::createRandomPlayList(uint8_t folder) {
   if (_playList.empty()) {
     _playListCompleted.clear();
 
@@ -385,8 +388,17 @@ Track YX5300_AudioPlayer::getRandomTrack(uint8_t folder) {
     // randomize list
     std::random_shuffle(_playList.begin(), _playList.end());
   }
+}
 
-  // pick first randomized track, remove it from the playlis,
+/**
+ * Get a random track.
+ *
+ * @param folder The source folder (1-99).
+*/
+Track YX5300_AudioPlayer::getRandomTrack(uint8_t folder) {
+  createRandomPlayList(folder);
+
+  // pick first randomized track, remove it from the playlist,
   // and add it to the completed playlist.
   Track tr = _playList.at(0);
 

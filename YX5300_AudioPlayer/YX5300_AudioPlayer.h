@@ -19,6 +19,8 @@
 struct Track {
   uint8_t index;
   uint8_t folder;
+  String title;
+  String album;
 };
 
 class YX5300_AudioPlayer {
@@ -55,13 +57,14 @@ class YX5300_AudioPlayer {
     void setTimeout(uint32_t timeout = 200);
     void setVolume(uint8_t volume);
     void setEqualizerMode(uint8_t mode);
-    void setTrackList(const char *folders[], const char *tracks[]);
+    void setTrackList(std::vector<String> folders, std::vector<String> tracks);
     uint8_t getMaxVolume();
     void queryFile();
     void queryStatus();
     void queryEqualizer();
     void queryFolderCount();
     void queryFolderFiles(uint8_t folder = 1);
+    void createRandomPlayList(uint8_t folder = 1);
 
     String label = "MD_YX5300";
 
