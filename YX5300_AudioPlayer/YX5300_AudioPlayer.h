@@ -92,6 +92,7 @@ class YX5300_AudioPlayer {
     MD_YX5300 *_player;
 
     void setupCallbacks();
+    void printTrackInfo();
     Track getRandomTrack(uint8_t folder = 1);
     Track addTrack(uint8_t index, uint8_t folder);
 

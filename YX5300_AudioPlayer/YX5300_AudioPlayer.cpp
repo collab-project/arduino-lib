@@ -217,12 +217,16 @@ void YX5300_AudioPlayer::playFolderShuffle(uint8_t folder) {
   Log.info(F("%s - Playing random track %d from folder %d" CR),
     label, currentTrack.index, currentTrack.folder
   );
-  if (currentTrack.title.length() > 0 && currentTrack.album.length() > 0) {
-    Log.info(F("         %s (%s)" CR), currentTrack.title.c_str(), currentTrack.album.c_str());
-  }
+  printTrackInfo();
 
   // start playback
   playSpecific(currentTrack.folder, currentTrack.index);
+}
+
+void YX5300_AudioPlayer::printTrackInfo() {
+  if (currentTrack.title.length() > 0 && currentTrack.album.length() > 0) {
+    Log.info(F("         %s (%s)" CR), currentTrack.title.c_str(), currentTrack.album.c_str());
+  }
 }
 
 /**
@@ -476,6 +480,7 @@ void YX5300_AudioPlayer::onTrackEnded(int index) {
   }
   if (_trackEnded == 2) {
     Log.info(F("%s - Track %d ended" CR), label, index);
+    printTrackInfo();
 
     _trackEnded = 0;
 
