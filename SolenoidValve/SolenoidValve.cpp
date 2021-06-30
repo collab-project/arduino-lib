@@ -28,9 +28,13 @@ void SolenoidValve::loop() {
 }
 
 void SolenoidValve::start() {
+  active = true;
+
   _relay->start();
 }
 
 void SolenoidValve::stop() {
+  active = false;
+
   _relay->stop();
 }

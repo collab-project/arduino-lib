@@ -17,6 +17,8 @@ class SolenoidValve
     void start();
     void stop();
 
+    bool active = false;
+
   private:
     SingleChannel_Relay* _relay;
     int _relayPin;
