@@ -23,19 +23,24 @@ struct Track {
   String album;
 };
 
+struct UserCallbacks {
+  Method playerReady;
+  Method trackEnded;
+};
+
 class YX5300_AudioPlayer {
   public:
     #if defined(__AVR__) || defined(ESP8266)
     YX5300_AudioPlayer(
       SoftwareSerial * serial,
-      Method ready_callback,
+      UserCallbacks user_callbacks,
       uint8_t volume = 10,
       uint32_t timeout = 200
     );
     #elif defined(ESP32)
     YX5300_AudioPlayer(
       HardwareSerial * serial,
-      Method ready_callback,
+      UserCallbacks user_callbacks,
       uint8_t volume = 10,
       uint32_t timeout = 200
     );
@@ -86,7 +91,8 @@ class YX5300_AudioPlayer {
     std::vector<Track> _playList;
     std::vector<Track> _playListCompleted;
 
-    Method _readyCallback;
+    // callbacks
+    UserCallbacks _userCallbacks;
 
     Stream * _stream;
     MD_YX5300 *_player;

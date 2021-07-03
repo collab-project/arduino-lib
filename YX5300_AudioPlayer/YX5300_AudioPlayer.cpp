@@ -16,14 +16,14 @@ Method _equalizerModeCallback;
 #if defined(ESP32)
 YX5300_AudioPlayer::YX5300_AudioPlayer(
   HardwareSerial * serial,
-  Method ready_callback,
+  UserCallbacks user_callbacks,
   uint8_t volume,
   uint32_t timeout
 ) {
   _hwSerial = true;
   _volume = volume;
   _timeOut = timeout;
-  _readyCallback = ready_callback;
+  _userCallbacks = user_callbacks;
 
   _stream = serial;
   _player = new MD_YX5300(*_stream);
@@ -36,14 +36,14 @@ YX5300_AudioPlayer::YX5300_AudioPlayer(
 #if defined(__AVR__) || defined(ESP8266)
 YX5300_AudioPlayer::YX5300_AudioPlayer(
   SoftwareSerial * serial,
-  Method ready_callback,
+  UserCallbacks user_callbacks,
   uint8_t volume,
   uint32_t timeout
 ) {
   _hwSerial = false;
   _volume = volume;
   _timeOut = timeout;
-  _readyCallback = ready_callback;
+  _userCallbacks = user_callbacks;
 
   _stream = serial;
   _player = new MD_YX5300(*_stream);
@@ -444,7 +444,7 @@ void YX5300_AudioPlayer::onFilesTotalInFolder(int total) {
     );
 
     // notify listeners
-    _readyCallback.callback();
+    _userCallbacks.playerReady.callback();
   }
 }
 
@@ -480,6 +480,7 @@ void YX5300_AudioPlayer::onTrackEnded(int index) {
   }
   if (_trackEnded == 2) {
     Log.info(F("%s - Track %d ended" CR), label, index);
+
     printTrackInfo();
 
     _trackEnded = 0;
@@ -492,6 +493,9 @@ void YX5300_AudioPlayer::onTrackEnded(int index) {
         nextTrack();
       }
     }
+
+    // notify others
+    _userCallbacks.trackEnded.callback();
   }
 }
 
