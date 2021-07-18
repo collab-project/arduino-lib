@@ -21,9 +21,9 @@ BMP280_BarometerSensor::BMP280_BarometerSensor(
   _clockSpeed = clock_speed;
   _seaLevelPressure = sea_level_pressure;
 
-  #if defined(__AVR__)
+  #if defined(__AVR__) || defined(ESP8266)
   _sensor = new Adafruit_BMP280();
-  #elif defined(ESP8266) || defined(ESP32)
+  #elif defined(ESP32)
     // i2c
     if (_busNr == 1) {
       _i2c = new TwoWire(_busNr);
@@ -35,7 +35,7 @@ BMP280_BarometerSensor::BMP280_BarometerSensor(
 }
 
 void BMP280_BarometerSensor::begin() {
-  #if defined(ESP8266) || defined(ESP32)
+  #if defined(ESP32)
   // i2c
   if (_busNr == 1) {
     _i2c->begin(_sdaPin, _sclPin, _clockSpeed);
