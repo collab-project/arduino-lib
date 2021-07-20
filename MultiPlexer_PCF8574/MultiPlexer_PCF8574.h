@@ -15,7 +15,8 @@ class MultiPlexer_PCF8574
 {
   public:
     MultiPlexer_PCF8574(uint8_t address, uint8_t sda, uint8_t scl);
-    void begin();
+    bool begin();
+    bool isConnected();
     void digitalWrite(uint8_t pin, uint8_t value);
     uint8_t digitalRead(uint8_t pin);
 

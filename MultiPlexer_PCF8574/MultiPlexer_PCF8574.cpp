@@ -10,8 +10,12 @@ MultiPlexer_PCF8574::MultiPlexer_PCF8574(uint8_t address, uint8_t sda, uint8_t s
   _expander = new PCF8574(address);
 }
 
-void MultiPlexer_PCF8574::begin() {
-  _expander->begin(_sdaPin, _sclPin);
+bool MultiPlexer_PCF8574::begin() {
+  return _expander->begin(_sdaPin, _sclPin);
+}
+
+bool MultiPlexer_PCF8574::isConnected() {
+  return _expander->isConnected();
 }
 
 void MultiPlexer_PCF8574::digitalWrite(uint8_t pin, uint8_t value) {
