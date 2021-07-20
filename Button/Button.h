@@ -13,7 +13,7 @@
 class Button
 {
   public:
-    Button(int btn_pin, int pin_mode = INPUT);
+    Button(int btn_pin, int pin_mode = INPUT, int last_state = LOW, int active_state = HIGH);
     void loop();
     void begin(Method callback);
     void read();
@@ -23,6 +23,7 @@ class Button
     int _pinMode;
     int _currentBtnState;
     int _lastBtnState;
+    int _activeState;
     Method _callback;
     unsigned long _lastDebounceTime = 0;
     unsigned long _debounceDelay = 50;

@@ -7,10 +7,11 @@
 
 #include "Button.h"
 
-Button::Button(int btn_pin, int pin_mode) {
+Button::Button(int btn_pin, int pin_mode, int last_state, int active_state) {
   _btnPin = btn_pin;
   _pinMode = pin_mode;
-  _lastBtnState = LOW;
+  _lastBtnState = last_state;
+  _activeState = active_state;
 }
 
 void Button::begin(Method callback) {
@@ -30,14 +31,14 @@ void Button::read() {
   if (val != _lastBtnState) {
     // reset the debouncing timer
     _lastDebounceTime = millis();
+
   }
   if ((millis() - _lastDebounceTime) > _debounceDelay) {
     // if the button state has changed
     if (val != _currentBtnState) {
       _currentBtnState = val;
 
-      // only toggle if the new button state is HIGH
-      if (_currentBtnState == HIGH) {
+      if (_currentBtnState == _activeState) {
         _callback.callback();
       }
     }
