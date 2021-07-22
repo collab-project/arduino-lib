@@ -16,7 +16,7 @@ class KY006_Buzzer
       int buzzer_pin
     );
     void begin();
-    void enable();
+    void enable(unsigned int frequency = 1000, unsigned long duration = 100);
     void disable();
 
   private:
