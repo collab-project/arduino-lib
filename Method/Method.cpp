@@ -25,10 +25,19 @@ void Method::attachCallbackIntStringArg(const Functor2<int, String> & callback) 
   callbackIntStringArg_ = callback;
 }
 
+void Method::attachCallbackIntStringBoolArg(const Functor3<int, String, bool> & callback) {
+  callbackIntStringBoolArg_ = callback;
+}
 
 void Method::callback() {
   if (callback_) {
     callback_();
+  }
+}
+
+void Method::callbackFloatArg(float val) {
+  if (callbackFloatArg_) {
+    callbackFloatArg_(val);
   }
 }
 
@@ -50,8 +59,8 @@ void Method::callbackIntStringArg(int val1, String val2) {
   }
 }
 
-void Method::callbackFloatArg(float val) {
-  if (callbackFloatArg_) {
-    callbackFloatArg_(val);
+void Method::callbackIntStringBoolArg(int val1, String val2, bool val3) {
+  if (callbackIntStringBoolArg_) {
+    callbackIntStringBoolArg_(val1, val2, val3);
   }
 }

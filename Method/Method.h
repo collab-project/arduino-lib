@@ -15,19 +15,21 @@ class Method
     void attachCallback2IntArg(const Functor2<int, int> & callback);
     void attachCallbackFloatArg(const Functor1<float> & callback);
     void attachCallbackIntStringArg(const Functor2<int, String> & callback);
+    void attachCallbackIntStringBoolArg(const Functor3<int, String, bool> & callback);
     void callback();
     void callbackIntArg(int val);
     void callback2IntArg(int val1, int val2);
     void callbackIntStringArg(int val1, String val2);
+    void callbackIntStringBoolArg(int val1, String val2, bool val3);
     void callbackFloatArg(float val);
 
   protected:
     Functor0 callback_;
     Functor1<int> callbackIntArg_;
+    Functor1<float> callbackFloatArg_;
     Functor2<int, int> callback2IntArg_;
     Functor2<int, String> callbackIntStringArg_;
-
-    Functor1<float> callbackFloatArg_;
+    Functor3<int, String, bool> callbackIntStringBoolArg_;
 };
 
 #endif
