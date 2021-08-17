@@ -17,6 +17,10 @@ void Method::attachCallback2IntArg(const Functor2<int, int> & callback) {
   callback2IntArg_ = callback;
 }
 
+void Method::attachCallback3IntArg(const Functor3<int, int, int> & callback) {
+  callback3IntArg_ = callback;
+}
+
 void Method::attachCallbackFloatArg(const Functor1<float> & callback) {
   callbackFloatArg_ = callback;
 }
@@ -50,6 +54,12 @@ void Method::callbackIntArg(int val) {
 void Method::callback2IntArg(int val1, int val2) {
   if (callback2IntArg_) {
     callback2IntArg_(val1, val2);
+  }
+}
+
+void Method::callback3IntArg(int val1, int val2, int val3) {
+  if (callback3IntArg_) {
+    callback3IntArg_(val1, val2, val3);
   }
 }
 
