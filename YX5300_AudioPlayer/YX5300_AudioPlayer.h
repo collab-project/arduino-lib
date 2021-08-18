@@ -62,6 +62,7 @@ class YX5300_AudioPlayer {
     void setTimeout(uint32_t timeout = 200);
     void setVolume(uint8_t volume);
     void setEqualizerMode(uint8_t mode);
+    void setPlayList();
     void setTrackList(std::vector<String> folders, std::vector<String> tracks);
     uint8_t getMaxVolume();
     void queryFile();
@@ -87,6 +88,8 @@ class YX5300_AudioPlayer {
     bool _shuffleEnabled = false;
     bool _shuffleAll = true;
 
+    std::vector<String> _originalFolders;
+    std::vector<String> _originalTracks;
     std::vector<int> _folders;
     std::vector<Track> _playList;
     std::vector<Track> _playListCompleted;

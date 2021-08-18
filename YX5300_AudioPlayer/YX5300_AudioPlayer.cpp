@@ -131,11 +131,21 @@ void YX5300_AudioPlayer::loop() {
  * @param tracks
 */
 void YX5300_AudioPlayer::setTrackList(std::vector<String> folders, std::vector<String> tracks) {
+  _originalFolders = folders;
+  _originalTracks = tracks;
+
+  setPlayList();
+}
+
+/**
+ * Set play list title and album data.
+*/
+void YX5300_AudioPlayer::setPlayList() {
   // save track information
   for (size_t x = 0; x < _playList.size(); ++x) {
     Track item = _playList.at(x);
-    _playList.at(x).title = tracks.at(item.index - 1);
-    _playList.at(x).album = folders.at(item.folder - 1);
+    _playList.at(x).title = _originalTracks.at(item.index - 1);
+    _playList.at(x).album = _originalFolders.at(item.folder - 1);
     /*
     Log.info(F("Track %d in folder %d: %s (%s)" CR),
       item.index,
@@ -401,6 +411,11 @@ void YX5300_AudioPlayer::createRandomPlayList(uint8_t folder) {
 */
 Track YX5300_AudioPlayer::getRandomTrack(uint8_t folder) {
   createRandomPlayList(folder);
+
+  if (_playListCompleted.size() == 0) {
+    // update title/album info
+    setPlayList();
+  }
 
   // pick first randomized track, remove it from the playlist,
   // and add it to the completed playlist.
