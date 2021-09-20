@@ -19,7 +19,7 @@ class DS3231_RealtimeClock
 {
   public:
     DS3231_RealtimeClock(int scl_pin = -1, int sda_pin = -1, uint8_t eeprom_address = 0x57);
-    void begin();
+    void begin(bool callWireBegin = true);
     DateTime now();
     DateTime load(int address = 0);
     void save(DateTime timestamp, int address = 0);

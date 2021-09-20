@@ -17,12 +17,16 @@ DS3231_RealtimeClock::DS3231_RealtimeClock(int scl_pin, int sda_pin, uint8_t eep
   _rtc = new RTC_DS3231();
 }
 
-void DS3231_RealtimeClock::begin() {
+void DS3231_RealtimeClock::begin(bool callWireBegin) {
   // rtc
-  Wire.begin(_sdaPin, _sclPin);
-  Wire.beginTransmission(DS3231_ADDRESS);
-  if (Wire.endTransmission() != 0) {
-    Log.warning(F("Initializing DS3231... Error!" CR));
+  if (callWireBegin) {
+    Wire.begin(_sdaPin, _sclPin);
+    Wire.beginTransmission(DS3231_ADDRESS);
+    if (Wire.endTransmission() != 0) {
+      Log.warning(F("Initializing DS3231... Error!" CR));
+    }
+  } else {
+    _rtc->begin(&Wire);
   }
 
   if (_rtc->lostPower()) {

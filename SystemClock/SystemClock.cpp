@@ -22,7 +22,7 @@ SystemClock::SystemClock(
 }
 
 void SystemClock::begin() {
-  _clock->begin();
+  _clock->begin(false);
 
   startupTime = _clock->startupTime;
 }
