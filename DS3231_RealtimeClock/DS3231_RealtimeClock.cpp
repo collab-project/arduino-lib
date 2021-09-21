@@ -21,12 +21,10 @@ void DS3231_RealtimeClock::begin(bool callWireBegin) {
   // rtc
   if (callWireBegin) {
     Wire.begin(_sdaPin, _sclPin);
-    Wire.beginTransmission(DS3231_ADDRESS);
-    if (Wire.endTransmission() != 0) {
-      Log.warning(F("Initializing DS3231... Error!" CR));
-    }
-  } else {
-    _rtc->begin(&Wire);
+  }
+  Wire.beginTransmission(DS3231_ADDRESS);
+  if (Wire.endTransmission() != 0) {
+    Log.warning(F("Initializing DS3231... Error!" CR));
   }
 
   if (_rtc->lostPower()) {
