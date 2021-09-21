@@ -74,9 +74,21 @@ DateTime SystemClock::now() {
 
 String SystemClock::getTime() {
   DateTime dt = now();
-  return _clock->formatTime(dt);
+  return formatTime(dt);
 }
 
 String SystemClock::getStartupTime() {
-  return _clock->formatTime(startupTime);
+  return formatTime(startupTime);
+}
+
+String SystemClock::formatTime(DateTime dt) {
+    return _clock->formatTime(dt);
+}
+
+String SystemClock::formatDate(DateTime dt) {
+    return _clock->formatDate(dt);
+}
+
+String SystemClock::formatDateTime(DateTime dt) {
+    return _clock->formatDateTime(dt);
 }

@@ -28,6 +28,9 @@ class SystemClock
     DateTime now();
     String getTime();
     String getStartupTime();
+    String formatTime(DateTime dt);
+    String formatDate(DateTime dt);
+    String formatDateTime(DateTime dt);
     DateTime startupTime;
 
   private:
@@ -35,8 +38,6 @@ class SystemClock
     long _gmtOffset_sec;
     int _daylightOffset_sec;
     DS3231_RealtimeClock* _clock;
-
-    String formatTime(DateTime dt);
 };
 
 #endif
