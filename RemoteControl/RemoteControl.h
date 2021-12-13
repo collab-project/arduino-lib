@@ -9,6 +9,8 @@
 #ifndef RemoteControl_h
 #define RemoteControl_h
 
+#define RAW_BUFFER_LENGTH 100
+
 #include <Arduino.h>
 #include <Method.h>
 #include <IRremoteInt.h>
