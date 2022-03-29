@@ -1,8 +1,9 @@
-/*  Copyright (c) 2021, Collab
+/*  Copyright (c) 2021-2022, Collab
  *  All rights reserved
 */
 /*
-  KY006_Buzzer.cpp - Control KY-006 passive piezo buzzer.
+  KY006_Buzzer.cpp - Control KY-006 passive piezo buzzer connected
+  to a digital pin.
 */
 
 #include "KY006_Buzzer.h"
