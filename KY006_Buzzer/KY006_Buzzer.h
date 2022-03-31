@@ -8,9 +8,6 @@
 #define KY006_Buzzer_h
 
 #include <Arduino.h>
-#if defined(ESP32)
-#include <Tone32.h>
-#endif
 
 class KY006_Buzzer
 {
