@@ -2,7 +2,7 @@
  *  All rights reserved
 */
 /*
-  KY006_Buzzer.cpp - Control KY-006 passive piezo buzzer connected
+  KY006_Buzzer.cpp - Control KY-006 piezo buzzer connected
   to a digital pin.
 */
 

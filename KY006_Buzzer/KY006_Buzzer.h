@@ -2,12 +2,15 @@
  *  All rights reserved
 */
 /*
-  KY006_Buzzer.h - Control KY-006 passive piezo buzzer.
+  KY006_Buzzer.h - Control KY-006 piezo buzzer.
 */
 #ifndef KY006_Buzzer_h
 #define KY006_Buzzer_h
 
 #include <Arduino.h>
+#if defined(ESP32)
+#include <Tone32.h>
+#endif
 
 class KY006_Buzzer
 {
