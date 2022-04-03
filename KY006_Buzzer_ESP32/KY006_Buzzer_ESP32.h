@@ -8,7 +8,6 @@
 #define KY006_Buzzer_ESP32_h
 
 #include <Arduino.h>
-#include <Tone32.h>
 
 class KY006_Buzzer_ESP32
 {
@@ -18,7 +17,7 @@ class KY006_Buzzer_ESP32
       int channel = 0
     );
     void begin();
-    void enable(unsigned int frequency = 1000, unsigned long duration = 100);
+    void enable(note_t frequency, unsigned long duration = 5);
     void disable();
 
   private:

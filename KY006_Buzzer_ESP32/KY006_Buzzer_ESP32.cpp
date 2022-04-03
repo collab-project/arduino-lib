@@ -16,14 +16,14 @@ KY006_Buzzer_ESP32::KY006_Buzzer_ESP32(int buzzer_pin, int channel) {
 void KY006_Buzzer_ESP32::begin() {
 }
 
-void KY006_Buzzer_ESP32::enable(unsigned int frequency, unsigned long duration) {
-  // stop sound first
-  disable();
+void KY006_Buzzer_ESP32::enable(note_t frequency, unsigned long duration) {
+  ledcAttachPin(_buzzerPin, _channel);
+  ledcWriteNote(_channel, frequency, duration);
+  delay(duration);
 
-  // start sound
-  tone(_buzzerPin, frequency, duration, _channel);
+  disable();
 }
 
 void KY006_Buzzer_ESP32::disable() {
-  noTone(_buzzerPin, _channel);
+  ledcDetachPin(_buzzerPin);
 }
