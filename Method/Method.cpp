@@ -9,6 +9,10 @@ void Method::attachCallback(const Functor0 & callback) {
   callback_ = callback;
 }
 
+void Method::attachCallbackCharArg(const Functor1<char> & callback) {
+  callbackCharArg_ = callback;
+}
+
 void Method::attachCallbackIntArg(const Functor1<int> & callback) {
   callbackIntArg_ = callback;
 }
@@ -36,6 +40,12 @@ void Method::attachCallbackIntStringBoolArg(const Functor3<int, String, bool> & 
 void Method::callback() {
   if (callback_) {
     callback_();
+  }
+}
+
+void Method::callbackCharArg(char val) {
+  if (callbackCharArg_) {
+    callbackCharArg_(val);
   }
 }
 

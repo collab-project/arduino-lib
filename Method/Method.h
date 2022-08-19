@@ -11,6 +11,7 @@ class Method
   public:
     Method();
     void attachCallback(const Functor0 & callback);
+    void attachCallbackCharArg(const Functor1<char> & callback);
     void attachCallbackIntArg(const Functor1<int> & callback);
     void attachCallback2IntArg(const Functor2<int, int> & callback);
     void attachCallback3IntArg(const Functor3<int, int, int> & callback);
@@ -18,6 +19,7 @@ class Method
     void attachCallbackIntStringArg(const Functor2<int, String> & callback);
     void attachCallbackIntStringBoolArg(const Functor3<int, String, bool> & callback);
     void callback();
+    void callbackCharArg(char val);
     void callbackIntArg(int val);
     void callback2IntArg(int val1, int val2);
     void callback3IntArg(int val1, int val2, int val3);
@@ -27,6 +29,7 @@ class Method
 
   protected:
     Functor0 callback_;
+    Functor1<char> callbackCharArg_;
     Functor1<int> callbackIntArg_;
     Functor1<float> callbackFloatArg_;
     Functor2<int, int> callback2IntArg_;
