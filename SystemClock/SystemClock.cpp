@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -8,8 +8,7 @@
 #include "SystemClock.h"
 
 SystemClock::SystemClock(
-    int scl_pin,
-    int sda_pin,
+    TwoWire* wire,
     char *ntp_server,
     long int gmtOffset_sec,
     int daylightOffset_sec)
@@ -18,11 +17,11 @@ SystemClock::SystemClock(
   _gmtOffset_sec = gmtOffset_sec;
   _daylightOffset_sec = daylightOffset_sec;
 
-  _clock = new DS3231_RealtimeClock(scl_pin, sda_pin);
+  _clock = new DS3231_RealtimeClock(wire);
 }
 
 void SystemClock::begin() {
-  _clock->begin(false);
+  _clock->begin();
 
   startupTime = _clock->startupTime;
 }
