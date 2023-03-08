@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -6,24 +6,19 @@
 */
 #include "DS3231_RealtimeClock.h"
 
-DS3231_RealtimeClock::DS3231_RealtimeClock(int scl_pin, int sda_pin, uint8_t eeprom_address) {
-  _sclPin = scl_pin;
-  _sdaPin = sda_pin;
+DS3231_RealtimeClock::DS3231_RealtimeClock(TwoWire* wire, uint8_t eeprom_address) {
+  _wire = wire;
 
   // storage
-  _storage = new AT24C32_EEPROM(eeprom_address);
+  _storage = new AT24C32_EEPROM(eeprom_address, wire);
 
   // rtc
   _rtc = new RTC_DS3231();
 }
 
-void DS3231_RealtimeClock::begin(bool callWireBegin) {
-  // rtc
-  if (callWireBegin) {
-    Wire.begin(_sdaPin, _sclPin);
-  }
-  Wire.beginTransmission(DS3231_ADDRESS);
-  if (Wire.endTransmission() != 0) {
+void DS3231_RealtimeClock::begin() {
+  // initializing the rtc
+  if (!_rtc->begin(_wire)) {
     Log.warning(F("Initializing DS3231... Error!" CR));
   }
 

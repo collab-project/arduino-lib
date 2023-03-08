@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -18,8 +18,8 @@
 class DS3231_RealtimeClock
 {
   public:
-    DS3231_RealtimeClock(int scl_pin = -1, int sda_pin = -1, uint8_t eeprom_address = 0x57);
-    void begin(bool callWireBegin = true);
+    DS3231_RealtimeClock(TwoWire* wire, uint8_t eeprom_address = 0x57);
+    void begin();
     DateTime now();
     DateTime load(int address = 0);
     void save(DateTime timestamp, int address = 0);
@@ -34,10 +34,9 @@ class DS3231_RealtimeClock
     float startupTemperature;
 
   private:
+    TwoWire *_wire;
     RTC_DS3231 *_rtc;
     AT24C32_EEPROM *_storage;
-    int _sclPin;
-    int _sdaPin;
 };
 
 #endif
