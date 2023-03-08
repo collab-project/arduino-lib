@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -8,13 +8,13 @@
 #define MultiPlexer_PCF8574_h
 
 #include <Arduino.h>
-#include <Method.h>
 #include <PCF8574.h>
+#include <ArduinoLog.h>
 
 class MultiPlexer_PCF8574
 {
   public:
-    MultiPlexer_PCF8574(uint8_t address, uint8_t sda, uint8_t scl);
+    MultiPlexer_PCF8574(uint8_t address, TwoWire* wire = &Wire);
     bool begin();
     bool isConnected();
     void digitalWrite(uint8_t pin, uint8_t value);
@@ -22,8 +22,6 @@ class MultiPlexer_PCF8574
 
   private:
     PCF8574* _expander;
-    uint8_t _sdaPin;
-    uint8_t _sclPin;
 };
 
 #endif
