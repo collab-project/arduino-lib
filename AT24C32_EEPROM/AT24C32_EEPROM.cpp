@@ -1,53 +1,56 @@
-/*  Copyright (c) 2021, Collab
+/*  Copyright (c) 2021-2023, Collab
  *  All rights reserved
 */
 #include "AT24C32_EEPROM.h"
 
-AT24C32_EEPROM::AT24C32_EEPROM(uint8_t eeprom_address) {
+AT24C32_EEPROM::AT24C32_EEPROM(uint8_t eeprom_address, TwoWire* wire) {
   _eepromAddress = eeprom_address;
+  _wire = wire;
 }
 
 void AT24C32_EEPROM::write_byte(unsigned int eeaddress, byte data) {
   int rdata = data;
-  Wire.beginTransmission(_eepromAddress);
-  Wire.write((int)(eeaddress >> 8)); // MSB
-  Wire.write((int)(eeaddress & 0xFF)); // LSB
-  Wire.write(rdata);
-  Wire.endTransmission();
+  _wire->beginTransmission(_eepromAddress);
+  _wire->write((int)(eeaddress >> 8)); // MSB
+  _wire->write((int)(eeaddress & 0xFF)); // LSB
+  _wire->write(rdata);
+  _wire->endTransmission();
 }
 
 void AT24C32_EEPROM::write_page(unsigned int eeaddresspage, byte* data, byte length) {
-  Wire.beginTransmission(_eepromAddress);
-  Wire.write((int)(eeaddresspage >> 8)); // MSB
-  Wire.write((int)(eeaddresspage & 0xFF)); // LSB
+  _wire->beginTransmission(_eepromAddress);
+  _wire->write((int)(eeaddresspage >> 8)); // MSB
+  _wire->write((int)(eeaddresspage & 0xFF)); // LSB
   byte c;
   for (c = 0; c < length; c++) {
-    Wire.write(data[c]);
+    _wire->write(data[c]);
   }
-  Wire.endTransmission();
+  _wire->endTransmission();
 }
 
 byte AT24C32_EEPROM::read_byte(unsigned int eeaddress) {
   byte rdata = 0xFF;
-  Wire.beginTransmission(_eepromAddress);
-  Wire.write((int)(eeaddress >> 8)); // MSB
-  Wire.write((int)(eeaddress & 0xFF)); // LSB
-  Wire.endTransmission();
-  Wire.requestFrom(_eepromAddress, 1);
-  if (Wire.available()) {
-    rdata = Wire.read();
+  _wire->beginTransmission(_eepromAddress);
+  _wire->write((int)(eeaddress >> 8)); // MSB
+  _wire->write((int)(eeaddress & 0xFF)); // LSB
+  _wire->endTransmission();
+  _wire->requestFrom(_eepromAddress, 1);
+  if (_wire->available()) {
+    rdata = _wire->read();
   }
   return rdata;
 }
 
 void AT24C32_EEPROM::read_buffer(unsigned int eeaddress, byte *buffer, int length) {
-  Wire.beginTransmission(_eepromAddress);
-  Wire.write((int)(eeaddress >> 8)); // MSB
-  Wire.write((int)(eeaddress & 0xFF)); // LSB
-  Wire.endTransmission();
-  Wire.requestFrom(_eepromAddress, length);
+  _wire->beginTransmission(_eepromAddress);
+  _wire->write((int)(eeaddress >> 8)); // MSB
+  _wire->write((int)(eeaddress & 0xFF)); // LSB
+  _wire->endTransmission();
+  _wire->requestFrom(_eepromAddress, length);
   int c = 0;
   for (c = 0; c < length; c++) {
-    if (Wire.available()) buffer[c] = Wire.read();
+    if (_wire->available()) {
+      buffer[c] = _wire->read();
+    }
   }
 }

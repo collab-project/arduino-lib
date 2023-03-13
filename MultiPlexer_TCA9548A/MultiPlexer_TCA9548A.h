@@ -1,4 +1,4 @@
-/*  Copyright (c) 2021, Collab
+/*  Copyright (c) 2021-2023, Collab
  *  All rights reserved
 */
 /*
@@ -10,13 +10,15 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <TCA9548A.h>
+#include <ArduinoLog.h>
 
 class MultiPlexer_TCA9548A
 {
   public:
     MultiPlexer_TCA9548A(int i2c_addr = 0x70);
     void begin();
-    void scan();
+    void scan(bool ignoreMultiplexer = true);
+    void scanAll();
     void closeAll();
     void openChannel(uint8_t channel_nr);
     void closeChannel(uint8_t channel_nr);
@@ -24,6 +26,7 @@ class MultiPlexer_TCA9548A
 
   private:
     TCA9548A* _mux;
+    int _address;
 };
 
 #endif

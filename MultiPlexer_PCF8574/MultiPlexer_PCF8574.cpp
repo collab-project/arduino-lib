@@ -1,17 +1,22 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 
 #include <MultiPlexer_PCF8574.h>
 
-MultiPlexer_PCF8574::MultiPlexer_PCF8574(uint8_t address, uint8_t sda, uint8_t scl) {
-  _sdaPin = sda;
-  _sclPin = scl;
-  _expander = new PCF8574(address);
+MultiPlexer_PCF8574::MultiPlexer_PCF8574(uint8_t address, TwoWire* wire) {
+  _expander = new PCF8574(address, wire);
 }
 
 bool MultiPlexer_PCF8574::begin() {
-  return _expander->begin(_sdaPin, _sclPin);
+  bool expanderReady = _expander->begin();
+  if (!expanderReady) {
+    Log.warning(F("PCF8574 could not initialize!" CR));
+  }
+  if (!isConnected()) {
+    Log.warning(F("PCF8574 not connected!" CR));
+  }
+  return expanderReady;
 }
 
 bool MultiPlexer_PCF8574::isConnected() {

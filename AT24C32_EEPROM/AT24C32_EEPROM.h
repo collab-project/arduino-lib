@@ -1,4 +1,4 @@
-/*  Copyright (c) 2021, Collab
+/*  Copyright (c) 2021-2023, Collab
  *  All rights reserved
 */
 #ifndef AT24C32_EEPROM_h
@@ -10,7 +10,7 @@
 class AT24C32_EEPROM
 {
   public:
-    AT24C32_EEPROM(uint8_t eeprom_address);
+    AT24C32_EEPROM(uint8_t eeprom_address, TwoWire* wire);
     byte read_byte(unsigned int eeaddress);
     void write_byte(unsigned int eeaddress, byte data);
     void write_page(unsigned int eeaddresspage, byte* data, byte length);
@@ -18,6 +18,7 @@ class AT24C32_EEPROM
 
   private:
     uint8_t _eepromAddress;
+    TwoWire* _wire;
 };
 
 #endif

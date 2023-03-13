@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -15,8 +15,7 @@ class SystemClock
 {
   public:
     SystemClock(
-        int scl_pin,
-        int sda_pin,
+        TwoWire* wire,
         char *ntpServer = "pool.ntp.org",
         long int gmtOffset_sec = 3600,
         int daylightOffset_sec = 3600
