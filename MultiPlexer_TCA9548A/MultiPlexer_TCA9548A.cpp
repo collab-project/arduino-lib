@@ -68,8 +68,9 @@ void MultiPlexer_TCA9548A::scan(bool ignoreMultiplexer) {
 }
 
 void MultiPlexer_TCA9548A::scanAll() {
-  // see https://github.com/WifWaf/TCA9548A/issues/6
   for (int channel = 0; channel < 8; channel++) {
-
+    Log.info(F("TCA9548A - Scanning channel %d..." CR), channel);
+    openChannel(channel);
+    scan();
   }
 }
