@@ -1,3 +1,6 @@
+/*  Copyright (c) 2023, Collab
+ *  All rights reserved
+*/
 /*
   MultiPlexer_MCP3008.cpp - Control MCP3008 8-channel 10-bit ADC.
 */
