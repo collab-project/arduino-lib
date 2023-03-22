@@ -27,8 +27,12 @@ class SSD1306_OLEDDisplay_Mux {
     void loop();
     void disable();
     void enable();
-    void writeBig(String msg);
-    void writeSmall(String msg);
+    void writeBig(String msg, int16_t x = 64, int16_t y = 0, bool clear_display = true);
+    void writeSmall(String msg, int16_t x = 64, int16_t y = 4, bool clear_display = true);
+    void drawImage(
+      int16_t xMove, int16_t yMove, int16_t width, int16_t height,
+      const uint8_t *xbm, bool clear_display = true
+    );
 
   private:
     uint8_t _address;
