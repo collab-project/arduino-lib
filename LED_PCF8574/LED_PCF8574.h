@@ -19,6 +19,9 @@ class LED_PCF8574
       int led_state = LOW
     );
     int state;
+    bool blink = false;
+    unsigned long interval = 500;
+
     void begin();
     void loop();
     void enable();
@@ -29,6 +32,7 @@ class LED_PCF8574
     void update();
 
     int _pin;
+    unsigned long _previousMillis = 0;
     MultiPlexer_PCF8574* _expander;
 };
 

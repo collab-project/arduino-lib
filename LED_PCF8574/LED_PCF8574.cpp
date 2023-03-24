@@ -23,6 +23,15 @@ void LED_PCF8574::begin() {
 }
 
 void LED_PCF8574::loop() {
+  if (blink) {
+    unsigned long currentMillis = millis();
+
+    if (currentMillis - _previousMillis >= interval) {
+      _previousMillis = currentMillis;
+
+      toggle();
+    }
+  }
 }
 
 void LED_PCF8574::update() {
@@ -31,11 +40,13 @@ void LED_PCF8574::update() {
 
 void LED_PCF8574::enable() {
   state = HIGH;
+  blink = false;
   update();
 }
 
 void LED_PCF8574::disable() {
   state = LOW;
+  blink = false;
   update();
 }
 
