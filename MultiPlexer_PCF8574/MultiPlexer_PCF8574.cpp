@@ -8,8 +8,8 @@ MultiPlexer_PCF8574::MultiPlexer_PCF8574(uint8_t address, TwoWire* wire) {
   _expander = new PCF8574(address, wire);
 }
 
-bool MultiPlexer_PCF8574::begin() {
-  bool expanderReady = _expander->begin();
+bool MultiPlexer_PCF8574::begin(uint8_t value) {
+  bool expanderReady = _expander->begin(value);
   if (!expanderReady) {
     Log.warning(F("PCF8574 could not initialize!" CR));
   }
