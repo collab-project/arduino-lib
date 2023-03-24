@@ -31,7 +31,7 @@ void SSD1306_OLEDDisplay_Mux::begin() {
   if (_flipVertical == true) {
     _display->flipScreenVertically();
   }
-  _display->setTextAlignment(TEXT_ALIGN_CENTER);
+  setTextAlignment(TEXT_ALIGN_CENTER);
   _display->setFont(Arimo_Regular_30);
 
   _expander->closeChannel(_expanderChannel);
@@ -78,6 +78,10 @@ void SSD1306_OLEDDisplay_Mux::writeSmall(String msg, int16_t x, int16_t y, bool 
   _display->display();
 
   _expander->closeChannel(_expanderChannel);
+}
+
+void SSD1306_OLEDDisplay_Mux::setTextAlignment(OLEDDISPLAY_TEXT_ALIGNMENT textAlignment) {
+  _display->setTextAlignment(textAlignment);
 }
 
 void SSD1306_OLEDDisplay_Mux::disable() {
