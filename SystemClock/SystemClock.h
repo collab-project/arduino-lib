@@ -21,7 +21,7 @@ class SystemClock
         int daylightOffset_sec = 3600
     );
     void sync();
-    void begin();
+    void begin(bool write_time = false);
     void setLocalTime();
     float getStartupTemperature();
     DateTime now();

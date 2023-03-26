@@ -20,8 +20,8 @@ SystemClock::SystemClock(
   _clock = new DS3231_RealtimeClock(wire);
 }
 
-void SystemClock::begin() {
-  _clock->begin();
+void SystemClock::begin(bool write_time) {
+  _clock->begin(write_time);
 
   startupTime = _clock->startupTime;
 }

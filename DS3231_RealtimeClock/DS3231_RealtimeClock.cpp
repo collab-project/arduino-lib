@@ -16,13 +16,13 @@ DS3231_RealtimeClock::DS3231_RealtimeClock(TwoWire* wire, uint8_t eeprom_address
   _rtc = new RTC_DS3231();
 }
 
-void DS3231_RealtimeClock::begin() {
+void DS3231_RealtimeClock::begin(bool write_time) {
   // initializing the rtc
   if (!_rtc->begin(_wire)) {
     Log.warning(F("Initializing DS3231... Error!" CR));
   }
 
-  if (_rtc->lostPower()) {
+  if (write_time || _rtc->lostPower()) {
     // when time needs to be set on a new device, or after a battery power
     // loss, the following line sets the RTC to the date and time this
     // project was compiled
