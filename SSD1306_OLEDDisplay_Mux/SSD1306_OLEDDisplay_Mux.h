@@ -28,6 +28,7 @@ class SSD1306_OLEDDisplay_Mux {
     void disable();
     void enable();
     void setTextAlignment(OLEDDISPLAY_TEXT_ALIGNMENT textAlignment);
+    void writeTiny(String msg, int16_t x = 64, int16_t y = 0, bool clear_display = true);
     void writeBig(String msg, int16_t x = 64, int16_t y = 0, bool clear_display = true);
     void writeSmall(String msg, int16_t x = 64, int16_t y = 4, bool clear_display = true);
     void drawImage(

@@ -66,6 +66,20 @@ void SSD1306_OLEDDisplay_Mux::writeBig(String msg, int16_t x, int16_t y, bool cl
   _expander->closeChannel(_expanderChannel);
 }
 
+void SSD1306_OLEDDisplay_Mux::writeTiny(String msg, int16_t x, int16_t y, bool clear_display) {
+  _expander->openChannel(_expanderChannel);
+
+  if (clear_display) {
+    _display->clear();
+  }
+  _display->setFont(Arimo_Regular_16);
+
+  _display->drawString(x, y, msg);
+  _display->display();
+
+  _expander->closeChannel(_expanderChannel);
+}
+
 void SSD1306_OLEDDisplay_Mux::writeSmall(String msg, int16_t x, int16_t y, bool clear_display) {
   _expander->openChannel(_expanderChannel);
 
