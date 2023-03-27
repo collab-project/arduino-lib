@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -16,6 +16,7 @@ class BH1750_LightSensor_Mux {
   public:
     BH1750_LightSensor_Mux(
       MultiPlexer_TCA9548A* expander,
+      TwoWire* wire,
       uint8_t expander_channel,
       int address = 0x23,
       BH1750Mode modus = BH1750Mode::CHM

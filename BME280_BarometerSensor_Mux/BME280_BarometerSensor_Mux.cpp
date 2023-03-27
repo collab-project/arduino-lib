@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -8,12 +8,14 @@
 
 BME280_BarometerSensor_Mux::BME280_BarometerSensor_Mux(
     MultiPlexer_TCA9548A* expander,
+    TwoWire* wire,
     uint8_t expander_channel,
     int address,
     float sea_level_pressure,
     int clock_speed
 ) {
   _expander = expander;
+  _wire = wire;
   _expanderChannel = expander_channel;
   _address = address;
   _clockSpeed = clock_speed;
@@ -22,15 +24,14 @@ BME280_BarometerSensor_Mux::BME280_BarometerSensor_Mux(
   _sensor = new Adafruit_BME280();
 }
 
-void BME280_BarometerSensor_Mux::begin() {
+bool BME280_BarometerSensor_Mux::begin() {
   _expander->openChannel(_expanderChannel);
 
-  bool status = _sensor->begin(_address, &Wire1);
-  if (!status) {
-    Log.warning(F("Error initialising BME280 sensor" CR));
-  }
+  working = _sensor->begin(_address, _wire);
 
   _expander->closeChannel(_expanderChannel);
+
+  return working;
 }
 
 float BME280_BarometerSensor_Mux::getTemperature() {

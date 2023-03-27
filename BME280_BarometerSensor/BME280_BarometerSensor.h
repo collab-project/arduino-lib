@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -30,7 +30,7 @@ class BME280_BarometerSensor
       float sea_level_pressure = 1013,
       long clock_speed = 100000
     );
-    void begin();
+    bool begin();
     void loop();
     float getTemperature();
     float getPressure();

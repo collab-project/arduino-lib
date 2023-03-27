@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -10,7 +10,6 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
-#include <ArduinoLog.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME280.h>
 #include <MultiPlexer_TCA9548A.h>
@@ -26,17 +25,20 @@ class BME280_BarometerSensor_Mux {
   public:
     BME280_BarometerSensor_Mux(
         MultiPlexer_TCA9548A* expander,
+        TwoWire* wire,
         uint8_t expander_channel = 0,
         int address = 0x76,
         float sea_level_pressure = 1013,
         int clock_speed = 100000
     );
-    void begin();
+    bool begin();
     float getTemperature();
     float getPressure();
     float getAltitude();
     float getHumidity();
     BME280_Result readAll();
+
+    bool working = false;
 
   private:
     uint8_t _expanderChannel;
@@ -44,6 +46,7 @@ class BME280_BarometerSensor_Mux {
     int _clockSpeed;
     float _seaLevelPressure;
 
+    TwoWire* _wire;
     Adafruit_BME280* _sensor;
     MultiPlexer_TCA9548A* _expander;
 };

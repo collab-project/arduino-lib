@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -23,7 +23,7 @@ BME280_BarometerSensor::BME280_BarometerSensor(
   _sensor = new Adafruit_BME280();
 }
 
-void BME280_BarometerSensor::begin() {
+bool BME280_BarometerSensor::begin() {
   _i2c->begin(_sdaPin, _sclPin, _clockSpeed);
 
   bool status;
@@ -31,6 +31,8 @@ void BME280_BarometerSensor::begin() {
   if (!status) {
     Log.warning(F("Could not find a valid BME280 sensor, check wiring!" CR));
   }
+
+  return status;
 }
 
 void BME280_BarometerSensor::loop() {

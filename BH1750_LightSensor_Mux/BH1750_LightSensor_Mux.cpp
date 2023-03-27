@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -8,6 +8,7 @@
 
 BH1750_LightSensor_Mux::BH1750_LightSensor_Mux(
   MultiPlexer_TCA9548A* expander,
+  TwoWire* wire,
   uint8_t expander_channel,
   int address,
   BH1750Mode modus
@@ -17,7 +18,7 @@ BH1750_LightSensor_Mux::BH1750_LightSensor_Mux(
   _modus = modus;
   _address = address;
 
-  _lightMeter = new BH1750_WE(&Wire1, _address);
+  _lightMeter = new BH1750_WE(wire, _address);
 }
 
 void BH1750_LightSensor_Mux::begin() {
