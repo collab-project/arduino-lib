@@ -38,7 +38,7 @@ class BME280_BarometerSensor_Mux {
     float getHumidity();
     BME280_Result readAll();
 
-    bool working = false;
+    bool working = true;
 
   private:
     uint8_t _expanderChannel;
