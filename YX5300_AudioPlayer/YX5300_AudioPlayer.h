@@ -1,4 +1,4 @@
-/*  Copyright (c) 2020-2021, Collab
+/*  Copyright (c) 2020-2023, Collab
  *  All rights reserved
 */
 /*
@@ -11,6 +11,7 @@
 #include <Method.h>
 #include <MD_YX5300.h>
 #include <ArduinoLog.h>
+#include <vector>
 
 #if defined(__AVR__) || defined(ESP8266)
 #include <SoftwareSerial.h>
